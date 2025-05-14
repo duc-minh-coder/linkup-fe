@@ -1,7 +1,9 @@
+import "./Friends.scss";
+
 function Friends() {
     return (
         <>
-            Friends
+            <div className="box">hehe</div>
         </>
     )
 }
