@@ -1,0 +1,157 @@
+.layout-default {
+    display: flex;
+    background-color: #F4F2EE;
+
+    .header {
+        display: flex;
+        background-color: #ffffff;
+        justify-content: space-between;
+        height: 60px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        box-shadow: 1px  0px  3px #aaa;
+        align-items: center;
+        padding: 0 10px 0 10px;
+
+        &__left {
+            display: flex;
+            gap: 10px;
+        }
+
+        &__logo-img {
+            width: 30px;
+            height: 30px;
+        }
+
+        &__search {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #aaa;
+            height: 30px;
+            border-radius: 5px;
+            padding: 2px 5px;
+        }
+
+        &__icon-block {
+            
+            img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        &__input {
+            outline: none;
+            border: none;
+            width: 230px;
+            height: 20px;
+            font-size: large;
+        }
+
+        &__menu {
+            display: flex;
+            height: 100%;
+            background-color: #fff;
+            align-items: end;
+            justify-content: center;
+    
+            ul {
+                list-style: none;
+                margin: 0;
+                display: flex;
+                gap: 40px;
+
+                li {
+                    display: flex;
+                }
+
+                img {
+                    width: 30px;
+                    height: 30px;
+                }
+            }
+        }
+        &__link {
+            text-decoration: none;
+            color: #000;   
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: 0.2s;
+            padding: 0 5px 0 5px;
+            height: 40px;
+            font-weight: normal;
+            font-size: 16px;
+            width: 120px; /* hoặc fix width/ min-width đủ rộng */
+
+            &:hover {
+                background-color: #eee;
+                border-radius: 8px;
+                font-weight: bold;
+            }
+
+            &--active {// tìm thẻ a.active 
+                color: #000000;
+                font-weight: bold;
+                text-decoration: underline;
+            }
+        }
+
+        &__info-block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        &__signin {
+            text-decoration: none;
+            color: #000;
+        }
+
+        &__info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 0px 5px;
+            border-radius: 10px;
+            cursor: pointer;
+
+            img {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+
+            &:hover {
+                background-color: #eee;
+            }
+        }
+
+        &__setting {
+            cursor: pointer;
+            padding: 5px 5px;
+            border-radius: 10px;
+
+            img {
+                width: 30px;
+                height: 30px;
+            }
+
+            &:hover {
+                background-color: #eee;
+
+            }
+        }
+    }
+
+    .main {
+        margin-top: 40px;
+        flex-grow: 1;
+    }
+}
