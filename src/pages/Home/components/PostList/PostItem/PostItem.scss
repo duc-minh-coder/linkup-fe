@@ -2,7 +2,6 @@
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
     transition: box-shadow 0.2s ease;
     padding: 1rem;
 
@@ -89,8 +88,8 @@
         img {
             width: 100%;
             border-radius: 10px;
-            object-fit: cover;
-            max-height: 400px;
+            object-fit: contain;
+            max-height: 480px;
         }
     }
 

@@ -10,7 +10,7 @@ import avt from "../../assets/images/avtmacdinh.png";
 import settingIcon from "../../assets/icon/settings.png";
 
 function LayoutDefault() {
-    var isLogin = false;
+    var isLogin = true;
     
     const navLinkActive = (e) => {
         return e.isActive ? "header__link header__link--active" : "header__link";

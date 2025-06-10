@@ -20,7 +20,7 @@ function Sidebar({ userAvatar, userName }) {
         { icon: <GroupIcon />, label: "Nhóm", isMain: true },
         { icon: <VidIcon />, label: "Video", isMain: true },
         { icon: <ChatIcon />, label: "Tin nhắn", isMain: true },
-        { icon: <GameIcon />, label: "Trò chơi", isMain: true },
+        { icon: <GameIcon />, label: "Trò chơi", isMain: false },
         { icon: <PostSavedIcon />, label: "Trang đã lưu", isMain: false },
         { icon: <ChatBotIcon />, label: "Chat bot AI", isMain: false },
     ];

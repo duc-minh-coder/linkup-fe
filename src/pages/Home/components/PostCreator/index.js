@@ -9,7 +9,7 @@ import {
 function PostCreator({ userAvatar }) {
     const [showModal, setShowModal] = useState(false);
     const [postText, setPostText] = useState("");
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImages, setSelectedImages] = useState([]);
     const fileInputRef = useRef();
     const submitBtnRef = useRef();
 
@@ -20,19 +20,21 @@ function PostCreator({ userAvatar }) {
     }, [postText]);
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setSelectedImage(URL.createObjectURL(file));
-        }
+        const files = Array.from(e.target.files);
+        const imgURLs = files.map(file => {
+            return URL.createObjectURL(file);
+        })
+
+        setSelectedImages(prev => [...prev, ...imgURLs]);
     };
 
     const handleSubmit = () => {
         // Handle post submission logic here
-        console.log("Post submitted:", { text: postText, image: selectedImage });
+        console.log("Post submitted:", { text: postText, image: selectedImages });
         
         // Reset form
         setPostText("");
-        setSelectedImage(null);
+        setSelectedImages([]);
         setShowModal(false);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
@@ -42,7 +44,7 @@ function PostCreator({ userAvatar }) {
     const handleCloseModal = () => {
         setShowModal(false);
         setPostText("");
-        setSelectedImage(null);
+        setSelectedImages([]);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -102,23 +104,24 @@ function PostCreator({ userAvatar }) {
                                 placeholder="Bạn đang nghĩ gì?"
                                 value={postText}
                                 onChange={(e) => setPostText(e.target.value)}
-                                rows={4}
+                                rows={3}
                             />
 
-                            {selectedImage && (
-                                <div className="post-modal__image-preview">
-                                    <img src={selectedImage} alt="Preview" />
-                                    <button 
-                                        className="post-modal__remove-image"
-                                        onClick={() => {
-                                            setSelectedImage(null);
-                                            if (fileInputRef.current) {
-                                                fileInputRef.current.value = "";
-                                            }
-                                        }}
-                                    >
-                                        ×
-                                    </button>
+                            {selectedImages.length > 0 && (
+                                <div className="post-modal__image-preview-multiple">
+                                    {
+                                        selectedImages.map((img, index) => (
+                                            <div key={index} className="image-wrapper">
+                                                <img src={img} alt={`Preview ${index}`} />
+                                                <button 
+                                                    onClick={() => {
+                                                        setSelectedImages(selectedImages.filter((_, i) => i !== index));
+                                                    }}
+                                                >×</button>
+                                            </div>
+                                        ))
+                                    }
+                                    
                                 </div>
                             )}
                         </div>
@@ -135,6 +138,7 @@ function PostCreator({ userAvatar }) {
                             accept="image/*,video/*"
                             ref={fileInputRef}
                             onChange={handleImageChange}
+                            multiple
                             style={{ display: 'none' }}
                         />
 
