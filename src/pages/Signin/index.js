@@ -4,13 +4,35 @@ import passIcon from '../../assets/icon/passIcon.png';
 import { useNavigate } from 'react-router-dom';
 import googleIcon from "../../assets/icon/google.png";
 import fbIcon from "../../assets/icon/facebook.png";
+import { useState } from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { login } from '../../actions/userAction';
 
 function Signin() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault(); 
-        navigate('/');
+        try {
+            const response = await axios.post("http://localhost:8080/auth/token", {
+                username: username,
+                password: password
+            });
+
+            const token = response.data.result.token;
+            
+            localStorage.setItem("token", token);
+            dispatch(login(token))
+
+            navigate("/");
+        }
+        catch(err) {
+            alert('Đăng nhập thất bại: ' + err.response?.data?.message || 'Lỗi không xác định');
+        }
     };
 
     return (
@@ -20,12 +42,24 @@ function Signin() {
 
                 <div className="form__box">
                     <img src={userIcon} className="form__img" alt="User Icon"/>
-                    <input className="form__input" type="text" placeholder="Tên người dùng / SĐT" required />
+                    <input 
+                        className="form__input" 
+                        type="text" 
+                        placeholder="Tên người dùng / SĐT" 
+                        value={username} 
+                        onChange={(e) => setUsername(e.target.value)}
+                        required />
                 </div>
 
                 <div className="form__box">
                     <img src={passIcon} className="form__img" alt="Password Icon"/>
-                    <input className="form__input" type="password" placeholder="Nhập mật khẩu" required />
+                    <input 
+                        className="form__input" 
+                        type="password" 
+                        placeholder="Nhập mật khẩu" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)}
+                        required />
                 </div>
 
                 <a className="form__request" href="/signup">Chưa có tài khoản?</a>

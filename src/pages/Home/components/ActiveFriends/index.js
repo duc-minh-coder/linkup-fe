@@ -22,8 +22,8 @@ function ActiveFriends({ activeFriends }) {
                 
                 <div className="active-friends__friends">
                     {
-                        friends.map(activeFriend => (
-                            <div className="active-friends__info">
+                        friends.map((activeFriend, index) => (
+                            <div className="active-friends__info" key={index}>
                                 <div className="active-friends__img--icon">
                                     <img src={activeFriend.avatar} />
                                 </div>

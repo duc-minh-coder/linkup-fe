@@ -10,6 +10,9 @@ import Sidebar from "./components/SideBar/index.js";
 import PostCreator from "./components/PostCreator/index.js";
 import PostList from "./components/PostList/index.js";
 import ActiveFriends from "./components/ActiveFriends/index.js";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 function Home() {
     // Sample post data
@@ -53,15 +56,6 @@ function Home() {
         { id: 3, name: "Nguyễn Văn Mạnh", avatar: avt },
         { id: 4, name: "Nguyễn Văn Nam", avatar: avt },
         { id: 5, name: "Nguyễn Thị A", avatar: avt },
-        { id: 6, name: "Nguyễn Thị B", avatar: avt },
-        { id: 7, name: "Nguyễn Thị C", avatar: avt },
-        { id: 8, name: "Nguyễn Thị D", avatar: avt },
-        { id: 9, name: "Nguyễn Thị E", avatar: avt },
-        { id: 10, name: "Nguyễn Thị E", avatar: avt },
-        { id: 11, name: "Nguyễn Thị F", avatar: avt },
-        { id: 12, name: "Nguyễn Thị G", avatar: avt },
-        { id: 13, name: "Nguyễn Thị H", avatar: avt },
-        
     ];
 
     return (

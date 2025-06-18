@@ -146,6 +146,7 @@ function PostCreator({ userAvatar }) {
                             className="post-modal__submit"
                             ref={submitBtnRef}
                             onClick={handleSubmit}
+                            disabled={postText.trim() === ""}
                         >
                             Đăng
                         </button>
