@@ -10,53 +10,73 @@ import Sidebar from "./components/SideBar/index.js";
 import PostCreator from "./components/PostCreator/index.js";
 import PostList from "./components/PostList/index.js";
 import ActiveFriends from "./components/ActiveFriends/index.js";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import axios from "axios";
 
 function Home() {
-    // Sample post data
-    const posts = [
-        {
-            id: 1,
-            author: "Nguyễn Đức Minh",
-            avatar: avt,
-            date: "13/8/2005 04:04",
-            content: "Happy birthday!",
-            image: imgFake,
-            likes: 1975,
-            comments: 99
-        },
-        {
-            id: 2,
-            author: "Nguyễn Đức Minh",
-            avatar: avt,
-            date: "30/02/2025 04:04",
-            content: "hello world",
-            image: null,
-            likes: 1,
-            comments: 0
-        },
-        {
-            id: 3,
-            author: "Nguyễn Đức Minh",
-            avatar: avt,
-            date: "13/8/2005 04:04",
-            content: "Happy birthday!",
-            image: imgFake,
-            likes: 1975,
-            comments: 99
-        }
-    ];
+    const [posts, setPosts] = useState([]);
+    const [activeFriends, setActiveFriends] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    // Active friends data
-    const activeFriends = [
-        { id: 1, name: "Nguyễn Đức Minh", avatar: avt },
-        { id: 2, name: "Nguyễn Đức Bình", avatar: avt },
-        { id: 3, name: "Nguyễn Văn Mạnh", avatar: avt },
-        { id: 4, name: "Nguyễn Văn Nam", avatar: avt },
-        { id: 5, name: "Nguyễn Thị A", avatar: avt },
-    ];
+    const getFriendPosts = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                setError("không tìm thấy token");
+                return;
+            }
+
+            const response = await axios.get("http://localhost:8080/api/posts/friend-posts", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log(response.data)
+            setPosts(response.data.result);
+
+
+        }
+        catch(err) {
+            console.log(err);
+        }  
+    }
+
+    const getListFriend = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                setError("không tìm thấy token");
+                return;
+            }
+
+            const response = await axios.get("http://localhost:8080/api/friendships", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log(response.data.result);
+            setActiveFriends(response.data.result)
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        getFriendPosts();
+        getListFriend();
+    }, [])
+
+
 
     return (
         <div className="home-container">
@@ -67,11 +87,18 @@ function Home() {
                 />
             </div>
             
-            
-            <main className="main-content">
-                <PostCreator userAvatar={avt} />
-                <PostList posts={posts} />
-            </main>
+            {/* Hiển thị trạng thái loading */}
+            {!loading && (
+                <div className="loading-container">
+                    <p>Đang tải bài đăng...</p>
+                </div>
+            )}
+            {loading && !error && (
+                <main className="main-content">
+                    <PostCreator userAvatar={avt} />
+                    <PostList posts={posts} />
+                </main>
+            )}
             
             <div className="active-friends">
                 <ActiveFriends 

@@ -25,11 +25,11 @@ function ActiveFriends({ activeFriends }) {
                         friends.map((activeFriend, index) => (
                             <div className="active-friends__info" key={index}>
                                 <div className="active-friends__img--icon">
-                                    <img src={activeFriend.avatar} />
+                                    <img src={activeFriend.avatarUrl} />
                                 </div>
 
                                 <div className="active-friends__name">
-                                    <p>{activeFriend.name}</p>
+                                    <p>{activeFriend.fullName}</p>
                                 </div>
                             </div>
                         ))

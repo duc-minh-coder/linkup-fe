@@ -18,7 +18,7 @@ function Signin() {
     const handleSubmit = async (event) => {
         event.preventDefault(); 
         try {
-            const response = await axios.post("http://localhost:8080/auth/token", {
+            const response = await axios.post("http://localhost:8080/api/auth/token", {
                 username: username,
                 password: password
             });

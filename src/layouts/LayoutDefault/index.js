@@ -38,12 +38,12 @@ function LayoutDefault() {
             }
 
             try {
-                const res = await axios.post("http://localhost:8080/auth/introspect", {
+                const res = await axios.post("http://localhost:8080/api/auth/introspect", {
                     token: accessToken
                 })
 
                 if (!res.data.result.valid) {
-                    const refreshToken = await axios.post("http://localhost:8080/auth/refresh", {
+                    const refreshToken = await axios.post("http://localhost:8080/api/auth/refresh", {
                         token: accessToken
                     })
 

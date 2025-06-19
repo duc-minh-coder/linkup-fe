@@ -26,13 +26,13 @@ function PostItem({ post }) {
             <div className="post-item__header">
                 <div className="post-item__user">
                     <img 
-                        src={post.avatar} 
+                        src={post.authorAvatarUrl} 
                         alt={`${post.author} avatar`}
                         className="post-item__avatar"
                     />
                     <div className="post-item__user-info">
-                        <h3 className="post-item__author">{post.author}</h3>
-                        <time className="post-item__date">{post.date}</time>
+                        <h3 className="post-item__author">{post.authorName}</h3>
+                        <time className="post-item__date">{post.updatedTime}</time>
                     </div>
                 </div>
                 
@@ -52,21 +52,59 @@ function PostItem({ post }) {
                 {post.content && (
                     <p className="post-item__text">{post.content}</p>
                 )}
-                {post.image && (
+                {/* {post.postMedia && (
                     <div className="post-item__media">
-                        <img 
-                            src={post.image} 
-                            alt="Post content"
-                            className="post-item__image"
-                        />
+                        {
+                            post.postMedia.map((media, index) => (
+                                <img 
+                                    src={media.url} 
+                                    alt="Post content"
+                                    className="post-item__image"
+                                    key={index}
+                                />                            
+                            ))
+                        }
+
                     </div>
-                )}
+                )} */}
+
+                {post.postMedia && post.postMedia.length > 0 && (
+                    <div className="post-item__media">
+                            {post.postMedia.slice(0, 5).map((media, index) => (
+                                <div 
+                                    key={index} 
+                                    className={`post-item__image-wrapper ${index === 4 && post.postMedia.length > 5 ? "post-item__image--more" : ""}`}
+                                    onClick={() => {
+                                        if (index === 4 && post.postMedia.length > 5) {
+                                            alert(`Xem thêm ${post.postMedia.length - 5} ảnh`); // bạn có thể thay thành mở modal ở đây
+                                        }
+                                    }}
+                                >
+                                    <img 
+                                        src={media.url} 
+                                        alt="Post content"
+                                        className="post-item__image"
+                                    />
+                                    {
+                                        index === 4 && post.postMedia.length > 5 && (
+                                            <div className="post-item__image-overlay">
+                                                +{post.postMedia.length - 5}
+                                            </div>
+                                        )
+                                    }
+                                </div>
+                            ))}
+                        </div>
+                    )}
             </div>
 
             {/* Post Stats */}
             <div className="post-item__stats">
-                <span className="post-item__stat">{post.likes} lượt thích</span>
-                <span className="post-item__stat">{post.comments} bình luận</span>
+                <span className="post-item__stat">
+                    {post.userLikes.length} lượt thích</span>
+
+                <span className="post-item__stat">
+                    {post.comments.length} bình luận</span>
             </div>
 
             {/* Post Interactions */}
