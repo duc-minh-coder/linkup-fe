@@ -1,7 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import './LayoutDefault.scss';
 import searchIcon from "../../assets/icon/search.png";
-import logo from "../../assets/images/logo_web.png";
 import homeIcon from "../../assets/icon/home.png";
 import friendsIcon from "../../assets/icon/friends.png";
 import chattingIcon from "../../assets/icon/chatting.png";
@@ -90,9 +89,6 @@ function LayoutDefault() {
             <div className="layout-default">
                 <header className="header">
                     <div className='header__left'>
-                        <div className='header__logo'>
-                            <img src={logo} className='header__logo-img'/>
-                        </div>
 
                         <div className="header__search">
                             <div className="header__icon-block">

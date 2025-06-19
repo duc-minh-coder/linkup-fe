@@ -15,8 +15,38 @@ import axios from "axios";
 function Home() {
     const [posts, setPosts] = useState([]);
     const [activeFriends, setActiveFriends] = useState([]);
+    const [avtUrl, setAvtUrl] = useState("");
+    const [fullName, setFullName] = useState("");
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const getUser = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                setError("không tìm thấy token");
+                return;
+            }
+
+            const response = await axios.get("http://localhost:8080/api/profiles/user", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const userData = response.data.result;
+            console.log(userData);
+
+            setAvtUrl(userData.avatarUrl);
+            setFullName(userData.fullName);
+        }
+        catch(err) {
+            console.log(err);
+        }
+    }
 
     const getFriendPosts = async () => {
         try {
@@ -72,6 +102,7 @@ function Home() {
     }
 
     useEffect(() => {
+        getUser();
         getFriendPosts();
         getListFriend();
     }, [])
@@ -82,8 +113,8 @@ function Home() {
         <div className="home-container">
             <div className="sidebar">
                 <Sidebar 
-                    userAvatar={avt} 
-                    userName="Nguyễn Đức Minh" 
+                    userAvatar={avtUrl} 
+                    userName= {fullName}
                 />
             </div>
             
@@ -95,7 +126,7 @@ function Home() {
             )}
             {loading && !error && (
                 <main className="main-content">
-                    <PostCreator userAvatar={avt} />
+                    <PostCreator userAvatar={avtUrl} />
                     <PostList posts={posts} />
                 </main>
             )}
