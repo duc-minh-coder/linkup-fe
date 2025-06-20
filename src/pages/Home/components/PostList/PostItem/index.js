@@ -1,3 +1,4 @@
+import axios from "axios";
 import { 
     ConfigIcon, 
     CloseIcon,
@@ -6,9 +7,41 @@ import {
     ShareIcon
 } from "../../../../../components/assetsConvert";
 import "./PostItem.scss";
+import { useState } from "react";
+
 
 function PostItem({ post }) {
-    const handleLike = () => {
+    const [error, setError] = useState(null);
+    const [userLiked, setUserLiked] = useState(false);
+
+    const handleLike = async () => {
+        const postId = post.id;
+
+        try {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                setError("không tìm thấy token");
+                return;
+            }
+
+            const response = await axios.post("http://localhost:8080/api/post-like", null, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    postId: postId
+                }
+            })
+
+            console.log(response.data.result); //trả về true false
+
+        }
+        catch(err) {
+            console.log(err);
+        }
+
         console.log("Liked post:", post.id);
     };
 
@@ -52,21 +85,6 @@ function PostItem({ post }) {
                 {post.content && (
                     <p className="post-item__text">{post.content}</p>
                 )}
-                {/* {post.postMedia && (
-                    <div className="post-item__media">
-                        {
-                            post.postMedia.map((media, index) => (
-                                <img 
-                                    src={media.url} 
-                                    alt="Post content"
-                                    className="post-item__image"
-                                    key={index}
-                                />                            
-                            ))
-                        }
-
-                    </div>
-                )} */}
 
                 {post.postMedia && post.postMedia.length > 0 && (
                     <div className="post-item__media">

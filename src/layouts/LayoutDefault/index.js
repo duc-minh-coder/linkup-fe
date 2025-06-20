@@ -11,11 +11,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from '../../actions/userAction';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
+import { Suspense } from "react";
 
 function LayoutDefault() {
-    var isLogin = true;
+    // var isLogin = true;
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const token = useSelector(state => state.user.token);
 
     const [isChecking, setIsChecking] = useState(true);
@@ -25,7 +28,7 @@ function LayoutDefault() {
             const saveToken = localStorage.getItem("token");
 
             if (saveToken) 
-                dispatch(login(token));
+                dispatch(login(saveToken));
         }
 
         const checkAuth = async () => {
@@ -81,8 +84,7 @@ function LayoutDefault() {
     }
 
     if (isChecking) {
-        return 
-            <div>Đang kiểm tra đăng nhập...</div>;
+        return <div>Đang kiểm tra đăng nhập...</div>;
     }
     return (
         <>
@@ -112,21 +114,21 @@ function LayoutDefault() {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="friends" className={navLinkActive}>
+                                    <NavLink to="/friends" className={navLinkActive}>
                                         <img src={friendsIcon} />
 
                                         <p>Bạn bè</p>
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="message" className={navLinkActive}>
+                                    <NavLink to="/messages" className={navLinkActive}>
                                         <img src={chattingIcon} />
 
                                         <p>Trò chuyện</p>
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="notifications" className={navLinkActive}>
+                                    <NavLink to="/notifications" className={navLinkActive}>
                                         <img src={notificationIcon} />
 
                                         <p>Thông báo</p>
@@ -137,24 +139,13 @@ function LayoutDefault() {
                     </div>
 
                     <div className="header__info-block">
-                        {
-                            isLogin ? 
-                            <div className='header__info'>
-                                {/* <img src={avt} />
-
-                                <p>Nguyễn Đức Minh</p> */}
-
-                                <div 
-                                    to="signin" 
-                                    className="header__signin"
-                                    onClick={handleLogout}
-                                >
-                                    đăng xuất
-                                </div>
-                            </div> :
-                            <NavLink to="signin" className="header__signin">đăng nhập</NavLink>
-                        }
-                        
+                        <div 
+                            to="signin" 
+                            className="header__signin"
+                            onClick={handleLogout}
+                        >
+                            đăng xuất
+                        </div>
 
                         <div className='header__setting'>
                             <img src={settingIcon} />
@@ -165,7 +156,7 @@ function LayoutDefault() {
                 
 
                 <main className="main">
-                    <Outlet />
+                    <Outlet key={location.pathname} />
                 </main>
             </div>
         </>

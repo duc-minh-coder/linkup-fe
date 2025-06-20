@@ -19,25 +19,26 @@ export const routes = [
                 element: <Signup />
             },
             {
-                    element: <LayoutDefault />,
-                    children: [
-                        {
-                            path: '/',
-                            element: <Home />
-                        },
-                        {
-                            path: 'friends',
-                            element: <Friends />
-                        },
-                        {
-                            path: 'message',
-                            element: <Message />
-                        },
-                        {
-                            path: 'notifications',
-                            element: <Notifications />
-                        }
-                    ]
+                path: "",
+                element: <LayoutDefault />,
+                children: [
+                    {
+                        path: '/',
+                        element: <Home />
+                    },
+                    {
+                        path: '/friends',
+                        element: <Friends />
+                    },
+                    {
+                        path: '/messages',
+                        element: <Message />
+                    },
+                    {
+                        path: '/notifications',
+                        element: <Notifications />
+                    }
+                ]
             } 
         ]
         

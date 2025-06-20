@@ -1,9 +1,6 @@
 // Home/index.js
 import "./Home.scss";
-import avt from "../../assets/images/avtmacdinh.png";
-import imgFake from "../../assets/images/kcotime.jpg";
 import { useEffect, useState, useRef } from "react";
-import FetchApi from "../../helpers/FetchApi/index.js";
 
 // Import components
 import Sidebar from "./components/SideBar/index.js";
@@ -124,6 +121,14 @@ function Home() {
                     <p>Đang tải bài đăng...</p>
                 </div>
             )}
+
+            {/* Hiển thị nếu lỗi */}
+            {error && (
+                <div className="loading-container">
+                    <p>Đang xảy ra lỗi!</p>
+                </div>
+            )}
+
             {loading && !error && (
                 <main className="main-content">
                     <PostCreator userAvatar={avtUrl} />
