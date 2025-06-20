@@ -7,12 +7,37 @@ import {
     ShareIcon
 } from "../../../../../components/assetsConvert";
 import "./PostItem.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import DetailPost from "./DetailPost";
 
 
 function PostItem({ post }) {
     const [error, setError] = useState(null);
     const [userLiked, setUserLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
+    const [showDetail, setShowDetail] = useState(false);
+
+    // useEffect(() => {
+    //     const socketUrl = "http://localhost:8080/ws";
+
+    //     const stompClient = new Client({
+    //         webSocketFactory: () => new SockJS(socketUrl),
+    //         reconnectDelay: 5000,
+    //         onConnect: () => {
+    //             stompClient.subscribe(`/topic/post-like/${post.id}`, (message) => {
+    //                 const body = JSON.parse(message.body);
+    //                 setLikeCount(body.likesCount);
+    //             })
+    //         },
+    //         debug: (str) => console.log(str)
+    //     })
+
+    //     stompClient.activate();
+
+    //     return () => stompClient.deactivate();
+    // }, [post.id])
 
     const handleLike = async () => {
         const postId = post.id;
@@ -35,7 +60,7 @@ function PostItem({ post }) {
                 }
             })
 
-            console.log(response.data.result); //trả về true false
+            console.log(response.data.result);
 
         }
         catch(err) {
@@ -53,10 +78,24 @@ function PostItem({ post }) {
         console.log("Share post:", post.id);
     };
 
+    const handlingShow = () => {
+        setShowDetail(false);
+    }
+
     return (
         <article className="post-item">
+            {showDetail && (
+                <DetailPost 
+                        post={post} 
+                        showDetail={showDetail} 
+                        userAvatar={post.authorAvatarUrl} 
+                        userName={post.authorName}
+                        handlingShow={handlingShow}
+                />
+            )}
+
             {/* Post Header */}
-            <div className="post-item__header">
+            <div className="post-item__header" onClick={() => setShowDetail(true)}>
                 <div className="post-item__user">
                     <img 
                         src={post.authorAvatarUrl} 
@@ -119,7 +158,9 @@ function PostItem({ post }) {
             {/* Post Stats */}
             <div className="post-item__stats">
                 <span className="post-item__stat">
-                    {post.userLikes.length} lượt thích</span>
+                    {/* {post.userLikes.length} lượt thích */}
+                    {likeCount} lượt thích
+                </span>
 
                 <span className="post-item__stat">
                     {post.comments.length} bình luận</span>

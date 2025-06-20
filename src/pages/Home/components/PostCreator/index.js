@@ -54,7 +54,7 @@ function PostCreator({ userAvatar }) {
         <>
             <div className="post-creator">
                 <div className="post-creator__input-section">
-                    <img src={userAvatar} alt="User avatar" className="post-creator__avatar" />
+                    {(userAvatar) && <img src={userAvatar} alt="User avatar" className="post-creator__avatar" />}
                     <button 
                         className="post-creator__input"
                         onClick={() => setShowModal(true)}

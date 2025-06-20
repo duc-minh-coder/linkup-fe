@@ -30,7 +30,8 @@ function Sidebar({ userAvatar, userName }) {
             <div className="sidebar__content">
                 {/* User Info */}
                 <div className="sidebar__user">
-                    <img src={userAvatar} alt="User avatar" className="sidebar__avatar" />
+                    {(userAvatar) && <img src={userAvatar} alt="User avatar" className="sidebar__avatar" />}
+                    
                     <span className="sidebar__username">{userName}</span>
                 </div>
 

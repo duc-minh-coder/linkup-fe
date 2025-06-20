@@ -72,3 +72,7 @@ export const CallIcon = () => (
 export const VideoCallIcon = () => (
   <img src={require('../assets/icon/video-call.png')} alt="Video Call" />
 );
+
+export const SendIcon = () => {
+  <img src={require("../assets/icon/send.png")} alt='send icon' />
+}
