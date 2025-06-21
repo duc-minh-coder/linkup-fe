@@ -156,24 +156,24 @@
         margin-bottom: 1rem;
         
         // Dynamic grid based on number of images
-        &:has(.detail-post__image-wrapper:nth-child(1):last-child) {
-            grid-template-columns: 1fr;
-        }
+        // &:has(.detail-post__image-wrapper:nth-child(1):last-child) {
+        //     grid-template-columns: 1fr;
+        // }
         
-        &:has(.detail-post__image-wrapper:nth-child(2):last-child) {
-            grid-template-columns: 1fr 1fr;
-        }
+        // &:has(.detail-post__image-wrapper:nth-child(2):last-child) {
+        //     grid-template-columns: 1fr 1fr;
+        // }
         
-        &:has(.detail-post__image-wrapper:nth-child(3):last-child) {
-            grid-template-columns: 1fr 1fr;
-            .detail-post__image-wrapper:first-child {
-                grid-column: 1 / -1;
-            }
-        }
+        // &:has(.detail-post__image-wrapper:nth-child(3):last-child) {
+        //     grid-template-columns: 1fr 1fr;
+        //     .detail-post__image-wrapper:first-child {
+        //         grid-column: 1 / -1;
+        //     }
+        // }
         
-        &:has(.detail-post__image-wrapper:nth-child(4):last-child) {
-            grid-template-columns: 1fr 1fr;
-        }
+        // &:has(.detail-post__image-wrapper:nth-child(4):last-child) {
+        //     grid-template-columns: 1fr 1fr;
+        // }
         
         // For 5+ images
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

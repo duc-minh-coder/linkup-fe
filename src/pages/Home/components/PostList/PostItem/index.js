@@ -18,6 +18,7 @@ function PostItem({ post }) {
     const [userLiked, setUserLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
     const [showDetail, setShowDetail] = useState(false);
+    const [viewImageUrl, setViewImageUrl] = useState(null);
 
     // useEffect(() => {
     //     const socketUrl = "http://localhost:8080/ws";
@@ -141,6 +142,7 @@ function PostItem({ post }) {
                                         src={media.url} 
                                         alt="Post content"
                                         className="post-item__image"
+                                        onClick={() => setViewImageUrl(media.url)}
                                     />
                                     {
                                         index === 4 && post.postMedia.length > 5 && (
@@ -192,6 +194,14 @@ function PostItem({ post }) {
                     <span>Chia sẻ</span>
                 </button>
             </div>
+
+            {viewImageUrl && (
+                <div className="image-viewer-overlay" onClick={() => setViewImageUrl(null)}>
+                    <div className="image-viewer-modal" onClick={(e) => e.stopPropagation()}>
+                        <img src={viewImageUrl} alt="Zoomed" />
+                    </div>
+                </div>
+            )}
         </article>
     );
 }
