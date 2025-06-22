@@ -40,6 +40,17 @@ function PostItem({ post }) {
     //     return () => stompClient.deactivate();
     // }, [post.id])
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    };
+
     const handleLike = async () => {
         const postId = post.id;
 
@@ -67,8 +78,6 @@ function PostItem({ post }) {
         catch(err) {
             console.log(err);
         }
-
-        console.log("Liked post:", post.id);
     };
 
     const handleComment = () => {
@@ -105,7 +114,7 @@ function PostItem({ post }) {
                     />
                     <div className="post-item__user-info">
                         <h3 className="post-item__author">{post.authorName}</h3>
-                        <time className="post-item__date">{post.updatedTime}</time>
+                        <time className="post-item__date">{formatDate(post.updatedTime)}</time>
                     </div>
                 </div>
                 
@@ -171,11 +180,11 @@ function PostItem({ post }) {
             {/* Post Interactions */}
             <div className="post-item__interactions">
                 <button 
-                    className="post-item__interaction-btn"
+                    className={`post-item__interaction-btn ${post.liked ? "liked" : ""}`}
                     onClick={handleLike}
                 >
                     <LikeIcon />
-                    <span>Thích</span>
+                    <span>{post.liked ? 'Bỏ thích' : 'Thích'}</span>
                 </button>
                 
                 <button 

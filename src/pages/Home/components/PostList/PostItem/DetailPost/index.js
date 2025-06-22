@@ -221,7 +221,8 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                                     onClick={handleAddComment}
                                     disabled={!newComment.trim() || loading}
                                 >
-                                    <SendIcon />
+                                    {/* <SendIcon /> */}
+                                    gửi
                                 </button>
                             </div>
                         </div>
@@ -231,14 +232,14 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                             {comments.map((comment, index) => (
                                 <div key={comment.id || index} className="detail-post__comment">
                                     <img 
-                                        src={comment.authorAvatarUrl} 
-                                        alt={`${comment.authorName} avatar`}
+                                        src={comment.avatarUrl} 
+                                        alt={`${comment.fullName} avatar`}
                                         className="detail-post__comment-avatar"
                                     />
                                     <div className="detail-post__comment-content">
                                         <div className="detail-post__comment-bubble">
                                             <strong className="detail-post__comment-author">
-                                                {comment.authorName}
+                                                {comment.fullName}
                                             </strong>
                                             <p className="detail-post__comment-text">
                                                 {comment.content}
@@ -248,7 +249,7 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                                             <button className="detail-post__comment-action">Thích</button>
                                             <button className="detail-post__comment-action">Phả hồi</button>
                                             <span className="detail-post__comment-time">
-                                                {formatDate(comment.createdTime)}
+                                                {formatDate(comment.updatedTime)}
                                             </span>
                                         </div>
                                     </div>

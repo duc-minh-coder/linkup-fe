@@ -5,13 +5,18 @@ import {
     VideoIcon,
     CloseIcon
 } from "../../../../components/assetsConvert.js";
+import PostItem from "../PostList/PostItem/index.js";
+import axios from "axios";
 
 function PostCreator({ userAvatar }) {
     const [showModal, setShowModal] = useState(false);
     const [postText, setPostText] = useState("");
     const [selectedImages, setSelectedImages] = useState([]);
+    const [fileSelectedImages, setFileSelectedImages] = useState([]);
     const fileInputRef = useRef();
     const submitBtnRef = useRef();
+    const [showNewUserPost, setShowUserPost] = useState(false);
+    const [post, setPost] = useState(null);
 
     useEffect(() => {
         if (submitBtnRef.current) {
@@ -21,6 +26,9 @@ function PostCreator({ userAvatar }) {
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
+
+        setFileSelectedImages(files);
+
         const imgURLs = files.map(file => {
             return URL.createObjectURL(file);
         })
@@ -28,9 +36,34 @@ function PostCreator({ userAvatar }) {
         setSelectedImages(prev => [...prev, ...imgURLs]);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         // Handle post submission logic here
         console.log("Post submitted:", { text: postText, image: selectedImages });
+
+        const token = localStorage.getItem("token");
+        const formData = new FormData();
+
+        formData.append("content", postText);
+        fileSelectedImages.map(img => {
+            formData.append("mediaList", img)
+        })
+
+        try {
+            const response = await axios.post("http://localhost:8080/api/posts", 
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                }
+            )
+
+            console.log(response.data);
+            setPost(response.data);
+        }
+        catch(err) {
+            console.log(err);
+        }
         
         // Reset form
         setPostText("");
@@ -77,6 +110,12 @@ function PostCreator({ userAvatar }) {
                     </button>
                 </div>
             </div>
+
+            {showNewUserPost && (
+                <>
+                    <PostItem post={post}/>
+                </>
+            )}
 
             {/* Modal */}
             {showModal && (
@@ -137,7 +176,7 @@ function PostCreator({ userAvatar }) {
                             type="file"
                             accept="image/*,video/*"
                             ref={fileInputRef}
-                            onChange={handleImageChange}
+                            onChange={handleImageChange} 
                             multiple
                             style={{ display: 'none' }}
                         />
