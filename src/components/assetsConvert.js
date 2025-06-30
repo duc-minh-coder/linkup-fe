@@ -73,6 +73,10 @@ export const VideoCallIcon = () => (
   <img src={require('../assets/icon/video-call.png')} alt="Video Call" />
 );
 
-export const SendIcon = () => {
+export const SendIcon = () => (
   <img src={require("../assets/icon/send.png")} alt='send icon' />
-}
+);
+
+export const LikedIcon = () => (
+  <img src={require("../assets/icon/liked.png")} alt='liked icon' />
+);

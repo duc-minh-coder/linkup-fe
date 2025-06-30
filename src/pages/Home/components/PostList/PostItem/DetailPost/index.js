@@ -221,8 +221,7 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                                     onClick={handleAddComment}
                                     disabled={!newComment.trim() || loading}
                                 >
-                                    {/* <SendIcon /> */}
-                                    gửi
+                                    <SendIcon />
                                 </button>
                             </div>
                         </div>

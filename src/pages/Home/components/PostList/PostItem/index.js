@@ -4,7 +4,9 @@ import {
     CloseIcon,
     LikeIcon,
     CommentIcon,
-    ShareIcon
+    ShareIcon,
+    LikedIcon
+
 } from "../../../../../components/assetsConvert";
 import "./PostItem.scss";
 import { useEffect, useState } from "react";
@@ -183,8 +185,9 @@ function PostItem({ post }) {
                     className={`post-item__interaction-btn ${post.liked ? "liked" : ""}`}
                     onClick={handleLike}
                 >
-                    <LikeIcon />
-                    <span>{post.liked ? 'Bỏ thích' : 'Thích'}</span>
+                    
+                    {post.liked ? <LikedIcon/> : < LikeIcon/>}
+                    <span>thích</span>
                 </button>
                 
                 <button 

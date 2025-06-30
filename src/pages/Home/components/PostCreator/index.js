@@ -60,6 +60,7 @@ function PostCreator({ userAvatar }) {
 
             console.log(response.data);
             setPost(response.data);
+            setShowUserPost(true);
         }
         catch(err) {
             console.log(err);
