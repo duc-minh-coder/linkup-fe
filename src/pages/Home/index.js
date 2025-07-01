@@ -14,6 +14,7 @@ function Home() {
     const [activeFriends, setActiveFriends] = useState([]);
     const [avtUrl, setAvtUrl] = useState("");
     const [fullName, setFullName] = useState("");
+    const [userId, setUserId] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -39,6 +40,7 @@ function Home() {
 
             setAvtUrl(userData.avatarUrl);
             setFullName(userData.fullName);
+            setUserId(userData.id)
         }
         catch(err) {
             console.log(err);
@@ -110,8 +112,9 @@ function Home() {
         <div className="home-container">
             <div className="sidebar">
                 <Sidebar 
-                    userAvatar={avtUrl} 
-                    userName= {fullName}
+                    userAvatar = {avtUrl} 
+                    userName = {fullName}
+                    userId = {userId}
                 />
             </div>
             

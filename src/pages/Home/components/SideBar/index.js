@@ -1,5 +1,5 @@
 import "./Sidebar.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { 
     FriendIcon,
     SavedIcon,
@@ -10,9 +10,11 @@ import {
     PostSavedIcon,
     ChatBotIcon
 } from "../../../../components/assetsConvert.js";
+import { useNavigate } from "react-router-dom";
 
-function Sidebar({ userAvatar, userName }) {
+function Sidebar({ userAvatar, userName, userId }) {
     const [showMore, setShowMore] = useState(false);
+    const navigate = useNavigate();
 
     const menuItems = [
         { icon: <FriendIcon />, label: "Bạn bè", isMain: true },
@@ -25,11 +27,19 @@ function Sidebar({ userAvatar, userName }) {
         { icon: <ChatBotIcon />, label: "Chat bot AI", isMain: false },
     ];
 
+    useEffect(() => {
+
+    }, [])
+
+    const handleOpenProfile = (e) => {
+        navigate(`/profile/${userId}`);
+    }
+
     return (
         <aside className="sidebar">
             <div className="sidebar__content">
                 {/* User Info */}
-                <div className="sidebar__user">
+                <div className="sidebar__user" onClick={handleOpenProfile}>
                     {(userAvatar) && <img src={userAvatar} alt="User avatar" className="sidebar__avatar" />}
                     
                     <span className="sidebar__username">{userName}</span>

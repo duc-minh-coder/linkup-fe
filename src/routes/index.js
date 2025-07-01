@@ -5,6 +5,7 @@ import Home from "../pages/Home/index.js";
 import Message from "../pages/Message/index.js";
 import Notifications from "../pages/Notifications/index.js";
 import Friends from "../pages/friends/index.js";
+import Profile from "../pages/Profile/index.js";
 
 export const routes = [
     {
@@ -37,6 +38,10 @@ export const routes = [
                     {
                         path: '/notifications',
                         element: <Notifications />
+                    },
+                    {
+                        path: '/profile/:userId',
+                        element: <Profile />
                     }
                 ]
             } 
