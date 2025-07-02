@@ -20,7 +20,6 @@ function PostItem({ post }) {
     const [userLiked, setUserLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
     const [showDetail, setShowDetail] = useState(false);
-    const [viewImageUrl, setViewImageUrl] = useState(null);
 
     // useEffect(() => {
     //     const socketUrl = "http://localhost:8080/ws";
@@ -98,11 +97,11 @@ function PostItem({ post }) {
         <article className="post-item">
             {showDetail && (
                 <DetailPost 
-                        post={post} 
-                        showDetail={showDetail} 
-                        userAvatar={post.authorAvatarUrl} 
-                        userName={post.authorName}
-                        handlingShow={handlingShow}
+                    post={post} 
+                    showDetail={showDetail} 
+                    userAvatar={post.authorAvatarUrl} 
+                    userName={post.authorName}
+                    handlingShow={handlingShow}
                 />
             )}
 
@@ -143,21 +142,16 @@ function PostItem({ post }) {
                                 <div 
                                     key={index} 
                                     className={`post-item__image-wrapper ${index === 4 && post.postMedia.length > 5 ? "post-item__image--more" : ""}`}
-                                    onClick={() => {
-                                        if (index === 4 && post.postMedia.length > 5) {
-                                            alert(`Xem thêm ${post.postMedia.length - 5} ảnh`); // bạn có thể thay thành mở modal ở đây
-                                        }
-                                    }}
                                 >
                                     <img 
                                         src={media.url} 
                                         alt="Post content"
                                         className="post-item__image"
-                                        onClick={() => setViewImageUrl(media.url)}
+                                        onClick={() => setShowDetail(true)}
                                     />
                                     {
                                         index === 4 && post.postMedia.length > 5 && (
-                                            <div className="post-item__image-overlay">
+                                            <div className="post-item__image-overlay" onClick={() => setShowDetail(true)}>
                                                 +{post.postMedia.length - 5}
                                             </div>
                                         )
@@ -171,12 +165,12 @@ function PostItem({ post }) {
             {/* Post Stats */}
             <div className="post-item__stats">
                 <span className="post-item__stat">
-                    {/* {post.userLikes.length} lượt thích */}
                     {likeCount} lượt thích
                 </span>
 
                 <span className="post-item__stat">
-                    {post.comments.length} bình luận</span>
+                    {post.comments.length} bình luận
+                </span>
             </div>
 
             {/* Post Interactions */}
@@ -206,14 +200,6 @@ function PostItem({ post }) {
                     <span>Chia sẻ</span>
                 </button>
             </div>
-
-            {viewImageUrl && (
-                <div className="image-viewer-overlay" onClick={() => setViewImageUrl(null)}>
-                    <div className="image-viewer-modal" onClick={(e) => e.stopPropagation()}>
-                        <img src={viewImageUrl} alt="Zoomed" />
-                    </div>
-                </div>
-            )}
         </article>
     );
 }

@@ -17,6 +17,7 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     useEffect(() => {
         // Prevent body scroll when modal is open
@@ -145,23 +146,25 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                     </div>
 
                     {/* Post Content */}
-                    <div className="detail-post__post-content">
-                        {post.content && (
-                            <p className="detail-post__text">{post.content}</p>
-                        )}
+                    <div className="detail-post__media-wrapper">
+                        <img
+                            src={post.postMedia[currentImageIndex]?.url}
+                            alt={`Ảnh ${currentImageIndex + 1}`}
+                            className="detail-post__image"
+                        />
 
-                        {post.postMedia && post.postMedia.length > 0 && (
-                            <div className="detail-post__media">
-                                {post.postMedia.map((media, index) => (
-                                    <div key={index} className="detail-post__image-wrapper">
-                                        <img 
-                                            src={media.url} 
-                                            alt={`Media ${index + 1}`}
-                                            className="detail-post__image"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
+                        {post.postMedia.length > 1 && (
+                            <>
+                                <button 
+                                    onClick={() => setCurrentImageIndex(prev => Math.max(prev - 1, 0))}
+                                    className="detail-post__nav-btn prev"
+                                >‹</button>
+
+                                <button 
+                                    onClick={() => setCurrentImageIndex(prev => Math.min(prev + 1, post.postMedia.length - 1))}
+                                    className="detail-post__nav-btn next"
+                                >›</button>
+                            </>
                         )}
                     </div>
 
