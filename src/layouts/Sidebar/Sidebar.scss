@@ -1,0 +1,94 @@
+// Variables
+$primary-color: #0095f6;
+$secondary-color: #ed4956;
+$background-color: #000;
+$text-color: #fff;
+$text-muted: #a8a8a8;
+$border-color: #262626;
+$hover-color: #1a1a1a;
+$gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+
+// Mixins
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+}
+
+@mixin avatar($size: 32px) {
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@mixin button-reset {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+@mixin text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar {
+    width: 245px;
+    padding: 20px;
+    border-right: 1px solid $border-color;
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: $background-color;
+    z-index: 1000;
+
+    &__header {
+    margin-bottom: 30px;
+    }
+
+    &__logo {
+    font-size: 24px;
+    font-weight: bold;
+    padding-left: 12px;
+    margin: 0;
+    }
+
+    &__nav {
+    flex: 1;
+    }
+
+    &__nav-item {
+    @include flex-center;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: $hover-color;
+    }
+
+    &--active {
+        background-color: $hover-color;
+    }
+    }
+
+    &__nav-label {
+    margin-left: 16px;
+    font-size: 16px;
+    }
+
+    &__footer {
+    margin-top: auto;
+    }
+}

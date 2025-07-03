@@ -1,0 +1,59 @@
+// Variables
+$primary-color: #0095f6;
+$secondary-color: #ed4956;
+$background-color: #000;
+$text-color: #fff;
+$text-muted: #a8a8a8;
+$border-color: #262626;
+$hover-color: #1a1a1a;
+$gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin avatar($size: 32px) {
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@mixin button-reset {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+@mixin text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stories {
+    margin-bottom: 24px;
+    padding: 16px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background-color: $background-color;
+
+    &__container {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    }
+}

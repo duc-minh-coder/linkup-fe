@@ -1,0 +1,9 @@
+.feed {
+    width: 470px;
+
+    &__posts {
+    .post + .post {
+        margin-top: 24px;
+    }
+    }
+}

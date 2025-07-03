@@ -1,0 +1,61 @@
+import "./Friends.scss";
+
+function Friends() {
+    const friends = [
+        { username: 'xqzzmau', description: 'Gợi ý cho bạn' },
+        { username: '_haki_741_', description: 'Gợi ý cho bạn' },
+        { username: 'inmalinh', description: 'Có inmalinh theo dõi' },
+        { username: 'instagram', description: 'Có bạn1125 + 5 người nữa t...' },
+        { username: 'hieu4tuoii', description: 'Gợi ý cho bạn' },
+    ];
+
+    return (
+        <div className="friends">
+            <div className="friends__header">
+                <div className="friends__current-user">
+                <img src="/api/placeholder/44/44" alt="Current user" />
+                <div className="friends__user-info">
+                    <span className="friends__username">minh.zom</span>
+                    <span className="friends__full-name">Nguyễn Đức Minh</span>
+                </div>
+                </div>
+                <span className="friends__switch-btn">Chuyển</span>
+            </div>
+            
+            <div className="friends__content">
+                <div className="friends__title">
+                <span>Gợi ý cho bạn</span>
+                <span className="friends__see-all">Xem tất cả</span>
+                </div>
+                
+                <div className="friends__list">
+                {friends.map((suggestion, index) => (
+                    <div key={index} className="friends__item">
+                    <div className="friends__user">
+                        <img src="/api/placeholder/32/32" alt={suggestion.username} />
+                        <div className="friends__user-info">
+                        <span className="friends__username">{suggestion.username}</span>
+                        <span className="friends__description">{suggestion.description}</span>
+                        </div>
+                    </div>
+                    <span className="friends__follow-btn">Theo dõi</span>
+                    </div>
+                ))}
+                </div>
+            </div>
+            
+            <div className="friends__footer">
+                <div className="friends__links">
+                Giới thiệu · Trợ giúp · Báo chí · API · Việc làm ·
+                Quyền riêng tư · Điều khoản · Vị trí · Ngôn ngữ ·
+                Meta đã xác minh
+                </div>
+                <div className="friends__copyright">
+                © 2025 INSTAGRAM FROM META
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Friends;

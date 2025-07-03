@@ -1,0 +1,96 @@
+// Variables
+$primary-color: #0095f6;
+$secondary-color: #ed4956;
+$background-color: #000;
+$text-color: #fff;
+$text-muted: #a8a8a8;
+$border-color: #262626;
+$hover-color: #1a1a1a;
+$gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+
+// Mixins
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin avatar($size: 32px) {
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+@mixin button-reset {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+@mixin text-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.story {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 66px;
+    cursor: pointer;
+
+    &__avatar {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: $gradient;
+    padding: 2px;
+    margin-bottom: 8px;
+    position: relative;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+
+    &--own {
+        background: $border-color;
+    }
+
+    img {
+        @include avatar(100%);
+        border: 2px solid $background-color;
+    }
+    }
+
+    &__add-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: $primary-color;
+    border-radius: 50%;
+    @include flex-center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid $background-color;
+    }
+
+    &__username {
+    font-size: 12px;
+    color: $text-muted;
+    text-align: center;
+    width: 66px;
+    @include text-ellipsis;
+    }
+}

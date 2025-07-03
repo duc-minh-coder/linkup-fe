@@ -6,6 +6,7 @@ import Message from "../pages/Message/index.js";
 import Notifications from "../pages/Notifications/index.js";
 import Friends from "../pages/friends/index.js";
 import Profile from "../pages/Profile/index.js";
+import HomePage from "../pages/HomePage/index.js";
 
 export const routes = [
     {
@@ -25,7 +26,7 @@ export const routes = [
                 children: [
                     {
                         path: '/',
-                        element: <Home />
+                        element: <HomePage />
                     },
                     {
                         path: '/friends',
