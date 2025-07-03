@@ -27,12 +27,12 @@ function Sidebar() {
         ))}
       </nav>
       
-      <div className="sidebar__footer">
+      {/* <div className="sidebar__footer">
         <div className="sidebar__nav-item">
           <Menu size={24} />
           <span className="sidebar__nav-label">Xem thêm</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

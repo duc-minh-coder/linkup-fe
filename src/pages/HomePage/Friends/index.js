@@ -1,6 +1,6 @@
 import "./Friends.scss";
 
-function Friends() {
+function Friends({ userProfile }) {
     const friends = [
         { username: 'xqzzmau', description: 'Gợi ý cho bạn' },
         { username: '_haki_741_', description: 'Gợi ý cho bạn' },
@@ -13,10 +13,10 @@ function Friends() {
         <div className="friends">
             <div className="friends__header">
                 <div className="friends__current-user">
-                <img src="/api/placeholder/44/44" alt="Current user" />
+                <img src={userProfile.avatarUrl} alt="Current user" />
                 <div className="friends__user-info">
-                    <span className="friends__username">minh.zom</span>
-                    <span className="friends__full-name">Nguyễn Đức Minh</span>
+                    {/* <span className="friends__username">${userProfile}</span> */}
+                    <span className="friends__full-name">${userProfile.fullName}</span>
                 </div>
                 </div>
                 <span className="friends__switch-btn">Chuyển</span>
@@ -46,12 +46,12 @@ function Friends() {
             
             <div className="friends__footer">
                 <div className="friends__links">
-                Giới thiệu · Trợ giúp · Báo chí · API · Việc làm ·
-                Quyền riêng tư · Điều khoản · Vị trí · Ngôn ngữ ·
-                Meta đã xác minh
+                    Giới thiệu · Trợ giúp · Báo chí · API · Việc làm ·
+                    Quyền riêng tư · Điều khoản · Vị trí · Ngôn ngữ ·
+                    Meta đã xác minh
                 </div>
                 <div className="friends__copyright">
-                © 2025 INSTAGRAM FROM META
+                © 2025 LINK UP BY MINH
                 </div>
             </div>
         </div>

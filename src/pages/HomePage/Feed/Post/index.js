@@ -2,27 +2,49 @@ import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Search, Home, Com
 import { useState } from 'react';
 import "./Post.scss";
 
-function Post({ username, avatar, image, likes, timeAgo }) {
+function Post({ post }) {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
 
   return (
     <div className="post">
       <div className="post__header">
         <div className="post__user">
-          <img src={avatar} alt={username} className="post__user-avatar" />
+          <img src={post.authorAvatarUrl} alt={post.authorAvatarUrl} className="post__user-avatar" />
           <div className="post__user-info">
-            <span className="post__username">{username}</span>
-            <span className="post__time-ago">{timeAgo}</span>
+            <span className="post__username">{post.authorName}</span>
+            <span className="post__time-ago">{post.updatedTime}</span>
           </div>
         </div>
         <MoreHorizontal size={20} className="post__options" />
       </div>
       
-      <div className="post__image">
-        <img src={image} alt="Post" />
-      </div>
-      
+      {post.postMedia && post.postMedia.length > 0 && (
+        <div className="post-item__media">
+                {post.postMedia.slice(0, 5).map((media, index) => (
+                    <div 
+                        key={index} 
+                        className={`post-item__image-wrapper ${index === 4 && post.postMedia.length > 5 ? "post-item__image--more" : ""}`}
+                    >
+                        <img 
+                            src={media.url} 
+                            alt="Post content"
+                            className="post-item__image"
+                            onClick={() => setShowDetail(true)}
+                        />
+                        {
+                            index === 4 && post.postMedia.length > 5 && (
+                                <div className="post-item__image-overlay" onClick={() => setShowDetail(true)}>
+                                    +{post.postMedia.length - 5}
+                                </div>
+                            )
+                        }
+                    </div>
+                ))}
+            </div>
+        )}
+
       <div className="post__actions">
         <div className="post__actions-left">
           <Heart 
@@ -41,9 +63,9 @@ function Post({ username, avatar, image, likes, timeAgo }) {
       </div>
       
       <div className="post__info">
-        <div className="post__likes">{likes} lượt thích</div>
+        <div className="post__likes">{post.userLikes.length} lượt thích</div>
         <div className="post__description">
-          <span className="post__username">{username}</span>
+          <span className="post__username">{post.authorName}</span>
           <span className="post__description-text">Beautiful view from the bridge! 🌉</span>
         </div>
       </div>
