@@ -15,29 +15,29 @@ function Sidebar() {
 
     return (
         <div className="sidebar">
-        <div className="sidebar__header">
-            <h1 className="sidebar__logo">Link up</h1>
-        </div>
-        
-        <nav className="sidebar__nav">
-            {menuItems.map((item, index) => (
-            <NavLink 
-                key={index} 
-                to={item.path} 
-                className={({ isActive }) => `sidebar__nav-item ${isActive ? 'sidebar__nav-item--active' : ''}`}>
-
-                <item.icon size={24} />
-                <span className="sidebar__nav-label">{item.label}</span>
-            </NavLink>
-            ))}
-        </nav>
-        
-        {/* <div className="sidebar__footer">
-            <div className="sidebar__nav-item">
-            <Menu size={24} />
-            <span className="sidebar__nav-label">Xem thêm</span>
+            <div className="sidebar__header">
+                <h1 className="sidebar__logo">Link up</h1>
             </div>
-        </div> */}
+            
+            <nav className="sidebar__nav">
+                {menuItems.map((item, index) => (
+                <NavLink 
+                    key={index} 
+                    to={item.path} 
+                    className={({ isActive }) => `sidebar__nav-item ${isActive ? 'sidebar__nav-item--active' : ''}`}>
+
+                    <item.icon size={24} />
+                    <span className="sidebar__nav-label">{item.label}</span>
+                </NavLink>
+                ))}
+            </nav>
+            
+            {/* <div className="sidebar__footer">
+                <div className="sidebar__nav-item">
+                <Menu size={24} />
+                <span className="sidebar__nav-label">Xem thêm</span>
+                </div>
+            </div> */}
         </div>
     );
 };

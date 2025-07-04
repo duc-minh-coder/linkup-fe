@@ -19,7 +19,7 @@ function Friends({ userProfile }) {
                     <span className="friends__full-name">{userProfile.fullName}</span>
                 </div>
                 </div>
-                {/* <span className="friends__switch-btn">trang cá nhân</span> */}
+                <span className="friends__switch-btn">chuyển</span>
             </div>
             
             <div className="friends__content">
@@ -34,11 +34,12 @@ function Friends({ userProfile }) {
                     <div className="friends__user">
                         <img src="/api/placeholder/32/32" alt={friend.username} />
                         <div className="friends__user-info">
-                        <span className="friends__username">{friend.username}</span>
-                        <span className="friends__description">{friend.description}</span>
+                            <span className="friends__username">{friend.username}</span>
+                            <span className="friends__description">{friend.description}</span>
                         </div>
                     </div>
-                    <span className="friends__follow-btn">Theo dõi</span>
+
+                    <span className="friends__chat-btn">nhắn tin</span>
                     </div>
                 ))}
                 </div>

@@ -1,21 +1,27 @@
 .layout-default {
-    display: flex;
-    background-color: #000;
-    color: #fff;
+  display: flex;
 
-    .main {
-        flex-grow: 1;
-    }
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        width: 72px;
-        
-        &__nav-label {
-            display: none;
-        }
-    }
+.main {
+  flex: 1;
+  margin-left: 265px;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 1024px) {
+    margin-left: 72px;
+  }
+
+  @media (max-width: 640px) {
+    margin-left: 0;
+    margin-bottom: 60px; // Để không bị che bởi sidebar dưới
+    padding: 1rem;
+  }
 }
 
 /* Scrollbar styling cho các component */

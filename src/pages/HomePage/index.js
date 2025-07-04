@@ -59,6 +59,7 @@ function HomePage() {
         <div className="linkup-app">
             <main className="main-content">
                 <Feed posts={posts}/>
+                
                 <Friends userProfile={userProfile} />
             </main>
         </div>

@@ -8,38 +8,6 @@ $border-color: #262626;
 $hover-color: #1a1a1a;
 $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 
-// Mixins
-@mixin flex-center {
-    display: flex;
-    align-items: center;
-}
-
-@mixin flex-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-@mixin avatar($size: 32px) {
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-@mixin button-reset {
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 0;
-}
-
-@mixin text-ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 .linkup-app {
     display: flex;
     min-height: 100vh;
@@ -49,7 +17,6 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 
 .main-content {
     flex: 1;
-    margin-left: 245px;
     display: flex;
     justify-content: center;
     gap: 40px;
@@ -58,32 +25,23 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 }
 
 // Responsive styles
-@media (max-width: 1024px) {
+@media (max-width: 1024px) {    
     .friends {
         display: none;
     }
-    
+
     .main-content {
         justify-content: flex-start;
     }
 }
 
 @media (max-width: 768px) {
-    .sidebar {
-        width: 72px;
-        
-        &__nav-label {
-            display: none;
-        }
-    }
-    
     .main-content {
-        margin-left: 72px;
+        margin-left: 0;
     }
     
     .feed {
         width: 100%;
-        max-width: 470px;
     }
 }
 
