@@ -1,8 +1,10 @@
+import "./Error.scss";
+
 function Error() {
     return (
-        <>
-            lỗi không có trang này!
-        </>
+        <div className="error-content">
+            Lỗi! trang này không tồn tại.
+        </div>
     )
 }
 

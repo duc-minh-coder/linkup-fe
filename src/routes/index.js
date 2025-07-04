@@ -7,6 +7,7 @@ import Notifications from "../pages/Notifications/index.js";
 import Friends from "../pages/friends/index.js";
 import Profile from "../pages/Profile/index.js";
 import HomePage from "../pages/HomePage/index.js";
+import Error from "../pages/Error/index.js";
 
 export const routes = [
     {
@@ -43,10 +44,13 @@ export const routes = [
                     {
                         path: '/profile/:userId',
                         element: <Profile />
+                    },
+                    {
+                        path: '*',
+                        element: <Error />
                     }
                 ]
             } 
         ]
-        
     }
 ]

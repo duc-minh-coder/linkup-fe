@@ -16,26 +16,26 @@ function Friends({ userProfile }) {
                 <img src={userProfile.avatarUrl} alt="Current user" />
                 <div className="friends__user-info">
                     {/* <span className="friends__username">${userProfile}</span> */}
-                    <span className="friends__full-name">${userProfile.fullName}</span>
+                    <span className="friends__full-name">{userProfile.fullName}</span>
                 </div>
                 </div>
-                <span className="friends__switch-btn">Chuyển</span>
+                {/* <span className="friends__switch-btn">trang cá nhân</span> */}
             </div>
             
             <div className="friends__content">
                 <div className="friends__title">
-                <span>Gợi ý cho bạn</span>
+                <span>Bạn bè của bạn</span>
                 <span className="friends__see-all">Xem tất cả</span>
                 </div>
                 
                 <div className="friends__list">
-                {friends.map((suggestion, index) => (
+                {friends.map((friend, index) => (
                     <div key={index} className="friends__item">
                     <div className="friends__user">
-                        <img src="/api/placeholder/32/32" alt={suggestion.username} />
+                        <img src="/api/placeholder/32/32" alt={friend.username} />
                         <div className="friends__user-info">
-                        <span className="friends__username">{suggestion.username}</span>
-                        <span className="friends__description">{suggestion.description}</span>
+                        <span className="friends__username">{friend.username}</span>
+                        <span className="friends__description">{friend.description}</span>
                         </div>
                     </div>
                     <span className="friends__follow-btn">Theo dõi</span>

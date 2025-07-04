@@ -73,6 +73,8 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    color: white;
+    text-decoration: none;
 
     &:hover {
         background-color: $hover-color;
