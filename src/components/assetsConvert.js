@@ -80,3 +80,7 @@ export const SendIcon = () => (
 export const LikedIcon = () => (
   <img src={require("../assets/icon/liked.png")} alt='liked icon' />
 );
+
+export const homeIcon = () => (
+  <img src={require("../assets/icon/home.png")} alt='home icon'/>
+);

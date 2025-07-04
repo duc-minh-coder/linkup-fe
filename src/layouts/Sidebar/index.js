@@ -1,16 +1,16 @@
-import { Heart, MessageCircle, Send, Bookmark, MoreHorizontal, Search, Home, Compass, PlusSquare, User, Menu } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Search, Home, PlusSquare, User, Bell } from 'lucide-react';
 import "./Sidebar.scss";
 import { NavLink } from 'react-router-dom';
 
-function Sidebar() {
-
+function Sidebar({ userInfo }) {
     const menuItems = [
         { icon: Home, label: 'Trang chủ', path: "/" },
         { icon: Search, label: 'Tìm kiếm', path: "/finding" },
         { icon: MessageCircle, label: 'Tin nhắn', path: "messages" },
-        { icon: Heart, label: 'Thông báo', path: "/notifications" },
+        { icon: Bell, label: 'Thông báo', path: "/notifications" },
+        { icon: Bookmark, label: 'Bookmark', path: "/bookmark"},
         { icon: PlusSquare, label: 'Tạo bài viết', path: "/create-post" },
-        { icon: User, label: 'Trang cá nhân', path: "/my-info" },
+        { icon: User, label: 'Trang cá nhân', path: `/profile/${userInfo.id}` },
     ];
 
     return (
@@ -24,20 +24,13 @@ function Sidebar() {
                 <NavLink 
                     key={index} 
                     to={item.path} 
-                    className={({ isActive }) => `sidebar__nav-item ${isActive ? 'sidebar__nav-item--active' : ''}`}>
-
+                    className={({ isActive }) => `sidebar__nav-item ${isActive ? 'sidebar__nav-item--active' : ''}`}
+                >
                     <item.icon size={24} />
                     <span className="sidebar__nav-label">{item.label}</span>
                 </NavLink>
                 ))}
             </nav>
-            
-            {/* <div className="sidebar__footer">
-                <div className="sidebar__nav-item">
-                <Menu size={24} />
-                <span className="sidebar__nav-label">Xem thêm</span>
-                </div>
-            </div> */}
         </div>
     );
 };

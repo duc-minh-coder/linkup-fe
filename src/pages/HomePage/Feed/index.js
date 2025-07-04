@@ -5,11 +5,9 @@ import "./Feed.scss";
 function Feed({ posts }) {
     return (
         <div className="feed">
-            {/* <Stories /> */}
-
             <div className="feed__posts">
                 {posts.map((post, index) => (
-                <Post key={index} post={post} />
+                    <Post key={index} post={post} />
                 ))}
             </div>
         </div>

@@ -11,6 +11,7 @@ function ProfileInfo({ userInfo, isOwnProfile = false }) {
           <div className="profile-avatar">
             <img src={userInfo.avatarUrl} alt="Profile" />
           </div>
+          
           <div className="profile-details">
             <div className="profile-header-info">
               <h2>{userInfo.fullName}</h2>

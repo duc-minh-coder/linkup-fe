@@ -5,6 +5,7 @@ import "./Profile.scss";
 import ProfileHeader from "./ProfileHeader";
 import ProfileInfo from "./ProfileInfo";
 import PostList from "../Home/components/PostList/index.js";
+import Feed from "../HomePage/Feed/index.js";
 
 function Profile() {
     const { userId } = useParams();
@@ -54,7 +55,7 @@ function Profile() {
             <ProfileHeader />
             <ProfileInfo userInfo={userInfo} isOwnProfile={true} />
             <div className="profile__post-content">
-                <PostList posts={posts} />
+                <Feed posts={posts} />
             </div>
             
         </div>

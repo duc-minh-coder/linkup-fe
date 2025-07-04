@@ -22,6 +22,31 @@ function LayoutDefault() {
   const token = useSelector((state) => state.user.token);
 
   const [isChecking, setIsChecking] = useState(true);
+  const [userInfo, setUserInfo] = useState({});
+
+  const getInfo = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+        const response = await axios.get("http://localhost:8080/api/profiles/user", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+
+        console.log(response.data.result);
+        setUserInfo(response.data.result);
+    }
+    catch (err) {
+        console.log(err);
+    } 
+    finally {
+
+    }
+  }
 
   useEffect(() => {
     if (!token) {
@@ -68,6 +93,7 @@ function LayoutDefault() {
     };
 
     checkAuth();
+    getInfo();
   }, []);
 
   const handleLogout = async (e) => {
@@ -92,7 +118,7 @@ function LayoutDefault() {
   return (
     <>
       <div className="layout-default">
-        <Sidebar />
+        <Sidebar userInfo={userInfo} />
 
         <main className="main">
           <Outlet key={location.pathname} />

@@ -1,9 +1,10 @@
 .profile-header {
-  background: white;
+  background: #000;
   border-bottom: 1px solid #dbdbdb;
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
   
   .header-content {
     display: flex;
@@ -15,7 +16,7 @@
       font-size: 24px;
       font-weight: bold;
       margin: 0;
-      color: #262626;
+      color: #fff;
     }
     
     // .nav-icons {
