@@ -14,11 +14,13 @@ function Signin() {
     const dispatch = useDispatch();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
     
     const handleSubmit = async (event) => {
         event.preventDefault(); 
         try {
-            const response = await axios.post("http://localhost:8080/api/auth/token", {
+            const response = await axios.post(`${API_BASE_URL}/api/auth/token`, {
                 username: username,
                 password: password
             });

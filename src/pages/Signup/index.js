@@ -12,12 +12,14 @@ function Signup() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [fullName, setFullName] = useState("");
 
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+
     const handleSubmit = async (e) => {
         e.preventDefault(); 
 
         if (password == confirmPassword) {
             
-            const response = await axios.post("http://localhost:8080/users", {
+            const response = await axios.post(`${API_BASE_URL}/api/user`, {
                 username: username,
                 password: password,
                 fullName: fullName

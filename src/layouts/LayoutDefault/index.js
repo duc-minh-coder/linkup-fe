@@ -1,11 +1,5 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import "./LayoutDefault.scss";
-import searchIcon from "../../assets/icon/search.png";
-import homeIcon from "../../assets/icon/home.png";
-import friendsIcon from "../../assets/icon/friends.png";
-import chattingIcon from "../../assets/icon/chatting.png";
-import notificationIcon from "../../assets/icon/bell.png";
-import settingIcon from "../../assets/icon/settings.png";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../../actions/userAction";
 import { useEffect, useState } from "react";
@@ -13,6 +7,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import Sidebar from "../Sidebar";
+import { Search, Bell } from "lucide-react";
 
 function LayoutDefault() {
   // var isLogin = true;
@@ -20,6 +15,8 @@ function LayoutDefault() {
   const navigate = useNavigate();
   const location = useLocation();
   const token = useSelector((state) => state.user.token);
+
+  const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
   const [isChecking, setIsChecking] = useState(true);
   const [userInfo, setUserInfo] = useState({});
@@ -30,7 +27,7 @@ function LayoutDefault() {
     if (!token) return;
 
     try {
-        const response = await axios.get("http://localhost:8080/api/profiles/user", {
+        const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
@@ -65,7 +62,7 @@ function LayoutDefault() {
 
       try {
         const res = await axios.post(
-          "http://localhost:8080/api/auth/introspect",
+          `${API_BASE_URL}/api/auth/introspect`,
           {
             token: accessToken,
           }
@@ -73,7 +70,7 @@ function LayoutDefault() {
 
         if (!res.data.result.valid) {
           const refreshToken = await axios.post(
-            "http://localhost:8080/api/auth/refresh",
+            `${API_BASE_URL}/api/auth/refresh`,
             {
               token: accessToken,
             }

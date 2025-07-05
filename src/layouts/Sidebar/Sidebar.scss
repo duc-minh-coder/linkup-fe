@@ -6,39 +6,6 @@ $text-color: #fff;
 $text-muted: #a8a8a8;
 $border-color: #262626;
 $hover-color: #1a1a1a;
-$gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-
-// Mixins
-@mixin flex-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-@mixin flex-center {
-    display: flex;
-    align-items: center;
-}
-
-@mixin avatar($size: 32px) {
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-@mixin button-reset {
-    border: none;
-    background: none;
-    cursor: pointer;
-    padding: 0;
-}
-
-@mixin text-ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
 
 .sidebar {
     width: 245px;
@@ -53,21 +20,38 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 
     &__header {
         margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        display: none;
     }
 
-    &__logo {
+    &__logo, &__logo-mb {
         font-size: 24px;
         font-weight: bold;
-        padding-left: 12px;
         margin: 0;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 24px;
+    }
+
+    &__logo-mb {
+        display: none;
+    }
+
+    &__mobile-function {
+        display: none;
     }
 
     &__nav {
         flex: 1;
+
+        
     }
 
     &__nav-item {
-        @include flex-center;
+        display: flex;
+        align-items: center;
         padding: 12px;
         margin-bottom: 8px;
         border-radius: 8px;
@@ -119,18 +103,48 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         border-right: none;
         padding: 0;
 
-        .sidebar__nav {
+        &__header {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            border-bottom: 1px solid #dbdbdb;
+            background-color: #000;
+        }
+
+        &__logo {
+            display: none;
+        }
+
+        &__logo-mb {
+            display: block;
+            margin-bottom: 0px;
+        }
+
+        &__mobile-function {
+            display: flex;
+            padding: 2px;
+        }
+
+        &__nav {
             flex-direction: row;
             width: 100%;
             justify-content: space-around;
         }
 
-        .sidebar__nav-item {
+        &__nav-item {
             flex: 1;
             justify-content: center;
         }
 
-        .sidebar__nav-label {
+        &__nav-label {
+            display: none;
+        }
+
+        .hidden-mobile {
             display: none;
         }
     }

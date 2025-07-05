@@ -8,13 +8,15 @@ function HomePage() {
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState({});
 
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+
     const getPosts = async () => {
         const token = localStorage.getItem("token");
 
         if (!token) return;
 
         try {
-            const response = await axios.get("http://localhost:8080/api/posts/friend-posts", {
+            const response = await axios.get(`${API_BASE_URL}/api/posts/friend-posts`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -35,7 +37,7 @@ function HomePage() {
         if (!token) return;
 
         try {
-            const response = await axios.get("http://localhost:8080/api/profiles/user", {
+            const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'

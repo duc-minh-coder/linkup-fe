@@ -12,11 +12,13 @@ function Profile() {
     const [userInfo, setUserInfo] = useState({});
     const [posts, setPosts] = useState([]);
 
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+
     const getUser = async () => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get(`http://localhost:8080/api/profiles/user/${userId}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/profiles/user/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
@@ -34,7 +36,7 @@ function Profile() {
     const getAllUrPost = async () => {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get("http://localhost:8080/api/posts/user", {
+        const response = await axios.get(`${API_BASE_URL}/api/posts/user`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
