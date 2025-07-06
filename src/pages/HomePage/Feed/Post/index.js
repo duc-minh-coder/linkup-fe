@@ -1,23 +1,34 @@
 import {
-Heart,
-MessageCircle,
-Send,
-Bookmark,
-MoreHorizontal,
-Search,
-Home,
-Compass,
-PlusSquare,
-User,
-Menu,
+    Heart,
+    MessageCircle,
+    Send,
+    Bookmark,
+    MoreHorizontal
 } from "lucide-react";
 import { useState } from "react";
 import "./Post.scss";
+import DetailPost from "./DetailPost";
+import { useNavigate } from "react-router-dom";
 
 function Post({ post }) {
     const [isLiked, setIsLiked] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
+    const navigate = useNavigate();
+
+    const handlingShow = () => {
+        setShowDetail(false);
+    }
+
+    const handlingOpenProfile = (e) => {
+        e.preventDefault();
+
+        console.log("aaaa")
+    }
+
+    const handlingShare = () => {
+
+    }
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -32,8 +43,18 @@ function Post({ post }) {
 
     return (
         <div className="post">
+            {showDetail && (
+                <DetailPost
+                    post={post} 
+                    showDetail={showDetail} 
+                    userAvatar={post.authorAvatarUrl} 
+                    userName={post.authorName}
+                    handlingShow={handlingShow}
+                />
+            )}
+
             <div className="post__header">
-                <div className="post__user">
+                <div className="post__user" onClick={handlingOpenProfile}>
                     <img
                         src={post.authorAvatarUrl}
                         alt={post.authorAvatarUrl}
@@ -52,32 +73,32 @@ function Post({ post }) {
             </div>
 
             {post.postMedia && post.postMedia.length > 0 && (
-                <div className="post-item__media">
-                {post.postMedia.slice(0, 5).map((media, index) => (
-                    <div
-                    key={index}
-                    className={`post-item__image-wrapper ${
-                        index === 4 && post.postMedia.length > 5
-                        ? "post-item__image--more"
-                        : ""
-                    }`}
-                    >
-                    <img
-                        src={media.url}
-                        alt="Post content"
-                        className="post-item__image"
-                        onClick={() => setShowDetail(true)}
-                    />
-                    {index === 4 && post.postMedia.length > 5 && (
+                <div className="post__media" onClick={() => setShowDetail(true)}>
+                    {post.postMedia.slice(0, 5).map((media, index) => (
                         <div
-                        className="post-item__image-overlay"
-                        onClick={() => setShowDetail(true)}
+                        key={index}
+                        className={`post__image-wrapper ${
+                            index === 4 && post.postMedia.length > 5
+                            ? "post__image--more"
+                            : ""
+                        }`}
                         >
-                        +{post.postMedia.length - 5}
+                        <img
+                            src={media.url}
+                            alt="Post content"
+                            className="post__image"
+                            onClick={() => setShowDetail(true)}
+                        />
+                        {index === 4 && post.postMedia.length > 5 && (
+                            <div
+                            className="post__image-overlay"
+                            onClick={() => setShowDetail(true)}
+                            >
+                            +{post.postMedia.length - 5}
+                            </div>
+                        )}
                         </div>
-                    )}
-                    </div>
-                ))}
+                    ))}
                 </div>
             )}
 
@@ -90,8 +111,8 @@ function Post({ post }) {
                         }`}
                         onClick={() => setIsLiked(!isLiked)}
                     />
-                    <MessageCircle size={24} className="post__action-icon" />
-                    <Send size={24} className="post__action-icon" />
+                    <MessageCircle size={24} className="post__action-icon" onClick={() => setShowDetail(true)} />
+                    <Send size={24} className="post__action-icon" onClick={handlingShare} />
                 </div>
                 <Bookmark
                     size={24}
@@ -102,7 +123,7 @@ function Post({ post }) {
                 />
             </div>
 
-            <div className="post__info">
+            <div className="post__info" onClick={() => setShowDetail(true)}>
                 <div className="post__likes">{post.userLikes.length} lượt thích</div>
                 <div className="post__cmt">{post.comments.length} comment</div>
             </div>

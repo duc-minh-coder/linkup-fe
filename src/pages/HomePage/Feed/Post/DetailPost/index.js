@@ -1,20 +1,23 @@
-// DetailPost/index.js
 import "./DetailPost.scss";
 import { useState, useEffect } from "react";
-import { 
-    ConfigIcon, 
-    CloseIcon,
-    LikeIcon,
-    CommentIcon,
-    ShareIcon,
-    SendIcon
-} from "../../../../../../components/assetsConvert";
+import {
+    Heart,
+    MessageCircle,
+    Send,
+    Bookmark,
+    MoreHorizontal,
+    X,
+    ChevronLeft,
+    ChevronRight
+} from "lucide-react";
 import axios from "axios";
 
 function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
     const [comments, setComments] = useState(post.comments || []);
     const [newComment, setNewComment] = useState("");
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
+    const [isLiked, setIsLiked] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -35,6 +38,9 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                 return;
             }
 
+            setIsLiked(!isLiked);
+            setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
+
             const response = await axios.post("http://localhost:8080/api/post-like", null, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -46,11 +52,12 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
             });
 
             console.log("Like response:", response.data.result);
-            // Update like count based on response
-            setLikeCount(prev => prev + 1);
         } catch (err) {
             console.error("Error liking post:", err);
             setError("Có lỗi xảy ra khi thích bài viết");
+            // Revert optimistic update
+            setIsLiked(isLiked);
+            setLikeCount(prev => isLiked ? prev + 1 : prev - 1);
         }
     };
 
@@ -79,9 +86,9 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
             const newCommentData = {
                 id: response.data.result.id,
                 content: newComment,
-                authorName: userName,
-                authorAvatarUrl: userAvatar,
-                createdTime: new Date().toISOString()
+                fullName: userName,
+                avatarUrl: userAvatar,
+                updatedTime: new Date().toISOString()
             };
 
             setComments(prev => [...prev, newCommentData]);
@@ -112,6 +119,18 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
         });
     };
 
+    const nextImage = () => {
+        setCurrentImageIndex(prev => 
+            prev < post.postMedia.length - 1 ? prev + 1 : 0
+        );
+    };
+
+    const prevImage = () => {
+        setCurrentImageIndex(prev => 
+            prev > 0 ? prev - 1 : post.postMedia.length - 1
+        );
+    };
+
     return (
         <>
             <div className="detail-post-overlay" onClick={() => handlingShow()}></div>
@@ -119,7 +138,7 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                 <div className="detail-post__header">
                     <h2>Bài viết chi tiết</h2>
                     <button className="detail-post__close" onClick={() => handlingShow()}>
-                        <CloseIcon />
+                        <X size={20} />
                     </button>
                 </div>
 
@@ -129,7 +148,7 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                         <div className="detail-post__user">
                             <img 
                                 src={post.authorAvatarUrl} 
-                                alt={`${post.authorName} avatar`}
+                                alt={post.authorName}
                                 className="detail-post__avatar"
                             />
                             <div className="detail-post__user-info">
@@ -140,32 +159,78 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                         
                         <div className="detail-post__actions">
                             <button className="detail-post__action-btn">
-                                <ConfigIcon />
+                                <MoreHorizontal size={20} />
                             </button>
                         </div>
                     </div>
 
                     {/* Post Content */}
-                    <div className="detail-post__media-wrapper">
-                        <img
-                            src={post.postMedia[currentImageIndex]?.url}
-                            alt={`Ảnh ${currentImageIndex + 1}`}
-                            className="detail-post__image"
-                        />
+                    {post.content && (
+                        <div className="detail-post__post-content">
+                            <span>{post.content}</span>
+                        </div>
+                    )}
 
-                        {post.postMedia.length > 1 && (
-                            <>
-                                <button 
-                                    onClick={() => setCurrentImageIndex(prev => Math.max(prev - 1, 0))}
-                                    className="detail-post__nav-btn prev"
-                                >‹</button>
+                    {/* Post Media */}
+                    {post.postMedia && post.postMedia.length > 0 && (
+                        <div className="detail-post__media-wrapper">
+                            <img
+                                src={post.postMedia[currentImageIndex]?.url}
+                                alt={`Ảnh ${currentImageIndex + 1}`}
+                                className="detail-post__image"
+                            />
 
-                                <button 
-                                    onClick={() => setCurrentImageIndex(prev => Math.min(prev + 1, post.postMedia.length - 1))}
-                                    className="detail-post__nav-btn next"
-                                >›</button>
-                            </>
-                        )}
+                            {post.postMedia.length > 1 && (
+                                <>
+                                    <button 
+                                        onClick={prevImage}
+                                        className="detail-post__nav-btn prev"
+                                    >
+                                        <ChevronLeft size={20} />
+                                    </button>
+
+                                    <button 
+                                        onClick={nextImage}
+                                        className="detail-post__nav-btn next"
+                                    >
+                                        <ChevronRight size={20} />
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Post Actions */}
+                    <div className="detail-post__interactions">
+                        <div className="detail-post__interactions-left">
+                            <button 
+                                className={`detail-post__interaction-btn ${isLiked ? 'detail-post__interaction-btn--liked' : ''}`}
+                                onClick={handleLike}
+                            >
+                                <Heart 
+                                    size={24} 
+                                    fill={isLiked ? '#ed4956' : 'none'}
+                                />
+                            </button>
+                            
+                            <button className="detail-post__interaction-btn">
+                                <MessageCircle size={24} />
+                            </button>
+                            
+                            <button className="detail-post__interaction-btn">
+                                <Send size={24} />
+                            </button>
+                        </div>
+
+                        <button 
+                            className={`detail-post__interaction-btn ${isSaved ? 'detail-post__interaction-btn--saved' : ''}`}
+                            onClick={() => setIsSaved(!isSaved)}
+                        >
+                            <Bookmark 
+                                size={24} 
+                                fill={isSaved ? '#fff' : 'none'}
+                            />
+                        </button>
                     </div>
 
                     {/* Post Stats */}
@@ -176,27 +241,6 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                         <span className="detail-post__stat">
                             {comments.length} bình luận
                         </span>
-                    </div>
-
-                    {/* Post Interactions */}
-                    <div className="detail-post__interactions">
-                        <button 
-                            className="detail-post__interaction-btn"
-                            onClick={handleLike}
-                        >
-                            <LikeIcon />
-                            <span>Thích</span>
-                        </button>
-                        
-                        <button className="detail-post__interaction-btn">
-                            <CommentIcon />
-                            <span>Bình luận</span>
-                        </button>
-                        
-                        <button className="detail-post__interaction-btn">
-                            <ShareIcon />
-                            <span>Chia sẻ</span>
-                        </button>
                     </div>
 
                     {/* Comments Section */}
@@ -217,14 +261,14 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
                                     onKeyPress={handleKeyPress}
-                                    rows="2"
+                                    rows="1"
                                 />
                                 <button 
                                     className="detail-post__send-btn"
                                     onClick={handleAddComment}
                                     disabled={!newComment.trim() || loading}
                                 >
-                                    <SendIcon />
+                                    <Send size={14} />
                                 </button>
                             </div>
                         </div>
@@ -235,7 +279,7 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                                 <div key={comment.id || index} className="detail-post__comment">
                                     <img 
                                         src={comment.avatarUrl} 
-                                        alt={`${comment.fullName} avatar`}
+                                        alt={comment.fullName}
                                         className="detail-post__comment-avatar"
                                     />
                                     <div className="detail-post__comment-content">
@@ -249,7 +293,7 @@ function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
                                         </div>
                                         <div className="detail-post__comment-actions">
                                             <button className="detail-post__comment-action">Thích</button>
-                                            <button className="detail-post__comment-action">Phả hồi</button>
+                                            <button className="detail-post__comment-action">Phản hồi</button>
                                             <span className="detail-post__comment-time">
                                                 {formatDate(comment.updatedTime)}
                                             </span>

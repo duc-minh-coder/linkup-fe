@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import "./Profile.scss";
 import ProfileHeader from "./ProfileHeader";
 import ProfileInfo from "./ProfileInfo";
-import PostList from "../Home/components/PostList/index.js";
 import Feed from "../HomePage/Feed/index.js";
 
 function Profile() {
