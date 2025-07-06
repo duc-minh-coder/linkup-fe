@@ -7,7 +7,6 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import Sidebar from "../Sidebar";
-import { Search, Bell } from "lucide-react";
 
 function LayoutDefault() {
   // var isLogin = true;
@@ -16,7 +15,7 @@ function LayoutDefault() {
   const location = useLocation();
   const token = useSelector((state) => state.user.token);
 
-  const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+  const API_BASE_URL = "http://localhost:8080";
 
   const [isChecking, setIsChecking] = useState(true);
   const [userInfo, setUserInfo] = useState({});
@@ -110,7 +109,7 @@ function LayoutDefault() {
   };
 
   if (isChecking) {
-    return <div>Đang kiểm tra đăng nhập...</div>;
+    return <div className="check-login">Đang kiểm tra đăng nhập...</div>;
   }
   return (
     <>

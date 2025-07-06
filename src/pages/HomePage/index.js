@@ -8,7 +8,7 @@ function HomePage() {
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState({});
 
-    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+    const API_BASE_URL = "http://localhost:8080";
 
     const getPosts = async () => {
         const token = localStorage.getItem("token");
