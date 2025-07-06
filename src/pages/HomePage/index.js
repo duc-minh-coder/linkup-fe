@@ -7,6 +7,7 @@ import axios from "axios";
 function HomePage() {
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState({});
+    const [friends, setFriends] = useState([]);
 
     const API_BASE_URL = "http://localhost:8080";
 
@@ -52,17 +53,39 @@ function HomePage() {
         }
     }
 
+    const getFriends = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/friendships`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            console.log(response.data.result);
+            setFriends(response.data.result);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
     useEffect(() => {
         getUserProfile();
+        getFriends();
         getPosts();
     }, []);
 
     return (
         <div className="linkup-app">
             <main className="main-content">
-                <Feed posts={posts}/>
+                <Feed posts={posts} userProfile={userProfile}/>
                 
-                <Friends userProfile={userProfile} />
+                <Friends userProfile={userProfile} friends={friends} />
             </main>
         </div>
     );

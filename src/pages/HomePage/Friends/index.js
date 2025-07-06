@@ -1,14 +1,6 @@
 import "./Friends.scss";
 
-function Friends({ userProfile }) {
-    const friends = [
-        { username: 'xqzzmau', description: 'Gợi ý cho bạn' },
-        { username: '_haki_741_', description: 'Gợi ý cho bạn' },
-        { username: 'inmalinh', description: 'Có inmalinh theo dõi' },
-        { username: 'instagram', description: 'Có bạn1125 + 5 người nữa t...' },
-        { username: 'hieu4tuoii', description: 'Gợi ý cho bạn' },
-    ];
-
+function Friends({ userProfile, friends }) {
     return (
         <div className="friends">
             <div className="friends__header">
@@ -32,10 +24,10 @@ function Friends({ userProfile }) {
                 {friends.map((friend, index) => (
                     <div key={index} className="friends__item">
                     <div className="friends__user">
-                        <img src="/api/placeholder/32/32" alt={friend.username} />
+                        <img src={friend.avatarUrl} alt="friend avt" />
                         <div className="friends__user-info">
-                            <span className="friends__username">{friend.username}</span>
-                            <span className="friends__description">{friend.description}</span>
+                            <span className="friends__username">{friend.fullName}</span>
+                            <span className="friends__description">đang hoạt động</span>
                         </div>
                     </div>
 

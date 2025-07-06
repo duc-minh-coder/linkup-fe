@@ -3,10 +3,10 @@ import Signin from "../pages/Signin/index.js";
 import LayoutDefault from "../layouts/LayoutDefault/index.js";
 import Message from "../pages/Message/index.js";
 import Notifications from "../pages/Notifications/index.js";
-import Friends from "../pages/friends/index.js";
 import Profile from "../pages/Profile/index.js";
 import HomePage from "../pages/HomePage/index.js";
 import Error from "../pages/Error/index.js";
+import Friends from "../pages/Friends/index.js";
 
 export const routes = [
     {

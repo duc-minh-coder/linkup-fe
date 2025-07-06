@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 
-function DetailPost({ post, showDetail, handlingShow, userAvatar, userName }) {
+function DetailPost({ post, handlingShow, userAvatar, userName }) {
     const [comments, setComments] = useState(post.comments || []);
     const [newComment, setNewComment] = useState("");
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);

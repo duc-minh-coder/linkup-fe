@@ -10,7 +10,7 @@ import "./Post.scss";
 import DetailPost from "./DetailPost";
 import { useNavigate } from "react-router-dom";
 
-function Post({ post }) {
+function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
@@ -46,9 +46,8 @@ function Post({ post }) {
             {showDetail && (
                 <DetailPost
                     post={post} 
-                    showDetail={showDetail} 
-                    userAvatar={post.authorAvatarUrl} 
-                    userName={post.authorName}
+                    userAvatar={userProfile.avatarUrl} 
+                    userName={userProfile.fullName}
                     handlingShow={handlingShow}
                 />
             )}
