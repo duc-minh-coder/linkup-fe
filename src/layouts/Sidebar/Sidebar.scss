@@ -18,6 +18,18 @@ $hover-color: #1a1a1a;
     background-color: $background-color;
     z-index: 1000;
 
+    &--shrink {
+        width: 48px;
+
+        .sidebar__nav-label {
+            display: none;
+        }
+
+        .sidebar__logo {
+            display: none;
+        }
+    }
+
     &__header {
         margin-bottom: 30px;
         display: flex;

@@ -209,7 +209,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                             >
                                 <Heart 
                                     size={24} 
-                                    fill={isLiked ? '#ed4956' : 'none'}
+                                    fill={isLiked ? '#f11' : 'none'}
                                 />
                             </button>
                             

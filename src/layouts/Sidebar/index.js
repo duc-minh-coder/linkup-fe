@@ -3,12 +3,12 @@ import "./Sidebar.scss";
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { CloseIcon } from '../../components/assetsConvert';
+import SearchBar from '../../pages/SearchBar';
 
 function Sidebar({ userInfo }) {
     const menuItems = [
-        { icon: Home, label: 'Trang chủ', path: "/", mobileTop: false },
-        { icon: Search, label: 'Tìm kiếm', path: "/finding", mobileTop: true },
+        { icon: Home, label: 'Trang chủ', path: "/", mobileTop: false, isHome: true },
+        { icon: Search, label: 'Tìm kiếm', path: "/", mobileTop: true, search: true },
         { icon: MessageCircle, label: 'Tin nhắn', path: "messages", mobileTop: false },
         { icon: Bell, label: 'Thông báo', path: "/notifications", mobileTop: true },
         { icon: PlusSquare, label: 'Tạo bài viết', path: "/", mobileTop: false, createPost: true },
@@ -24,6 +24,7 @@ function Sidebar({ userInfo }) {
     const [postText, setPostText] = useState("");
     const [selectedImages, setSelectedImages] = useState([]);
     const [fileSelectedImages, setFileSelectedImages] = useState([]);
+    const [showSearch, setShowSearch] = useState(false);
     const fileInputRef = useRef();
     const submitBtnRef = useRef();
     const [post, setPost] = useState(null);
@@ -94,7 +95,7 @@ function Sidebar({ userInfo }) {
     };
 
     return (
-        <div className="sidebar">
+        <div className={`sidebar ${showSearch ? "sidebar--shrink" : ""}`}>
             <NavLink to="/" className="sidebar__logo">Link up</NavLink>
 
             {
@@ -125,14 +126,21 @@ function Sidebar({ userInfo }) {
                     <NavLink 
                         key={index} 
                         to={item.path} 
-                        className={({ isActive }) => `sidebar__nav-item ${isActive & !item?.createPost ? 'sidebar__nav-item--active' : ''} ${item.mobileTop ? "hidden-mobile" : ""}`}
+                        className={({ isActive }) => `sidebar__nav-item ${isActive & !item?.createPost & !item?.search ? 'sidebar__nav-item--active' : ''} ${item.mobileTop ? "hidden-mobile" : ""}`}
                         onClick={() => {
-                            if(item?.createPost) 
-                                setShowCreatePost(true)
+                            if (item?.createPost) 
+                                setShowCreatePost(!showCreatePost);
+
+                            else if (item?.search)
+                                setShowSearch(!showSearch);
+
+                            if (showSearch && !item?.isHome) {
+                                setShowSearch(false);
+                            }
                         }}
                     >
                         <item.icon size={24} />
-                        <span className="sidebar__nav-label">{item.label}</span>
+                        <span className={`sidebar__nav-label ${showSearch ? "hidden" : ""}`}>{item.label}</span>
                     </NavLink>
                 ))}
             </nav>
@@ -212,6 +220,7 @@ function Sidebar({ userInfo }) {
                     </div>
                 </>
             )}
+            {showSearch && <SearchBar isOpen={showSearch} onClose={() => setShowSearch(false)} />}
         </div>
     );
 };
