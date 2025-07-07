@@ -27,11 +27,12 @@ function SearchBar({ isOpen, onClose }) {
                     placeholder="Tìm kiếm người dùng..."
                 />
             </div>
-            
+
             <div className="search-sidebar__results">
                 <p className="search-sidebar__no-result">Không có dữ liệu tìm kiếm</p>
             </div>
         </div>
+        
         <div className="search-overlay" onClick={onClose}></div>
     </div>
   );

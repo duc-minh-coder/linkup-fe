@@ -109,7 +109,21 @@ function Sidebar({ userInfo }) {
                                     <NavLink 
                                         key={index} 
                                         to={item.path} 
-                                        className={({ isActive }) => `sidebar__nav-item ${isActive ? 'sidebar__nav-item--active' : ''}`}
+                                        className={({ isActive }) => 
+                                            `sidebar__nav-item 
+                                            ${isActive & !item?.createPost & !item?.search ? 'sidebar__nav-item--active' : ''}`}
+                                            
+                                        onClick={() => {
+                                            if (item?.createPost) 
+                                                setShowCreatePost(!showCreatePost);
+
+                                            else if (item?.search)
+                                                setShowSearch(!showSearch);
+
+                                            if (showSearch && !item?.isHome) {
+                                                setShowSearch(false);
+                                            }
+                                        }}
                                     >
                                         <item.icon size={24} />
                                         <span className="sidebar__nav-label">{item.label}</span>
@@ -126,7 +140,11 @@ function Sidebar({ userInfo }) {
                     <NavLink 
                         key={index} 
                         to={item.path} 
-                        className={({ isActive }) => `sidebar__nav-item ${isActive & !item?.createPost & !item?.search ? 'sidebar__nav-item--active' : ''} ${item.mobileTop ? "hidden-mobile" : ""}`}
+                        className={({ isActive }) => 
+                            `sidebar__nav-item 
+                            ${isActive & !item?.createPost & !item?.search ? 'sidebar__nav-item--active' : ''} 
+                            ${item.mobileTop ? "hidden-mobile" : ""}`}
+
                         onClick={() => {
                             if (item?.createPost) 
                                 setShowCreatePost(!showCreatePost);

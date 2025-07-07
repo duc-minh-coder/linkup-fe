@@ -6,6 +6,10 @@
     width: calc(100vw - 90px);
     z-index: 100;
     display: flex;
+
+    @media (max-width: 640px) {
+        left: 0;
+    }
 }
 
 .search-sidebar {
@@ -17,6 +21,7 @@
     display: flex;
     flex-direction: column;
     color: #fff;
+    z-index: 101;
 
     &__header {
         display: flex;
@@ -73,4 +78,9 @@
     flex: 1;
     background-color: rgba(0, 0, 0, 0.05);
     cursor: pointer;
+
+    @media (max-width: 640px) {
+        position: fixed;
+        inset: 0;
+    }
 }
