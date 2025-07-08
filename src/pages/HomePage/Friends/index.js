@@ -1,23 +1,31 @@
+import { useNavigate } from "react-router-dom";
 import "./Friends.scss";
 
 function Friends({ userProfile, friends }) {
+    const navigate = useNavigate();
+
+    const handlingShowAllFriend = (e) => {
+        e.preventDefault();
+
+        navigate("/friends");
+    }
+
     return (
         <div className="friends">
             <div className="friends__header">
                 <div className="friends__current-user">
-                <img src={userProfile.avatarUrl} alt="Current user" />
-                <div className="friends__user-info">
-                    {/* <span className="friends__username">${userProfile}</span> */}
-                    <span className="friends__full-name">{userProfile.fullName}</span>
-                </div>
+                    <img src={userProfile.avatarUrl} alt="Current user" />
+                    <div className="friends__user-info">
+                        <span className="friends__full-name">{userProfile.fullName}</span>
+                    </div>
                 </div>
                 <span className="friends__switch-btn">chuyển</span>
             </div>
             
             <div className="friends__content">
                 <div className="friends__title">
-                <span>Bạn bè của bạn</span>
-                <span className="friends__see-all">Xem tất cả</span>
+                    <span>Bạn bè của bạn</span>
+                    <button className="friends__see-all" onClick={handlingShowAllFriend}>Xem tất cả</button>
                 </div>
                 
                 <div className="friends__list">

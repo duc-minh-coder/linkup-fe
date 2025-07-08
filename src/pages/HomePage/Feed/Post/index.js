@@ -46,8 +46,8 @@ function Post({ post, userProfile }) {
             {showDetail && (
                 <DetailPost
                     post={post} 
-                    userAvatar={userProfile.avatarUrl} 
-                    userName={userProfile.fullName}
+                    userAvatar={post.authorAvatarUrl} 
+                    userName={post.authorName}
                     handlingShow={handlingShow}
                 />
             )}

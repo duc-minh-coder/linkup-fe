@@ -107,6 +107,8 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         font-size: 12px;
         cursor: pointer;
         transition: opacity 0.2s ease;
+        border: none;
+        background-color: #000;
 
         &:hover {
             opacity: 0.8;
