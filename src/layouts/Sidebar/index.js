@@ -4,6 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import SearchBar from '../../pages/SearchBar';
+import CreatePost from '../../pages/CreatePost';
 
 function Sidebar({ userInfo }) {
     const menuItems = [
@@ -30,63 +31,6 @@ function Sidebar({ userInfo }) {
     const submitBtnRef = useRef();
     const [post, setPost] = useState(null);
 
-    useEffect(() => {
-        if (submitBtnRef.current) {
-            submitBtnRef.current.disabled = postText.trim() === "";
-        }
-    }, [postText]);
-
-    const handleImageChange = (e) => {
-        const files = Array.from(e.target.files);
-
-        setFileSelectedImages(files);
-
-        const imgURLs = files.map(file => {
-            return URL.createObjectURL(file);
-        })
-
-        setSelectedImages(prev => [...prev, ...imgURLs]);
-    };
-
-    const handleSubmit = async () => {
-        // Handle post submission logic here
-        console.log("Post submitted:", { text: postText, image: selectedImages });
-
-        const token = localStorage.getItem("token");
-        const formData = new FormData();
-
-        formData.append("content", postText);
-        fileSelectedImages.map(img => {
-            formData.append("mediaList", img)
-        })
-
-        try {
-            const response = await axios.post("http://localhost:8080/api/posts", 
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                }
-            )
-
-            console.log(response.data);
-            setPost(response.data);
-            handleCloseModal();
-        }
-        catch(err) {
-            console.log(err);
-        }
-        
-        // Reset form
-        setPostText("");
-        setSelectedImages([]);
-        setShowCreatePost(false);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
-    };
-
     const handleCloseModal = () => {
         setShowCreatePost(false);
         setPostText("");
@@ -95,6 +39,13 @@ function Sidebar({ userInfo }) {
             fileInputRef.current.value = "";
         }
     };
+
+    useEffect(() => {
+        if (submitBtnRef.current) {
+            submitBtnRef.current.disabled = postText.trim() === "";
+        }
+    }, [postText]);
+
 
     return (
         <div className={`sidebar ${showSearch ? "sidebar--shrink" : ""}`}>
@@ -166,80 +117,7 @@ function Sidebar({ userInfo }) {
             </nav>
 
             {/* Modal */}
-            {showCreatePost && (
-                <>
-                    <div className="modal-overlay" onClick={handleCloseModal}></div>
-                    <div className="post-modal">
-                        <div className="post-modal__header">
-                            <h2>Tạo bài viết</h2>
-                            <button className="post-modal__close" onClick={handleCloseModal}>
-                                x
-                            </button>
-                        </div>
-
-                        <div className="post-modal__user-info">
-                            <img src={userInfo.avatarUrl} alt="User avatar" />
-                            <div>
-                                <div className="post-modal__username">Nguyễn Đức Minh</div>
-                                <div className="post-modal__privacy">Bạn bè</div>
-                            </div>
-                        </div>
-
-                        <div className="post-modal__content">
-                            <textarea
-                                className="post-modal__textarea"
-                                placeholder="Bạn đang nghĩ gì?"
-                                value={postText}
-                                onChange={(e) => setPostText(e.target.value)}
-                                rows={3}
-                            />
-
-                            {selectedImages.length > 0 && (
-                                <div className="post-modal__image-preview-multiple">
-                                    {
-                                        selectedImages.map((img, index) => (
-                                            <div key={index} className="image-wrapper">
-                                                <img src={img} alt={`Preview ${index}`} />
-                                                <button 
-                                                    onClick={() => {
-                                                        setSelectedImages(selectedImages.filter((_, i) => i !== index));
-                                                    }}
-                                                >×</button>
-                                            </div>
-                                        ))
-                                    }
-                                    
-                                </div>
-                            )}
-                        </div>
-
-                        <button 
-                            className="post-modal__add-media"
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            📷 Thêm ảnh/video
-                        </button>
-
-                        <input
-                            type="file"
-                            accept="image/*,video/*"
-                            ref={fileInputRef}
-                            onChange={handleImageChange} 
-                            multiple
-                            style={{ display: 'none' }}
-                        />
-
-                        <button 
-                            className="post-modal__submit"
-                            ref={submitBtnRef}
-                            onClick={handleSubmit}
-                            disabled={postText.trim() === ""}
-                        >
-                            Đăng
-                        </button>
-                    </div>
-                </>
-            )}
+            {showCreatePost && <CreatePost handleCloseModal={handleCloseModal} userInfo={userInfo} />}
             {showSearch && <SearchBar isOpen={showSearch} onClose={() => setShowSearch(false)} />}
         </div>
     );

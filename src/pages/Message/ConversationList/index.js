@@ -34,11 +34,13 @@ function ConversationList({ conversations, activeConversationById, onSelectConve
             </div>
 
             <div className="conversation-list__conversations">
-                {filteredConversations.length === 0 ? (
+                {filteredConversations.length === 0 ? 
+                (
                     <div className="no-conversations">
                         <p>Chưa có cuộc trò chuyện nào</p>
                     </div>
-                ) : (
+                ) : 
+                (
                     filteredConversations.map(conversation => (
                         <div
                             key={conversation.receiverId}
