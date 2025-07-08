@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./ProfileInfo.scss";
 import { NavLink } from "react-router-dom";
 
-function ProfileInfo({ userInfo, isOwner }) {
+function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent }) {
   const [addFriend, setAddFriend] = useState(false);
 
   return (
@@ -32,7 +32,11 @@ function ProfileInfo({ userInfo, isOwner }) {
                         
                         {/* btn chỉnh sửa profile cho mình */}
                         {isOwner && (
-                            <button className="edit-profile-btn">Chỉnh sửa trang cá nhân</button>
+                            <button 
+                                className="edit-profile-btn" 
+                                onClick={() => handlingOpenEditProfileComponent()}>
+                                    Chỉnh sửa trang cá nhân
+                            </button>
                         )}
                         
                         <button className="more-btn">⋯</button>

@@ -5,6 +5,7 @@ import "./Profile.scss";
 import ProfileHeader from "./ProfileHeader";
 import ProfileInfo from "./ProfileInfo";
 import Feed from "../HomePage/Feed/index.js";
+import EditProfile from "./EditProfile/index.js";
 
 function Profile() {
     const { userId } = useParams();
@@ -12,6 +13,30 @@ function Profile() {
     const [posts, setPosts] = useState([]);
     const [isOwner, setIsOwner] = useState(false);
     const [userExisted, setUserExisted] = useState(false);
+    const [addFriend, setAddFriend] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [localInfo, setLocalInfo] = useState(userInfo); // để cập nhật tức thì
+
+    const handleSave = async (updatedData) => {
+        try {
+        const token = localStorage.getItem("token");
+        await axios.put(`http://localhost:8080/api/profiles/update`, updatedData, {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+            }
+        });
+        setLocalInfo(prev => ({ ...prev, ...updatedData }));
+        setShowEditModal(false);
+        } catch (error) {
+        console.error("Lỗi khi lưu:", error);
+        }
+    };
+
+    const handlingOpenEditProfileComponent = () => {
+        setShowEditModal(true);
+    }
+
 
     const API_BASE_URL = "http://localhost:8080";
 
@@ -72,14 +97,22 @@ function Profile() {
                 <div className="profile">
                     <ProfileHeader />
 
-                    <ProfileInfo userInfo={userInfo} isOwner={isOwner} />
+                    <ProfileInfo userInfo={userInfo} isOwner={isOwner} handlingOpenEditProfileComponent={handlingOpenEditProfileComponent} />
 
                     <div className="profile__post-content">
                         <Feed posts={posts} />
                     </div>
-                </div> : 
-                <div className="user-not-existed">người dùng không tồn tại!</div>
+                </div> 
+                : <div className="user-not-existed">người dùng không tồn tại!</div>
             }
+
+            {showEditModal && (
+                <EditProfile
+                userInfo={localInfo}
+                onClose={() => setShowEditModal(false)}
+                onSave={handleSave}
+                />
+            )}
         </>
     )
 }
