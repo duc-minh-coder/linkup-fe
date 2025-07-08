@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, Bookmark, Search, Home, PlusSquare, User, Bell, X } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Search, Home, PlusSquare, User, Bell, X, Menu } from 'lucide-react';
 import "./Sidebar.scss";
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
@@ -14,6 +14,7 @@ function Sidebar({ userInfo }) {
         { icon: PlusSquare, label: 'Tạo bài viết', path: "/", mobileTop: false, createPost: true },
         { icon: Bookmark, label: 'Bookmark', path: "/bookmark", mobileTop: false },
         { icon: User, label: 'Trang cá nhân', path: `/profile/${userInfo.id}`, mobileTop: false },
+        { icon: Menu , label: 'Chức năng khác', path: `/`, mobileTop: false, isMenu: true },
     ];
 
     const [showCreatePost, setShowCreatePost] = useState(false);
@@ -71,6 +72,7 @@ function Sidebar({ userInfo }) {
 
             console.log(response.data);
             setPost(response.data);
+            handleCloseModal();
         }
         catch(err) {
             console.log(err);
@@ -142,7 +144,7 @@ function Sidebar({ userInfo }) {
                         to={item.path} 
                         className={({ isActive }) => 
                             `sidebar__nav-item 
-                            ${isActive & !item?.createPost & !item?.search ? 'sidebar__nav-item--active' : ''} 
+                            ${isActive & !item?.createPost & !item?.search & !item?.isMenu ? 'sidebar__nav-item--active' : ''} 
                             ${item.mobileTop ? "hidden-mobile" : ""}`}
 
                         onClick={() => {

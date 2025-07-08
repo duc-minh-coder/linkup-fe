@@ -13,6 +13,10 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     min-height: 100vh;
     background-color: $background-color;
     color: $text-color;
+
+    @media (max-width: 640px) {
+        margin-top: 60px;
+    }
 }
 
 .main-content {

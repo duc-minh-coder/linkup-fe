@@ -7,6 +7,8 @@ import Profile from "../pages/Profile/index.js";
 import HomePage from "../pages/HomePage/index.js";
 import Error from "../pages/Error/index.js";
 import Friends from "../pages/Friends/index.js";
+import FriendPage from "../pages/Friends/FriendPage/index.js";
+import FriendRequestsPage from "../pages/Friends/FriendRequestPage/index.js";
 
 export const routes = [
     {
@@ -30,12 +32,22 @@ export const routes = [
                     },
                     {
                         path: '/friends',
-                        element: <Friends />
+                        element: <Friends />, 
+                        children: [
+                            {
+                                path: '',
+                                element: <FriendPage />
+                            },
+                            {
+                                path: 'request',
+                                element: <FriendRequestsPage />
+                            }
+                        ]
                     },
-                    {
-                        path: '/messages',
-                        element: <Message />
-                    },
+                    // {
+                    //     path: '/messages',
+                    //     element: <Message />
+                    // },
                     {
                         path: '/notifications',
                         element: <Notifications />
