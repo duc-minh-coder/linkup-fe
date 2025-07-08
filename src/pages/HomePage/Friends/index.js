@@ -47,9 +47,8 @@ function Friends({ userProfile, friends }) {
             
             <div className="friends__footer">
                 <div className="friends__links">
-                    Giới thiệu · Trợ giúp · Báo chí · API · Việc làm ·
-                    Quyền riêng tư · Điều khoản · Vị trí · Ngôn ngữ ·
-                    Meta đã xác minh
+                    Giới thiệu · Trợ giúp · API · 
+                    Quyền riêng tư · Điều khoản · Ngôn ngữ 
                 </div>
                 <div className="friends__copyright">
                 © 2025 LINK UP BY MINH

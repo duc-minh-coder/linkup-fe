@@ -44,10 +44,10 @@ export const routes = [
                             }
                         ]
                     },
-                    // {
-                    //     path: '/messages',
-                    //     element: <Message />
-                    // },
+                    {
+                        path: '/messages',
+                        element: <Message />
+                    },
                     {
                         path: '/notifications',
                         element: <Notifications />
