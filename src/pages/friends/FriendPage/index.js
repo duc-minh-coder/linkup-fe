@@ -4,12 +4,35 @@ import { useEffect, useState } from "react";
 
 function FriendPage() {
     const [friends, setFriends] = useState([]);
+    const [userProfile, setUserProfile] = useState({});
+
     const API_BASE_URL = "http://localhost:8080";
+
+    const getUserProfile = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            console.log(response.data.result);
+            setUserProfile(response.data.result);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
 
     const fetchFriends = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get(`${API_BASE_URL}/api/friendships`, {
+            const res = await axios.get(`${API_BASE_URL}/api/friendships/user/${userProfile.id}`, {
                 headers: { 
                     Authorization: `Bearer ${token}` 
                 },
@@ -22,8 +45,12 @@ function FriendPage() {
     };
 
     useEffect(() => {
-        fetchFriends();
+        getUserProfile();
     }, []);
+
+    useEffect(() => {
+        fetchFriends();
+    }, [getUserProfile])
 
     const handleMessage = (friendId) => {
         console.log("Nhắn tin tới", friendId);

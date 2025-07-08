@@ -10,6 +10,8 @@ function Profile() {
     const { userId } = useParams();
     const [userInfo, setUserInfo] = useState({});
     const [posts, setPosts] = useState([]);
+    const [isOwner, setIsOwner] = useState(false);
+    const [userExisted, setUserExisted] = useState(false);
 
     const API_BASE_URL = "http://localhost:8080";
 
@@ -24,18 +26,31 @@ function Profile() {
                 }
             })
 
+            const isOwner = await axios.get(`${API_BASE_URL}/api/users/check-owner/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+
+            setIsOwner(isOwner.data.result);
             console.log(response.data.result);
-            setUserInfo(response.data.result);
+
+            if (response.data.result) {
+                setUserExisted(true);
+                setUserInfo(response.data.result);
+                getAllPostByUser();
+            }
         }
         catch (err) {
             console.log(err);
         }
     }
     
-    const getAllUrPost = async () => {
+    const getAllPostByUser = async () => {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get(`${API_BASE_URL}/api/posts/user`, {
+        const response = await axios.get(`${API_BASE_URL}/api/posts/user/${userId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json"
@@ -48,18 +63,24 @@ function Profile() {
 
     useEffect(() => {
         getUser();
-        getAllUrPost();
     }, []);
 
     return (
-        <div className="profile">
-            <ProfileHeader />
-            <ProfileInfo userInfo={userInfo} isOwnProfile={true} />
-            <div className="profile__post-content">
-                <Feed posts={posts} />
-            </div>
-            
-        </div>
+        <>
+            {
+                userExisted ? 
+                <div className="profile">
+                    <ProfileHeader />
+
+                    <ProfileInfo userInfo={userInfo} isOwner={isOwner} />
+
+                    <div className="profile__post-content">
+                        <Feed posts={posts} />
+                    </div>
+                </div> : 
+                <div className="user-not-existed">người dùng không tồn tại!</div>
+            }
+        </>
     )
 }
 

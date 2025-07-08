@@ -79,31 +79,18 @@
                     transition: all 0.2s;
                     
                     // Nút theo dõi
-                    &.follow-btn {
-                        background: #0095f6;
-                        color: #fff;
-                        
-                        &.following {
+                    &.add-friend-btn {
                         background: #dbdbdb;
-                        color: #262626;
-                        }
-                        
-                        &:hover {
-                        background: #1877f2;
-                        
-                        &.following {
-                            background: #fff;
-                        }
-                        }
+                        color: #000;
                     }
                     
                     // Nút nhắn tin
                     &.message-btn {
                         background: #dbdbdb;
-                        color: #fff;
+                        color: #000;
                         
                         &:hover {
-                        background: #c7c7c7;
+                        background: #fff;
                         }
                     }
                     

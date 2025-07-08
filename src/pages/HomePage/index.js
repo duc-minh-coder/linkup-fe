@@ -59,7 +59,7 @@ function HomePage() {
         if (!token) return;
 
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/friendships`, {
+            const response = await axios.get(`${API_BASE_URL}/api/friendships/user/${userProfile.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -76,9 +76,14 @@ function HomePage() {
 
     useEffect(() => {
         getUserProfile();
-        getFriends();
         getPosts();
     }, []);
+
+    useEffect(() => {
+        if (userProfile.id) {
+            getFriends();
+        }
+    }, [userProfile]);
 
     return (
         <div className="linkup-app">

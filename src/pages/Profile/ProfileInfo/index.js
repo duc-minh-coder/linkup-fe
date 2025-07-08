@@ -2,8 +2,8 @@ import { useState } from "react";
 import "./ProfileInfo.scss";
 import { NavLink } from "react-router-dom";
 
-function ProfileInfo({ userInfo, isOwnProfile = false }) {
-  const [isFollowing, setIsFollowing] = useState(false);
+function ProfileInfo({ userInfo, isOwner }) {
+  const [addFriend, setAddFriend] = useState(false);
 
   return (
     <div className="profile-info">
@@ -18,22 +18,21 @@ function ProfileInfo({ userInfo, isOwnProfile = false }) {
                     <h2>{userInfo.fullName}</h2>
 
                     <div className="profile-actions">
-                        {/* Chỉ hiển thị nút theo dõi và nhắn tin khi KHÔNG phải profile của mình */}
-                        {!isOwnProfile && (
+                        {!isOwner && (
                         <>
                             <button
-                            className={`follow-btn ${isFollowing ? 'following' : ''}`}
-                            onClick={() => setIsFollowing(!isFollowing)}
+                                className={`add-friend-btn ${addFriend ? 'is-friend' : ''}`}
+                                onClick={() => setAddFriend(!addFriend)}
                             >
-                            {isFollowing ? 'Đang theo dõi' : 'Theo dõi'}
+                                {addFriend ? 'Bạn bè' : 'Gửi kết bạn'}
                             </button>
                             <button className="message-btn">Nhắn tin</button>
                         </>
                         )}
                         
-                        {/* Nút chỉnh sửa profile cho chính mình */}
-                        {isOwnProfile && (
-                        <button className="edit-profile-btn">Chỉnh sửa trang cá nhân</button>
+                        {/* btn chỉnh sửa profile cho mình */}
+                        {isOwner && (
+                            <button className="edit-profile-btn">Chỉnh sửa trang cá nhân</button>
                         )}
                         
                         <button className="more-btn">⋯</button>

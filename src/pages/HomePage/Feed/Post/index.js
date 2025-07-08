@@ -14,7 +14,7 @@ function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handlingShow = () => {
         setShowDetail(false);
