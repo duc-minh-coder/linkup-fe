@@ -12,7 +12,7 @@ function Friends({ userProfile, friends }) {
 
     return (
         <div className="friends">
-            <div className="friends__header">
+            <div className="friends__header" onClick={() => navigate(`/profile/${userProfile.id}`)}>
                 <div className="friends__current-user">
                     <img src={userProfile.avatarUrl} alt="Current user" />
                     <div className="friends__user-info">

@@ -1,8 +1,10 @@
 import axios from "axios";
 import "./FriendPage.scss";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function FriendPage() {
+    const navigate = useNavigate();
     const [friends, setFriends] = useState([]);
     const [userProfile, setUserProfile] = useState({});
 
@@ -54,7 +56,7 @@ function FriendPage() {
 
     const handleMessage = (friendId) => {
         console.log("Nhắn tin tới", friendId);
-        // Ví dụ: navigate(`/messages/${friendId}`);
+        navigate(`/messages`);
     };
 
     const handleUnfriend = async (friendId) => {
@@ -80,7 +82,7 @@ function FriendPage() {
                 <div className="friends-list">
                     {friends.map((friend) => (
                         <div className="friends-list__item" key={friend.id}>
-                            <img src={friend.avatarUrl} alt={friend.fullName} />
+                            <img src={friend.avatarUrl} alt={friend.fullName} onClick={() => navigate(`/profile/${friend.id}`)} />
 
                             <div className="friends-list__info">
                                 <p>{friend.fullName}</p>

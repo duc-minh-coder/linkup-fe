@@ -29,7 +29,6 @@ $hover-color: #1a1a1a;
     }
 
     &__header {
-        margin-bottom: 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -107,7 +106,7 @@ $hover-color: #1a1a1a;
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #dbdbdb;
         border-right: none;
         padding: 0;
 
@@ -135,6 +134,7 @@ $hover-color: #1a1a1a;
         &__mobile-function {
             display: flex;
             padding: 2px;
+            gap: 12px;
         }
 
         &__nav {

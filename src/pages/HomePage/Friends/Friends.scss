@@ -46,8 +46,18 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     padding: 20px 0;
 
     &__header {
-        @include flex-between;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 24px;
+        // width: 280px;
+        cursor: pointer;
+        padding: 12px;
+        border-radius: 8px;
+
+        &:hover {
+            background-color: #1a1a1a;
+        }
     }
 
     &__current-user {
@@ -123,6 +133,7 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 
     &__item {
         @include flex-between;
+        padding: 12px
     }
 
     &__user {

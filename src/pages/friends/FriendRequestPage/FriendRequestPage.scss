@@ -16,6 +16,8 @@
             margin-bottom: 20px;
             font-size: 24px;
             font-weight: bold;
+            color: #fff;
+            text-align: center;
         }
 
         .request-list {
@@ -38,7 +40,7 @@
                     height: 70px;
                     border-radius: 50%;
                     object-fit: cover;
-                    border: 2px solid #0b8fee;
+                    cursor: pointer;
                 }
             }
 

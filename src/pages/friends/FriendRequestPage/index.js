@@ -2,9 +2,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./FriendRequestPage.scss";
+import { useNavigate } from "react-router-dom";
 
 function FriendRequestsPage() {
     const [requests, setRequests] = useState([]);
+    const navigate = useNavigate();
+
     const API_BASE_URL = "http://localhost:8080";
 
     const fetchRequests = async () => {
@@ -27,17 +30,26 @@ function FriendRequestsPage() {
         setRequests([
             {
                 id: 1,
+                userId: 1,
                 fullName: "Nguyễn Văn A",
                 avatarUrl: "https://i.pravatar.cc/150?img=3"
             },
             {
                 id: 2,
+                userId: 1,
                 fullName: "Trần Thị B",
                 avatarUrl: "https://i.pravatar.cc/150?img=5"
             },
             {
                 id: 3,
+                userId: 1,
                 fullName: "Lê C",
+                avatarUrl: "https://i.pravatar.cc/150?img=7"
+            },
+            {
+                id: 4,
+                userId: 1,
+                fullName: "Cường donna",
                 avatarUrl: "https://i.pravatar.cc/150?img=7"
             }
         ]);
@@ -63,7 +75,7 @@ function FriendRequestsPage() {
                 <div className="request-list">
                     {requests.map((request) => (
                         <div className="request-list__item" key={request.id}>
-                            <img src={request.avatarUrl} alt={request.fullName} />
+                            <img src={request.avatarUrl} alt={request.fullName} onClick={() => navigate(`/profile/${request.id}`)} />
 
                             <div className="request-list__info">
                                 <p>{request.fullName}</p>
