@@ -4,13 +4,17 @@ import "./ChatWindow.scss";
 function ChatWindow({ conversation, messages, loading, onSendMessage }) {
     const [messageInput, setMessageInput] = useState("");
     const messagesEndRef = useRef(null);
-    const currentUserId = localStorage.getItem("currentUserId"); // Giả sử có lưu ID người dùng hiện tại
+    const [currentUserId, setCurrentUserId] = useState(null);
+
+    
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     useEffect(() => {
+        setCurrentUserId(conversation?.userId);
+
         scrollToBottom();
     }, [messages]);
 
@@ -68,17 +72,17 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                             </div>
                         ) : 
                         (
-                            messages.map(message => (
+                            messages.map((message, index) => (
                                 <div
-                                    key={message.senderId}
+                                    key={index}
                                     className={`message-item ${
-                                        message.senderId === currentUserId ? 'own' : 'other'
+                                        String(message.senderId) === String(currentUserId) ? 'own' : 'other'
                                     }`}
                                 >
-                                    {message.senderId !== currentUserId && (
+                                    {String(message.senderId) !== String(currentUserId) && (
                                         <img
-                                            src={message.userAvatarUrl || '/default-avatar.png'}
-                                            alt={message.username}
+                                            src={conversation.userAvatarUrl || '/default-avatar.png'}
+                                            alt={conversation.username}
                                             className="message-item__avatar"
                                         />
                                     )}
@@ -86,8 +90,9 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                                         <div className="message-item__content__bubble">
                                             {message.content}
                                         </div>
+
                                         <div className="message-item__content__time">
-                                            {formatTime(message.createdAt)}
+                                            {formatTime(message.createdTime)}
                                         </div>
                                     </div>
                                 </div>

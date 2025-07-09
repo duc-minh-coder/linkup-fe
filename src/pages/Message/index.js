@@ -8,7 +8,7 @@ import axios from "axios";
 function Message() {
     const { receiverId } = useParams();
     const [conversations, setConversations] = useState([]);
-    const [activeConversationById, setActiveConversationById] = useState(null);
+    const [conversation, setConversation] = useState(null);
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -57,7 +57,7 @@ function Message() {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.post(`${API_BASE_URL}/api/messages/send`, {
-                receiverId: activeConversationById,
+                receiverId: conversation.userId,
                 content: content
             }, {
                 headers: {
@@ -77,7 +77,7 @@ function Message() {
     };
 
     const selectConversation = (conversation) => {
-        setActiveConversationById(conversation.userId);
+        setConversation(conversation);
         getMessages(conversation.userId);
     };
 
@@ -96,14 +96,13 @@ function Message() {
     return (
         <div className="message">
             <div className="message__content">
-                a
                 <ConversationList
                     conversations={conversations}
-                    activeConversationById={activeConversationById}
+                    conversation={conversation}
                     onSelectConversation={selectConversation}
                 />
                 <ChatWindow
-                    conversation={activeConversationById}
+                    conversation={conversation}
                     messages={messages}
                     loading={loading}
                     onSendMessage={sendMessage}

@@ -14,16 +14,14 @@ function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const handlingShow = () => {
         setShowDetail(false);
     }
 
-    const handlingOpenProfile = (e) => {
-        e.preventDefault();
-
-        console.log("aaaa")
+    const handlingOpenProfile = (e) => {        
+        navigate(`/profile/${post.authorId}`)
     }
 
     const handlingShare = () => {
@@ -58,6 +56,7 @@ function Post({ post, userProfile }) {
                         src={post.authorAvatarUrl}
                         alt={post.authorAvatarUrl}
                         className="post__user-avatar"
+                        onClick={handlingOpenProfile}
                     />
                     <div className="post__user-info">
                         <span className="post__username">{post.authorName}</span>

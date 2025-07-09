@@ -11,6 +11,7 @@ import {
     ChevronRight
 } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function DetailPost({ post, handlingShow, userAvatar, userName }) {
     const [comments, setComments] = useState(post.comments || []);
@@ -21,6 +22,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Prevent body scroll when modal is open
@@ -108,6 +110,10 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
         }
     };
 
+    const handlingOpenFriendProfile = (e) => {
+        navigate(`/profile/${post.authorId}`);
+    }
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('vi-VN', {
@@ -150,6 +156,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                                 src={post.authorAvatarUrl} 
                                 alt={post.authorName}
                                 className="detail-post__avatar"
+                                onClick={handlingOpenFriendProfile}
                             />
                             <div className="detail-post__user-info">
                                 <h3 className="detail-post__author">{post.authorName}</h3>

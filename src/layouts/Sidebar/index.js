@@ -13,7 +13,7 @@ function Sidebar({ userInfo }) {
         { icon: MessageCircle, label: 'Tin nhắn', path: "messages", mobileTop: false },
         { icon: Bell, label: 'Thông báo', path: "/notifications", mobileTop: true },
         { icon: PlusSquare, label: 'Tạo bài viết', path: "/", mobileTop: false, createPost: true },
-        { icon: Bookmark, label: 'Bookmark', path: "/bookmark", mobileTop: false },
+        { icon: Bookmark, label: 'Bookmark', path: "/bookmark", menu: true },
         { icon: User, label: 'Trang cá nhân', path: `/profile/${userInfo.id}`, mobileTop: false },
         { icon: Menu , label: 'Chức năng khác', path: `/`, mobileTop: false, isMenu: true },
     ];
@@ -25,11 +25,9 @@ function Sidebar({ userInfo }) {
 
     const [postText, setPostText] = useState("");
     const [selectedImages, setSelectedImages] = useState([]);
-    const [fileSelectedImages, setFileSelectedImages] = useState([]);
     const [showSearch, setShowSearch] = useState(false);
     const fileInputRef = useRef();
     const submitBtnRef = useRef();
-    const [post, setPost] = useState(null);
 
     const handleCloseModal = () => {
         setShowCreatePost(false);
@@ -90,29 +88,30 @@ function Sidebar({ userInfo }) {
             
             <nav className="sidebar__nav">
                 {menuItems.map((item, index) => (
-                    <NavLink 
-                        key={index} 
-                        to={item.path} 
-                        className={({ isActive }) => 
-                            `sidebar__nav-item 
-                            ${isActive & !item?.createPost & !item?.search & !item?.isMenu ? 'sidebar__nav-item--active' : ''} 
-                            ${item.mobileTop ? "hidden-mobile" : ""}`}
+                    !item?.menu &&
+                        <NavLink 
+                            key={index} 
+                            to={item.path} 
+                            className={({ isActive }) => 
+                                `sidebar__nav-item 
+                                ${isActive & !item?.createPost & !item?.search & !item?.isMenu ? 'sidebar__nav-item--active' : ''} 
+                                ${item.mobileTop ? "hidden-mobile" : ""}`}
 
-                        onClick={() => {
-                            if (item?.createPost) 
-                                setShowCreatePost(!showCreatePost);
+                            onClick={() => {
+                                if (item?.createPost) 
+                                    setShowCreatePost(!showCreatePost);
 
-                            else if (item?.search)
-                                setShowSearch(!showSearch);
+                                else if (item?.search)
+                                    setShowSearch(!showSearch);
 
-                            if (showSearch && !item?.isHome) {
-                                setShowSearch(false);
-                            }
-                        }}
-                    >
-                        <item.icon size={24} />
-                        <span className={`sidebar__nav-label ${showSearch ? "hidden" : ""}`}>{item.label}</span>
-                    </NavLink>
+                                if (showSearch && !item?.isHome) {
+                                    setShowSearch(false);
+                                }
+                            }}
+                        >
+                            <item.icon size={24} />
+                            <span className={`sidebar__nav-label ${showSearch ? "hidden" : ""}`}>{item.label}</span>
+                        </NavLink>
                 ))}
             </nav>
 
