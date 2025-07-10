@@ -19,11 +19,12 @@ function Message() {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(`${API_BASE_URL}/api/messages/conversation/user`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
                 }
-            });
+            );
 
             console.log(response.data.result);
             setConversations(response.data.result);
@@ -38,12 +39,13 @@ function Message() {
             const token = localStorage.getItem("token");
 
             const response = await axios.get(`${API_BASE_URL}/api/messages/conversation/${receiverId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
                 }
-            });
-            
+            );
+
             console.log(response.data.result);
             setMessages(response.data.result);
         } catch (err) {
@@ -56,19 +58,22 @@ function Message() {
     const sendMessage = async (content) => {
         try {
             const token = localStorage.getItem("token");
+
             const response = await axios.post(`${API_BASE_URL}/api/messages/send`, {
-                receiverId: conversation.userId,
-                content: content
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
+                        receiverId: conversation.userId,
+                        content: content,
+                    },
+                    {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
                 }
-            });
-            
+            );
+
             // Thêm tin nhắn mới vào danh sách
-            setMessages(prev => [...prev, response.data.result]);
-            
+            setMessages((prev) => [...prev, response.data.result]);
+
             // Cập nhật conversation list
             getConversations();
         } catch (err) {
@@ -87,7 +92,9 @@ function Message() {
 
     useEffect(() => {
         if (receiverId && conversations.length > 0) {
-            const conversationChoice = conversations.find(c => c.userId === receiverId);
+            const conversationChoice = conversations.find(
+                (c) => c.userId === receiverId
+            );
 
             if (conversationChoice) selectConversation(conversationChoice);
         }
@@ -109,7 +116,7 @@ function Message() {
                 />
             </div>
         </div>
-    )
+    );
 }
 
 export default Message;

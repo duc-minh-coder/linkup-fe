@@ -69,10 +69,8 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            if (!token) {
-                setError("Không tìm thấy token");
-                return;
-            }
+            
+            if (!token) return;
 
             const response = await axios.post("http://localhost:8080/api/comments", {
                 postId: post.id,
@@ -84,20 +82,11 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                 }
             });
 
-            // Add new comment to list
-            const newCommentData = {
-                id: response.data.result.id,
-                content: newComment,
-                fullName: userName,
-                avatarUrl: userAvatar,
-                updatedTime: new Date().toISOString()
-            };
+            console.log(response.data.result);
 
-            setComments(prev => [...prev, newCommentData]);
             setNewComment("");
         } catch (err) {
             console.error("Error adding comment:", err);
-            setError("Có lỗi xảy ra khi thêm bình luận");
         } finally {
             setLoading(false);
         }
@@ -110,7 +99,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
         }
     };
 
-    const handlingOpenFriendProfile = (e) => {
+    const handlingOpenFriendProfile = () => {
         navigate(`/profile/${post.authorId}`);
     }
 
@@ -270,6 +259,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                                     onKeyPress={handleKeyPress}
                                     rows="1"
                                 />
+
                                 <button 
                                     className="detail-post__send-btn"
                                     onClick={handleAddComment}
@@ -300,7 +290,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                                         </div>
                                         <div className="detail-post__comment-actions">
                                             <button className="detail-post__comment-action">Thích</button>
-                                            <button className="detail-post__comment-action">Phản hồi</button>
+                                            {/* <button className="detail-post__comment-action" onClick={handlingReplyComment}>Phản hồi</button> */}
                                             <span className="detail-post__comment-time">
                                                 {formatDate(comment.updatedTime)}
                                             </span>

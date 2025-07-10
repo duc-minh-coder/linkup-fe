@@ -6,8 +6,6 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
     const messagesEndRef = useRef(null);
     const [currentUserId, setCurrentUserId] = useState(null);
 
-    
-
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -81,13 +79,13 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                                 >
                                     {String(message.senderId) !== String(currentUserId) && (
                                         <img
-                                            src={conversation.userAvatarUrl || '/default-avatar.png'}
+                                            src={conversation.userAvatarUrl}
                                             alt={conversation.username}
                                             className="message-item__avatar"
                                         />
                                     )}
                                     <div className="message-item__content">
-                                        <div className="message-item__content__bubble">
+                                        <div className="message-item__content__bubble message-item__bubble">
                                             {message.content}
                                         </div>
 
