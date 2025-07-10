@@ -15,21 +15,26 @@ function Profile() {
     const [userExisted, setUserExisted] = useState(false);
     const [addFriend, setAddFriend] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [localInfo, setLocalInfo] = useState(userInfo); // để cập nhật tức thì
+    // const [localInfo, setLocalInfo] = useState(userInfo); // để cập nhật tức thì
 
-    const handleSave = async (updatedData) => {
+    const handleSave = async (fullName, bio) => {
         try {
-        const token = localStorage.getItem("token");
-        await axios.put(`http://localhost:8080/api/profiles/update`, updatedData, {
-            headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-            }
-        });
-        setLocalInfo(prev => ({ ...prev, ...updatedData }));
-        setShowEditModal(false);
+            const token = localStorage.getItem("token");
+
+            const response = await axios.post(`http://localhost:8080/api/profiles/update-profile`, {
+                fullName: fullName,
+                bio: bio
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            console.log(response.data.result);
+            setShowEditModal(false);
         } catch (error) {
-        console.error("Lỗi khi lưu:", error);
+            console.error("Lỗi khi lưu:", error);
         }
     };
 
@@ -59,7 +64,7 @@ function Profile() {
             })
 
             setIsOwner(isOwner.data.result);
-            console.log(response.data.result);
+            // console.log(response.data.result);
 
             if (response.data.result) {
                 setUserExisted(true);
@@ -82,7 +87,7 @@ function Profile() {
             }
         })
 
-        console.log(response.data.result);
+        // console.log(response.data.result);
         setPosts(response.data.result);
     }
 
@@ -106,13 +111,13 @@ function Profile() {
                     <div className="profile__post-content">
                         <Feed posts={posts} />
                     </div>
-                </div> 
-                : <div className="user-not-existed">người dùng không tồn tại!</div>
+                </div> : 
+                <div className="user-not-existed">người dùng không tồn tại!</div>
             }
 
             {showEditModal && (
                 <EditProfile
-                userInfo={localInfo}
+                userInfo={userInfo}
                 onClose={() => setShowEditModal(false)}
                 onSave={handleSave}
                 />

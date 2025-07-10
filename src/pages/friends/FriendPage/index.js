@@ -56,7 +56,7 @@ function FriendPage() {
 
     const handleMessage = (friendId) => {
         console.log("Nhắn tin tới", friendId);
-        navigate(`/messages`);
+        navigate(`/messages/${friendId}`);
     };
 
     const handleUnfriend = async (friendId) => {

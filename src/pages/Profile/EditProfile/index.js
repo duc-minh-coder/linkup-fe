@@ -1,22 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./EditProfile.scss";
+import useDebounce from "../../../hooks/useDebounce";
 
 function EditProfile({ userInfo, onClose, onSave }) {
-    const [formData, setFormData] = useState({
-        fullName: userInfo.fullName || "",
-        location: userInfo.location || "",
-        bio: userInfo.bio || "",
-        birthday: userInfo.birthday || "",
-    });
+    const [bio, setBio] = useState(userInfo.bio);
+    const [name, setName] = useState(userInfo.fullName);
+    const debounceBio = useDebounce(bio, 500);
+    const debounceName = useDebounce(name, 500);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const handleChangeName = (e) => {
+        setName(e.target.value)
     };
+
+    const handleChangeBio = (e) => {
+        setBio(e.target.value)
+    }
+
+    // useEffect(() => {
+        
+    // }, [debounceBio, debounceName])
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData);
+        
+        onSave(debounceName, debounceBio);
+        onClose();
     };
 
     return (
@@ -26,19 +34,20 @@ function EditProfile({ userInfo, onClose, onSave }) {
                 <form onSubmit={handleSubmit}>
                     <label>
                         Tên:
-                        <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} placeholder="..." />
-                    </label>
-                    <label>
-                        Địa chỉ:
-                        <input type="text" name="location" value={formData.location} onChange={handleChange} />
+                        <input 
+                            type="text" 
+                            name="fullName" 
+                            onChange={handleChangeName} 
+                            placeholder="tên phải có 8 kí tự"
+                        />
                     </label>
                     <label>
                         Tiểu sử:
-                        <textarea name="bio" value={formData.bio} onChange={handleChange} />
-                    </label>
-                    <label>
-                        Ngày sinh:
-                        <input type="date" name="birthday" value={formData.birthday} onChange={handleChange} />
+                        <textarea 
+                            name="bio" 
+                            onChange={handleChangeBio} 
+                            placeholder={userInfo.bio}
+                        />
                     </label>
                     <div className="modal-buttons">
                         <button type="submit">Lưu</button>
