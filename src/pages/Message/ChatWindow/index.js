@@ -86,10 +86,10 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                                 <div
                                     key={index}
                                     className={`message-item ${
-                                        String(message.senderId) === String(currentUserId) ? 'own' : 'other'
+                                        String(message.senderId) !== String(currentUserId) ? 'own' : 'other'
                                     }`}
                                 >
-                                    {String(message.senderId) !== String(currentUserId) && (
+                                    {String(message.senderId) === String(currentUserId) && (
                                         <img
                                             src={conversation.userAvatarUrl}
                                             alt={conversation.username}

@@ -82,8 +82,6 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                 }
             });
 
-            // console.log(response.data.result);
-
             setNewComment("");
         } catch (err) {
             console.error("Error adding comment:", err);

@@ -179,6 +179,12 @@
     
     &.own {
         justify-content: flex-end;
+
+        .message-item__content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
         
         .message-item__bubble {
             background: #0095f6;
@@ -189,6 +195,12 @@
     
     &.other {
         justify-content: flex-start;
+
+        .message-item__content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
         
         .message-item__bubble {
             background: #262626;
