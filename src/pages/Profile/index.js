@@ -97,7 +97,11 @@ function Profile() {
                 <div className="profile">
                     <ProfileHeader />
 
-                    <ProfileInfo userInfo={userInfo} isOwner={isOwner} handlingOpenEditProfileComponent={handlingOpenEditProfileComponent} />
+                    <ProfileInfo 
+                        userInfo={userInfo} 
+                        isOwner={isOwner} 
+                        handlingOpenEditProfileComponent={handlingOpenEditProfileComponent} 
+                    />
 
                     <div className="profile__post-content">
                         <Feed posts={posts} />

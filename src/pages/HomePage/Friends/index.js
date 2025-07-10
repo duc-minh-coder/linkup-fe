@@ -39,7 +39,7 @@ function Friends({ userProfile, friends }) {
                         </div>
                     </div>
 
-                    <span className="friends__chat-btn" onClick={() => {navigate("/messages")}}>nhắn tin</span>
+                    <span className="friends__chat-btn" onClick={() => {navigate(`/messages/${friend.id}`)}}>nhắn tin</span>
                     </div>
                 ))}
                 </div>

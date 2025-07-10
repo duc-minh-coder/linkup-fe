@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ChatWindow from "./ChatWindow";
 import ConversationList from "./ConversationList";
 import "./Message.scss";
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function Message() {
+    const navigate = useNavigate();
     const { receiverId } = useParams();
     const [conversations, setConversations] = useState([]);
     const [conversation, setConversation] = useState(null);
@@ -46,7 +47,7 @@ function Message() {
                 }
             );
 
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setMessages(response.data.result);
         } catch (err) {
             console.log(err);
@@ -71,9 +72,6 @@ function Message() {
                 }
             );
 
-            // Thêm tin nhắn mới vào danh sách
-            setMessages((prev) => [...prev, response.data.result]);
-
             // Cập nhật conversation list
             getConversations();
         } catch (err) {
@@ -84,6 +82,7 @@ function Message() {
     const selectConversation = (conversation) => {
         setConversation(conversation);
         getMessages(conversation.userId);
+        navigate(`/messages/${conversation.userId}`)
     };
 
     useEffect(() => {
@@ -92,11 +91,12 @@ function Message() {
 
     useEffect(() => {
         if (receiverId && conversations.length > 0) {
-            const conversationChoice = conversations.find(
-                (c) => c.userId === receiverId
+            const conversationChoice = conversations.find((c) => 
+                String(c.userId) === String(receiverId)
             );
 
-            if (conversationChoice) selectConversation(conversationChoice);
+            if (conversationChoice) 
+                selectConversation(conversationChoice);
         }
     }, [receiverId, conversations]);
 
@@ -105,7 +105,7 @@ function Message() {
             <div className="message__content">
                 <ConversationList
                     conversations={conversations}
-                    conversation={conversation}
+                    otherUserId={receiverId}
                     onSelectConversation={selectConversation}
                 />
                 <ChatWindow

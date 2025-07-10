@@ -32,7 +32,7 @@ function LayoutDefault() {
                 }
             })
 
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setUserInfo(response.data.result);
         }
         catch (err) {

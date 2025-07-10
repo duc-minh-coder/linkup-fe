@@ -53,7 +53,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                 }
             });
 
-            console.log("Like response:", response.data.result);
+            // console.log("Like response:", response.data.result);
         } catch (err) {
             console.error("Error liking post:", err);
             setError("Có lỗi xảy ra khi thích bài viết");
@@ -82,7 +82,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                 }
             });
 
-            console.log(response.data.result);
+            // console.log(response.data.result);
 
             setNewComment("");
         } catch (err) {

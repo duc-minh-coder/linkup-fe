@@ -46,7 +46,16 @@ export const routes = [
                     },
                     {
                         path: '/messages',
-                        element: <Message />
+                        children: [
+                            {
+                                path: '',
+                                element: <Message />
+                            },
+                            {
+                                path: ':receiverId',
+                                element: <Message />
+                            }
+                        ]
                     },
                     {
                         path: '/notifications',

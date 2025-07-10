@@ -24,7 +24,7 @@ function HomePage() {
                 }
             })
 
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setPosts(response.data.result);
         }
         catch (err) {
@@ -45,7 +45,7 @@ function HomePage() {
                 }
             })
 
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setUserProfile(response.data.result);
         }
         catch (err) {
@@ -66,7 +66,7 @@ function HomePage() {
                 }
             })
 
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setFriends(response.data.result);
         }
         catch (err) {

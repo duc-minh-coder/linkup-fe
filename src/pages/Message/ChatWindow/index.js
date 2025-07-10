@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./ChatWindow.scss";
+import { Phone, Video, Bolt } from "lucide-react";
 
 function ChatWindow({ conversation, messages, loading, onSendMessage }) {
     const [messageInput, setMessageInput] = useState("");
@@ -29,6 +30,17 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    };
+
     if (!conversation) {
         return (
             <div className="chat-window">
@@ -53,9 +65,9 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                     <p>Đang hoạt động</p>
                 </div>
                 <div className="chat-window__header__actions">
-                    <button>📞</button>
-                    <button>📹</button>
-                    <button>ⓘ</button>
+                    <button><Phone size={20}/></button>
+                    <button><Video size={20}/></button>
+                    <button><Bolt size={20}/></button>
                 </div>
             </div>
 
@@ -90,7 +102,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                                         </div>
 
                                         <div className="message-item__content__time">
-                                            {formatTime(message.createdTime)}
+                                            {formatDate(message.createdTime)}
                                         </div>
                                     </div>
                                 </div>

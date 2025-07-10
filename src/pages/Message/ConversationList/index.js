@@ -1,25 +1,22 @@
 import { useState } from "react";
 import "./ConversationList.scss";
 
-function ConversationList({ conversations, activeConversationById, onSelectConversation }) {
+function ConversationList({ conversations, otherUserId, onSelectConversation }) {
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredConversations = conversations.filter(conversation =>
         conversation.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const formatTime = (timestamp) => {
-        const date = new Date(timestamp);
-        const now = new Date();
-        const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-
-        if (diffInMinutes < 60) {
-            return `${diffInMinutes}m`;
-        } else if (diffInMinutes < 1440) {
-            return `${Math.floor(diffInMinutes / 60)}h`;
-        } else {
-            return date.toLocaleDateString();
-        }
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
     };
 
     return (
@@ -43,11 +40,13 @@ function ConversationList({ conversations, activeConversationById, onSelectConve
                 (
                     filteredConversations.map(conversation => (
                         <div
-                            key={conversation.receiverId}
+                            key={conversation.userId}
                             className={`conversation-item ${
-                                activeConversationById === conversation.userId ? 'active' : ''
+                                String(otherUserId) === String(conversation.userId) ? 'active' : ''
                             }`}
-                            onClick={() => onSelectConversation(conversation)}
+                            onClick={() => {
+                                onSelectConversation(conversation)
+                            }}
                         >
                             <img
                                 src={conversation.userAvatarUrl}
@@ -64,7 +63,7 @@ function ConversationList({ conversations, activeConversationById, onSelectConve
                                 </p>
                             </div>
                             <span className="conversation-item__time">
-                                {conversation.lastMessageTime && formatTime(conversation.lastMessageTime)}
+                                {conversation.lastMessageTime && formatDate(conversation.lastMessageTime)}
                             </span>
                         </div>
                     ))

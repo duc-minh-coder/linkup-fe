@@ -53,6 +53,10 @@
                     color: #0095f6;
                 }
             }
+
+            @media (max-width: 640px) {
+                gap: 2px;
+            }
         }
     }
 
