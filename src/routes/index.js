@@ -9,6 +9,7 @@ import Error from "../pages/Error/index.js";
 import Friends from "../pages/Friends/index.js";
 import FriendPage from "../pages/Friends/FriendPage/index.js";
 import FriendRequestsPage from "../pages/Friends/FriendRequestPage/index.js";
+import BookmarkPage from "../pages/BookmarkPage/index.js";
 
 export const routes = [
     {
@@ -64,6 +65,10 @@ export const routes = [
                     {
                         path: '/profile/:userId',
                         element: <Profile />
+                    },
+                    {
+                        path: '/bookmark',
+                        element: <BookmarkPage />
                     },
                     {
                         path: '*',
