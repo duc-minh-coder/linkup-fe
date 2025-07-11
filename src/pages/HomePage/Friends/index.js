@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./Friends.scss";
 
-function Friends({ userProfile, friends }) {
+function Friends({ userProfile, friends, logout }) {
     const navigate = useNavigate();
 
     const handlingShowAllFriend = (e) => {
@@ -12,14 +12,15 @@ function Friends({ userProfile, friends }) {
 
     return (
         <div className="friends">
-            <div className="friends__header" onClick={() => navigate(`/profile/${userProfile.id}`)}>
-                <div className="friends__current-user">
+            <div className="friends__header">
+                <div className="friends__current-user" onClick={() => navigate(`/profile/${userProfile.id}`)}>
                     <img src={userProfile.avatarUrl} alt="Current user" />
+
                     <div className="friends__user-info">
                         <span className="friends__full-name">{userProfile.fullName}</span>
                     </div>
                 </div>
-                <span className="friends__switch-btn">chuyển</span>
+                <span className="friends__switch-btn" onClick={() => logout()}>đăng xuất</span>
             </div>
             
             <div className="friends__content">

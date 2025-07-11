@@ -91,22 +91,6 @@ function LayoutDefault() {
         getInfo();
     }, []);
 
-    const handleLogout = async (e) => {
-        e.preventDefault();
-
-        dispatch(logout(token));
-        const tokenLogout = "";
-        localStorage.setItem("token", tokenLogout);
-
-        if (!token) {
-        navigate("/signin");
-        }
-    };
-
-    const navLinkActive = (e) => {
-        return e.isActive ? "header__link header__link--active" : "header__link";
-    };
-
     if (isChecking) {
         return <div className="check-login">Đang kiểm tra đăng nhập...</div>;
     }

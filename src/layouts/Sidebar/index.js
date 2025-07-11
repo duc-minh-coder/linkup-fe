@@ -1,10 +1,11 @@
-import { Heart, MessageCircle, Bookmark, Search, Home, PlusSquare, User, Bell, X, Menu } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Search, Home, PlusSquare, User, Bell, Menu, icons, Users } from 'lucide-react';
 import "./Sidebar.scss";
 import { NavLink, useLocation } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import SearchBar from '../../pages/SearchBar';
 import CreatePost from '../../pages/CreatePost';
+import BookmarkPage from '../../pages/BookmarkPage';
 
 function Sidebar({ userInfo }) {
     const menuItems = [
@@ -15,10 +16,17 @@ function Sidebar({ userInfo }) {
         { icon: PlusSquare, label: 'Tạo bài viết', path: "/", mobileTop: false, createPost: true },
         { icon: Bookmark, label: 'Bookmark', path: "/bookmark", menu: true },
         { icon: User, label: 'Trang cá nhân', path: `/profile/${userInfo.id}`, mobileTop: false },
-        { icon: Menu , label: 'Chức năng khác', path: `/`, mobileTop: false, isMenu: true },
+        { icon: Menu , label: 'Chức năng khác', path: ``, mobileTop: false, isMenu: true },
+    ];
+
+    const menuOtherFunction = [
+        { icon: Bookmark, label: 'Bookmark', path: '/bookmark' },
+        { icon: Users, label: 'Bạn bè', path: '/friends' },
+
     ];
 
     const [showCreatePost, setShowCreatePost] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
 
     const location = useLocation();
     const isHome = location.pathname === "/";
@@ -46,9 +54,8 @@ function Sidebar({ userInfo }) {
 
 
     return (
-        <div className={`sidebar ${showSearch ? "sidebar--shrink" : ""}`}>
+        <div className={`sidebar ${(showSearch || showMenu) ? "sidebar--shrink" : ""}`}>
             <NavLink to="/" className="sidebar__logo">Link up</NavLink>
-
             {
                 isHome && 
                     <div className="sidebar__header">
@@ -71,13 +78,20 @@ function Sidebar({ userInfo }) {
                                             else if (item?.search)
                                                 setShowSearch(!showSearch);
 
+                                            else if (item?.isMenu) 
+                                                setShowMenu(!showMenu);
+
                                             if (showSearch && !item?.isHome) {
                                                 setShowSearch(false);
+                                            }
+
+                                            if (showMenu && !item?.isMenu) {
+                                                setShowMenu(false);
                                             }
                                         }}
                                     >
                                         <item.icon size={24} />
-                                        <span className="sidebar__nav-label">{item.label}</span>
+                                        {/* <span className="sidebar__nav-label">{item.label}</span> */}
                                     </NavLink>
                                 ))}
                             </div>  
@@ -104,8 +118,15 @@ function Sidebar({ userInfo }) {
                                 else if (item?.search)
                                     setShowSearch(!showSearch);
 
+                                else if (item?.isMenu) 
+                                    setShowMenu(!showMenu);
+
                                 if (showSearch && !item?.isHome) {
                                     setShowSearch(false);
+                                }
+
+                                if (showMenu && !item?.isMenu) {
+                                    setShowMenu(false);
                                 }
                             }}
                         >
@@ -117,7 +138,32 @@ function Sidebar({ userInfo }) {
 
             {/* Modal */}
             {showCreatePost && <CreatePost handleCloseModal={handleCloseModal} userInfo={userInfo} />}
-            {showSearch && <SearchBar isOpen={showSearch} onClose={() => setShowSearch(false)} />}
+            {showSearch && <SearchBar isOpen={showSearch} onClose={() => {setShowSearch(false)}} />}
+            {showMenu && (
+                <div className='menu-function'>
+                    <div className='menu-overlay' onClick={() => setShowMenu(false)}></div>
+                    <div className='menu-container'>
+                        {
+                            menuOtherFunction.map((item, index) => 
+                                <NavLink 
+                                    key={index}
+                                    to={item.path}
+                                    className={({ isActive }) => 
+                                        `menu-container__item
+                                        ${isActive ? 'menu-container__item--active' : ''} `}
+                                >   
+                                    <item.icon size={24} />
+                                    <span 
+                                        className={`menu-container__label ${showSearch ? "hidden" : ""}`}
+                                    >
+                                        {item.label}
+                                    </span>
+                                </NavLink>
+                            )
+                        }
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

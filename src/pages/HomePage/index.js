@@ -2,12 +2,17 @@ import Feed from "./Feed";
 import "./HomePage.scss";
 import Friends from "./Friends";
 import { useEffect, useState } from "react";
+import { logout } from "../../actions/userAction";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState({});
     const [friends, setFriends] = useState([]);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const API_BASE_URL = "http://localhost:8080";
 
@@ -74,6 +79,17 @@ function HomePage() {
         }
     }
 
+    
+    const handleLogout = async () => {
+        const token = localStorage.getItem("token");
+
+        dispatch(logout(token));
+        const tokenLogout = "";
+        localStorage.setItem("token", tokenLogout);
+
+        if (!token) navigate("/signin");
+    };
+
     useEffect(() => {
         getUserProfile();
         getPosts();
@@ -90,7 +106,7 @@ function HomePage() {
             <main className="main-content">
                 <Feed posts={posts} userProfile={userProfile}/>
                 
-                <Friends userProfile={userProfile} friends={friends} />
+                <Friends userProfile={userProfile} friends={friends} logout={handleLogout} />
             </main>
         </div>
     );
