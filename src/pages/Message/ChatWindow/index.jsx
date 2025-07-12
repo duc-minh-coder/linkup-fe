@@ -78,7 +78,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                     <>
                         {messages.length === 0 ? (
                             <div className="no-messages">
-                                <p>Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!</p>
+                                <p>Hãy bắt đầu cuộc trò chuyện!</p>
                             </div>
                         ) : 
                         (

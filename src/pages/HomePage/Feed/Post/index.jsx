@@ -3,10 +3,7 @@ import {
     MessageCircle,
     Send,
     Bookmark,
-    MoreHorizontal,
-    Edit,
-    EyeOff,
-    Delete
+    MoreHorizontal
 } from "lucide-react";
 import "./Post.scss";
 import DetailPost from "./DetailPost";
@@ -80,6 +77,7 @@ function Post({ post, userProfile }) {
                     userAvatar={post.authorAvatarUrl} 
                     userName={post.authorName}
                     handlingShow={handlingShow}
+                    isAuthor={isAuthor}
                 />
             )}
 

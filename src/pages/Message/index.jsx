@@ -19,7 +19,7 @@ function Message() {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get(`${API_BASE_URL}/api/messages/conversation/user`, {
+            const response = await axios.get(`${API_BASE_URL}/api/messages/conversation`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
@@ -47,7 +47,6 @@ function Message() {
                 }
             );
 
-            // console.log(response.data.result);
             setMessages(response.data.result);
         } catch (err) {
             console.log(err);
