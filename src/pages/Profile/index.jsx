@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import "./Profile.scss";
 import ProfileHeader from "./ProfileHeader";
 import ProfileInfo from "./ProfileInfo";
-import Feed from "../HomePage/Feed/index.js";
-import EditProfile from "./EditProfile/index.js";
+import Feed from "../HomePage/Feed/index.jsx";
+import EditProfile from "./EditProfile/index.jsx";
 
 function Profile() {
     const { userId } = useParams();

@@ -47,11 +47,11 @@ function Friends({ userProfile, friends, logout }) {
             </div>
             
             <div className="friends__footer">
-                <div className="friends__links">
+                <div className="friends__links" onClick={() => {navigate('/about')}}>
                     Giới thiệu · Trợ giúp · API · 
                     Quyền riêng tư · Điều khoản · Ngôn ngữ 
                 </div>
-                <div className="friends__copyright">
+                <div className="friends__copyright" onClick={() => {navigate('/about')}}>
                 © 2025 LINK UP BY MINH
                 </div>
             </div>

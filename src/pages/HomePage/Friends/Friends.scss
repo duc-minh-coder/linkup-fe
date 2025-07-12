@@ -178,10 +178,12 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         font-size: 11px;
         line-height: 16px;
         margin-bottom: 16px;
+        cursor: pointer;
     }
 
     &__copyright {
         color: #737373;
         font-size: 11px;
+        cursor: pointer;
     }
 }

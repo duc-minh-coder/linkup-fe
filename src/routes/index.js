@@ -1,15 +1,16 @@
 import Signup from "../pages/Signup";
-import Signin from "../pages/Signin/index.js";
-import LayoutDefault from "../layouts/LayoutDefault/index.js";
-import Message from "../pages/Message/index.js";
-import Notifications from "../pages/Notifications/index.js";
-import Profile from "../pages/Profile/index.js";
-import HomePage from "../pages/HomePage/index.js";
-import Error from "../pages/Error/index.js";
-import Friends from "../pages/Friends/index.js";
-import FriendPage from "../pages/Friends/FriendPage/index.js";
-import FriendRequestsPage from "../pages/Friends/FriendRequestPage/index.js";
-import BookmarkPage from "../pages/BookmarkPage/index.js";
+import Signin from "../pages/Signin/index.jsx";
+import LayoutDefault from "../layouts/LayoutDefault/index.jsx";
+import Message from "../pages/Message/index.jsx";
+import Notifications from "../pages/Notifications/index.jsx";
+import Profile from "../pages/Profile/index.jsx";
+import HomePage from "../pages/HomePage/index.jsx";
+import Error from "../pages/Error/index.jsx";   
+import Friends from "../pages/Friends/index.jsx";
+import FriendPage from "../pages/Friends/FriendPage/index.jsx";
+import FriendRequestsPage from "../pages/Friends/FriendRequestPage/index.jsx";
+import BookmarkPage from "../pages/BookmarkPage/index.jsx";
+import About from "../pages/About/index.jsx";
 
 export const routes = [
     {
@@ -69,6 +70,10 @@ export const routes = [
                     {
                         path: '/bookmark',
                         element: <BookmarkPage />
+                    },
+                    {
+                        path: '/about',
+                        element: <About />
                     },
                     {
                         path: '*',
