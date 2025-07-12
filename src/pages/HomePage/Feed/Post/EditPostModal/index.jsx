@@ -96,25 +96,25 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
     return (
         <>
             <div className="modal-overlay" onClick={() => handleCloseModal()}></div>
-            <div className="post-modal">
-                <div className="post-modal__header">
+            <div className="post-edit-modal">
+                <div className="post-edit-modal__header">
                     <h2>{isEditMode ? "Chỉnh sửa bài viết" : "Tạo bài viết"}</h2>
-                    <button className="post-modal__close" onClick={() => handleCloseModal()}>
+                    <button className="post-edit-modal__close" onClick={() => handleCloseModal()}>
                         ×
                     </button>
                 </div>
 
-                <div className="post-modal__user-info">
+                <div className="post-edit-modal__user-info">
                     <img src={userInfo.avatarUrl} alt="User avatar" />
                     <div>
-                        <div className="post-modal__username">{userInfo.fullName || "Nguyễn Đức Minh"}</div>
-                        <div className="post-modal__privacy">Bạn bè</div>
+                        <div className="post-edit-modal__username">{userInfo.fullName || "Nguyễn Đức Minh"}</div>
+                        <div className="post-edit-modal__privacy">Bạn bè</div>
                     </div>
                 </div>
 
-                <div className="post-modal__content">
+                <div className="post-edit-modal__content">
                     <textarea
-                        className="post-modal__textarea"
+                        className="post-edit-modal__textarea"
                         placeholder="Bạn đang nghĩ gì?"
                         value={postText}
                         onChange={(e) => setPostText(e.target.value)}
@@ -122,13 +122,13 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
                     />
 
                     {selectedImages.length > 0 && (
-                        <div className="post-modal__image-preview-multiple">
+                        <div className="post-edit-modal__image-preview-multiple">
                             {selectedImages.map((img, index) => (
                                 <div key={index} className="image-wrapper">
                                     <img src={img} alt={`Preview ${index}`} />
                                     <button 
                                         onClick={() => handleRemoveImage(index)}
-                                        className="post-modal__remove-image"
+                                        className="post-edit-modal__remove-image"
                                     >
                                         ×
                                     </button>
@@ -139,7 +139,7 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
                 </div>
 
                 <button 
-                    className="post-modal__add-media"
+                    className="post-edit-modal__add-media"
                     onClick={() => fileInputRef.current?.click()}
                 >
                     📷 Thêm ảnh/video
@@ -155,7 +155,7 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
                 />
 
                 <button 
-                    className="post-modal__submit"
+                    className="post-edit-modal__submit"
                     ref={submitBtnRef}
                     onClick={handleSubmit}
                     disabled={postText.trim() === ""}

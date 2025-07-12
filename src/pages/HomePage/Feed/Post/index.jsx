@@ -13,6 +13,7 @@ import DetailPost from "./DetailPost";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import EditPostModal from "./EditPostModal";
+import DropdownMenu from "./DropdownMenu";
 
 function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
@@ -52,22 +53,13 @@ function Post({ post, userProfile }) {
 
     }
 
+    const handlingSetDropdown = () => {
+        setShowDropdown(false);
+    }
+
     const handleCloseModal = () => {
         setShowEditModal(false);
     }
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setShowDropdown(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -121,37 +113,13 @@ function Post({ post, userProfile }) {
                     onClick={() => setShowDropdown(!showDropdown)}
                 />
 
-                {showDropdown && (
-                    <div className="post__dropdown" ref={dropdownRef}>
-                        {isAuthor ? (
-                            <>
-                                <button 
-                                    className="post__dropdown-item"
-                                    onClick={handleEditPost}
-                                >
-                                    <Edit size={16} />
-                                    Chỉnh sửa bài viết
-                                </button>
-                                <button 
-                                    className="post__dropdown-item"
-                                    onClick={handleDeletePost}
-                                >
-                                    <Delete size={16} />
-                                    Xoá bài viết
-                                </button>
-                            </>
-                            
-                        ) : (
-                            <button 
-                                className="post__dropdown-item"
-                                onClick={handleHidePost}
-                            >
-                                <EyeOff size={16} />
-                                Ẩn bài viết
-                            </button>
-                        )}
-                    </div>
-                )}
+                {showDropdown && 
+                    <DropdownMenu 
+                        isAuthor={isAuthor} 
+                        handleEditPost={handleEditPost} 
+                        handleDeletePost={handleDeletePost} 
+                        handlingSetDropdown={handlingSetDropdown}
+                    />}
             </div>
 
             <div className="post__content"> 

@@ -141,6 +141,7 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         display: flex;
         align-items: center;
         gap: 10px;
+        position: relative;
     }
 
     &__action-btn {

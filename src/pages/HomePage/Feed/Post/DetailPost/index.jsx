@@ -1,5 +1,5 @@
 import "./DetailPost.scss";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     Heart,
     MessageCircle,
@@ -12,8 +12,9 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import DropdownMenu from "../DropdownMenu";
 
-function DetailPost({ post, handlingShow, userAvatar, userName }) {
+function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
     const [comments, setComments] = useState(post.comments || []);
     const [newComment, setNewComment] = useState("");
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
@@ -22,7 +23,10 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const navigate = useNavigate();
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         // Prevent body scroll when modal is open
@@ -32,6 +36,37 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
         };
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const handleEditPost = () => {
+        setShowEditModal(true);
+        setShowDropdown(false);
+    }
+
+    const handleHidePost = () => {
+
+    }
+
+    const handleDeletePost = () => {
+
+    }
+
+    
+    const handlingSetDropdown = () => {
+        setShowDropdown(false);
+    }
+    
     const handleLike = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -153,9 +188,19 @@ function DetailPost({ post, handlingShow, userAvatar, userName }) {
                         
                         <div className="detail-post__actions">
                             <button className="detail-post__action-btn">
-                                <MoreHorizontal size={20} />
+                                <MoreHorizontal size={20} onClick={() => setShowDropdown(!showDropdown)}/>
                             </button>
+
+                            {showDropdown && 
+                                <DropdownMenu 
+                                    isAuthor={isAuthor} 
+                                    handleEditPost={handleEditPost} 
+                                    handleDeletePost={handleDeletePost} 
+                                    handlingSetDropdown={handlingSetDropdown}
+                            />}                        
                         </div>
+
+
                     </div>
 
                     {/* Post Content */}
