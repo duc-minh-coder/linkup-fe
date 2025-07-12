@@ -3,18 +3,28 @@ import {
     MessageCircle,
     Send,
     Bookmark,
-    MoreHorizontal
+    MoreHorizontal,
+    Edit,
+    EyeOff,
+    Delete
 } from "lucide-react";
-import { useState } from "react";
 import "./Post.scss";
 import DetailPost from "./DetailPost";
 import { useNavigate } from "react-router-dom";
+import { useRef, useState, useEffect } from "react";
 
 function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const navigate = useNavigate();
+    const dropdownRef = useRef(null);
+
+    const isAuthor = userProfile && String(userProfile.id) === String(post.authorId);
+    // console.log(userProfile, post.authorId);
+    
 
     const handlingShow = () => {
         setShowDetail(false);
@@ -27,6 +37,32 @@ function Post({ post, userProfile }) {
     const handlingShare = () => {
 
     }
+
+    const handleEditPost = () => {
+        setShowEditModal(true);
+        setShowDropdown(false);
+    }
+
+    const handleHidePost = () => {
+
+    }
+
+    const handleDeletePost = () => {
+
+    }
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -63,7 +99,43 @@ function Post({ post, userProfile }) {
                         <span className="post__time-ago">{formatDate(post.updatedTime)}</span>
                     </div>
                 </div>
-                <MoreHorizontal size={20} className="post__options" />
+                <MoreHorizontal 
+                    size={20} 
+                    className="post__options" 
+                    onClick={() => setShowDropdown(!showDropdown)}
+                />
+
+                {showDropdown && (
+                    <div className="post__dropdown" ref={dropdownRef}>
+                        {isAuthor ? (
+                            <>
+                                <button 
+                                    className="post__dropdown-item"
+                                    onClick={handleEditPost}
+                                >
+                                    <Edit size={16} />
+                                    Chỉnh sửa bài viết
+                                </button>
+                                <button 
+                                    className="post__dropdown-item"
+                                    onClick={handleDeletePost}
+                                >
+                                    <Delete size={16} />
+                                    Xoá bài viết
+                                </button>
+                            </>
+                            
+                        ) : (
+                            <button 
+                                className="post__dropdown-item"
+                                onClick={handleHidePost}
+                            >
+                                <EyeOff size={16} />
+                                Ẩn bài viết
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="post__content"> 

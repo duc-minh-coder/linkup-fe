@@ -11,6 +11,7 @@ function HomePage() {
     const [posts, setPosts] = useState([]);
     const [userProfile, setUserProfile] = useState({});
     const [friends, setFriends] = useState([]);
+    const [loadingProfile, setLoadingProfile] = useState(true);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -50,11 +51,12 @@ function HomePage() {
                 }
             })
 
-            // console.log(response.data.result);
             setUserProfile(response.data.result);
+            setLoadingProfile(false);
         }
         catch (err) {
             console.log(err);
+            setLoadingProfile(false);
         }
     }
 
@@ -104,9 +106,15 @@ function HomePage() {
     return (
         <div className="linkup-app">
             <main className="main-content">
-                <Feed posts={posts} userProfile={userProfile}/>
+                {
+                    !loadingProfile && (
+                        <>
+                            <Feed posts={posts} userProfile={userProfile}/>
                 
-                <Friends userProfile={userProfile} friends={friends} logout={handleLogout} />
+                            <Friends userProfile={userProfile} friends={friends} logout={handleLogout} />
+                        </>
+                    )
+                }
             </main>
         </div>
     );

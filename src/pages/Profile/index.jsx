@@ -109,7 +109,7 @@ function Profile() {
                     />
 
                     <div className="profile__post-content">
-                        <Feed posts={posts} />
+                        <Feed posts={posts} userProfile={userInfo} />
                     </div>
                 </div> : 
                 <div className="user-not-existed">người dùng không tồn tại!</div>
