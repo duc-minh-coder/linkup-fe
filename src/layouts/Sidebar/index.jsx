@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, Bookmark, Search, Home, PlusSquare, User, Bell, Menu, icons, Users } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Search, Home, PlusSquare, User, Bell, Menu, Users } from 'lucide-react';
 import "./Sidebar.scss";
 import { NavLink, useLocation } from 'react-router-dom';
 import { lazy, useEffect, useRef, useState } from 'react';
@@ -10,7 +10,7 @@ import BookmarkPage from '../../pages/BookmarkPage';
 function Sidebar({ userInfo }) {
     const menuItems = [
         { icon: Home, label: 'Trang chủ', path: "/", mobileTop: false, isHome: true },
-        { icon: Search, label: 'Tìm kiếm', path: "/", mobileTop: true, search: true },
+        { icon: Search, label: 'Tìm kiếm', path: null, mobileTop: true, search: true },
         { icon: MessageCircle, label: 'Tin nhắn', path: "messages", mobileTop: false },
         { icon: Bell, label: 'Thông báo', path: "/notifications", mobileTop: true },
         { icon: PlusSquare, label: 'Tạo bài viết', path: "/", mobileTop: false, createPost: true },

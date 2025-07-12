@@ -9,7 +9,6 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
     const [existingImages, setExistingImages] = useState([]);
     const fileInputRef = useRef();
     const submitBtnRef = useRef();
-    const [post, setPost] = useState(null);
 
     // Initialize form with existing post data when editing
     useEffect(() => {
@@ -70,20 +69,10 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
 
         try {
             let response;
+
             if (isEditMode && editPost) {
                 // Update existing post
-                response = await axios.put(`http://localhost:8080/api/posts/${editPost.id}`, 
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            'Content-Type': 'multipart/form-data'
-                        },
-                    }
-                );
-            } else {
-                // Create new post
-                response = await axios.post("http://localhost:8080/api/posts", 
+                response = await axios.patch(`http://localhost:8080/api/posts/${editPost.id}`, 
                     formData,
                     {
                         headers: {
@@ -95,7 +84,6 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
             }
 
             console.log(response.data);
-            setPost(response.data);
             handleCloseModal();
         } catch(err) {
             console.log(err);

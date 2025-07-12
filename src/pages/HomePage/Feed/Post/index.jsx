@@ -12,6 +12,7 @@ import "./Post.scss";
 import DetailPost from "./DetailPost";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
+import EditPostModal from "./EditPostModal";
 
 function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
@@ -51,6 +52,10 @@ function Post({ post, userProfile }) {
 
     }
 
+    const handleCloseModal = () => {
+        setShowEditModal(false);
+    }
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -86,6 +91,13 @@ function Post({ post, userProfile }) {
                 />
             )}
 
+            {showEditModal && 
+                <EditPostModal
+                    handleCloseModal={handleCloseModal} 
+                    userInfo={userProfile} 
+                    editPost={post}
+                    isEditMode={true} />}
+
             <div className="post__header">
                 <div className="post__user" onClick={handlingOpenProfile}>
                     <img
@@ -96,7 +108,11 @@ function Post({ post, userProfile }) {
                     />
                     <div className="post__user-info">
                         <span className="post__username">{post.authorName}</span>
-                        <span className="post__time-ago">{formatDate(post.updatedTime)}</span>
+                        <span 
+                            className="post__time-ago">
+                                {formatDate(post.createdTime)} 
+                                {post.createdTime !== post.updatedTime && `(lastUpdate:${formatDate(post.updatedTime)})` }
+                            </span>
                     </div>
                 </div>
                 <MoreHorizontal 
