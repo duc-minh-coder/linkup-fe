@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./FriendRequestPage.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 function FriendRequestsPage() {
     const [requests, setRequests] = useState([]);
     const navigate = useNavigate();
+    const userProfile = useOutletContext();
 
     const API_BASE_URL = "http://localhost:8080";
 
@@ -53,7 +54,7 @@ function FriendRequestsPage() {
                 avatarUrl: "https://i.pravatar.cc/150?img=7"
             }
         ]);
-    }, []);
+    }, [userProfile]);
 
     const handleAccept = async (requestId) => {
         // Call API accept friend

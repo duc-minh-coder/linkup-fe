@@ -16,7 +16,7 @@ function Sidebar({ userInfo }) {
         { icon: PlusSquare, label: 'Tạo bài viết', path: "/", mobileTop: false, createPost: true },
         { icon: Bookmark, label: 'Bookmark', path: "/bookmark", menu: true },
         { icon: User, label: 'Trang cá nhân', path: `/profile/${userInfo.id}`, mobileTop: false },
-        { icon: Menu , label: 'Chức năng khác', path: ``, mobileTop: false, isMenu: true },
+        { icon: Menu , label: 'Chức năng khác', path: null, mobileTop: false, isMenu: true },
     ];
 
     const menuOtherFunction = [
@@ -91,7 +91,6 @@ function Sidebar({ userInfo }) {
                                         }}
                                     >
                                         <item.icon size={24} />
-                                        {/* <span className="sidebar__nav-label">{item.label}</span> */}
                                     </NavLink>
                                 ))}
                             </div>  
@@ -151,6 +150,7 @@ function Sidebar({ userInfo }) {
                                     className={({ isActive }) => 
                                         `menu-container__item
                                         ${isActive ? 'menu-container__item--active' : ''} `}
+                                    onClick={() => setShowMenu(false)}
                                 >   
                                     <item.icon size={24} />
                                     <span 

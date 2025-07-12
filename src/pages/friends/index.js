@@ -1,7 +1,37 @@
+import { useEffect, useState } from "react";
 import "./Friends.scss";
-import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
+import axios from "axios";
 
 function Friends() {
+    const API_BASE_URL = "http://localhost:8080";
+    const [userProfile, setUserProfile] = useState({});
+
+    const getUserProfile = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            console.log(response.data.result);
+            setUserProfile(response.data.result);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        getUserProfile();
+    }, []);
+
     return (
         <div className="friends-component">
             <div className="friend-header">
@@ -21,7 +51,7 @@ function Friends() {
             </div>
 
             <div className="friend-content">
-                <Outlet />    
+                <Outlet context={userProfile}/>    
             </div>            
         </div>
     );
