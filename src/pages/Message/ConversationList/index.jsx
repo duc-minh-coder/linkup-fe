@@ -59,6 +59,7 @@ function ConversationList({ conversations, otherUserId, onSelectConversation }) 
                                 </h4>
 
                                 <p className="conversation-item__info__message">
+                                    {conversation.userSentLast ? 'bạn: ' : ''}
                                     {conversation.lastMessage || 'Chưa có tin nhắn'}
                                 </p>
                             </div>

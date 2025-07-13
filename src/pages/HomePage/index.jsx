@@ -23,7 +23,7 @@ function HomePage() {
         if (!token) return;
 
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/posts/friend-posts`, {
+            const response = await axios.get(`${API_BASE_URL}/api/posts/all-post`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
