@@ -20,7 +20,7 @@ function Friends() {
                 }
             })
 
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setUserProfile(response.data.result);
         }
         catch (err) {
@@ -51,7 +51,10 @@ function Friends() {
             </div>
 
             <div className="friend-content">
-                <Outlet context={userProfile}/>    
+                {
+                    userProfile.id ? <Outlet context={userProfile}/> : <div>Đang tải dữ liệu...</div>
+                }
+                 
             </div>            
         </div>
     );

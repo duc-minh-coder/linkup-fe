@@ -139,6 +139,7 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 
     &__user {
         @include flex-center;
+        cursor: pointer;
 
         img {
             @include avatar(32px);

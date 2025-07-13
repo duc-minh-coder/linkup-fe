@@ -15,7 +15,6 @@ function Profile() {
     const [userExisted, setUserExisted] = useState(false);
     const [addFriend, setAddFriend] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    // const [localInfo, setLocalInfo] = useState(userInfo); // để cập nhật tức thì
 
     const handleSave = async (fullName, bio) => {
         try {
@@ -64,7 +63,7 @@ function Profile() {
             })
 
             setIsOwner(isOwner.data.result);
-            // console.log(response.data.result);
+            console.log(response.data.result);
 
             if (response.data.result) {
                 setUserExisted(true);

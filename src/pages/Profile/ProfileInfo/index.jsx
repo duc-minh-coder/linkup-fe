@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent }) {
   const [addFriend, setAddFriend] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -22,10 +23,16 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent }) {
                             {!isOwner && (
                             <>
                                 <button
-                                    className={`add-friend-btn ${addFriend ? 'is-friend' : ''}`}
-                                    onClick={() => setAddFriend(!addFriend)}
+                                    className={`add-friend-btn ${userInfo.role == "FRIEND" ? 'is-friend' : ''}`}
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
                                 >
-                                    {addFriend ? 'Bạn bè' : 'Gửi kết bạn'}
+                                     {userInfo.role === "FRIEND"
+                                        ? isHovered
+                                            ? "Hủy kết bạn"
+                                            : "Bạn bè"
+                                        : "Gửi kết bạn"}
+
                                 </button>
                                 <button className="message-btn" onClick={() => {navigate(`/messages/${userInfo.id}`)}}>Nhắn tin</button>
                             </>
