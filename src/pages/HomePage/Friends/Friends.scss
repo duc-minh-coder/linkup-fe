@@ -92,6 +92,7 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         font-size: 12px;
         cursor: pointer;
         transition: opacity 0.2s ease;
+        text-align: center;
 
         &:hover {
             opacity: 0.8;
@@ -157,15 +158,17 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         font-size: 12px;
         cursor: pointer;
         transition: opacity 0.2s ease;
+        width: 60px;
+        text-align: center;
 
         &:hover {
             opacity: 0.8;
         }
 
-        @media (max-width: 1024px) {
-            width: 200px;
-            display: none;
-        }
+        // @media (max-width: 1024px) {
+        //     width: 200px;
+        //     display: none;
+        // }
     }
 
     &__footer {

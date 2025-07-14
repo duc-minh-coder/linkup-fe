@@ -80,9 +80,7 @@ function Profile() {
     const getPosts = async (page = 0, initial = false) => {
         const token = localStorage.getItem("token");
 
-        if (!token) return;
-
-        if (loadingPosts) return;
+        if (!token || loadingPosts) return;
 
         setLoadingPosts(true);
 
@@ -102,8 +100,7 @@ function Profile() {
             if (initial) {
                 setPosts(newPosts);
                 setPage(0);
-            }
-                
+            } 
             else {
                 setPosts(prevPosts => [...prevPosts, ...newPosts]);
                 setPage(prevPage => prevPage + 1);
@@ -140,8 +137,7 @@ function Profile() {
     useEffect(() => {
         window.addEventListener("scroll", handlingScrollPage);
 
-        console.log(hasMore, posts)
-
+        console.log(posts)
         return () => 
             window.removeEventListener("scroll", handlingScrollPage);
     }, [handlingScrollPage])
@@ -153,6 +149,7 @@ function Profile() {
 
     useEffect(() => {
         if (userExisted) {
+            setPosts([]);
             getPosts(0, true);
         }
     }, [userExisted, userId]);

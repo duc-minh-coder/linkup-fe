@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import EditPostModal from "./EditPostModal";
 import DropdownMenu from "./DropdownMenu";
+import axios from "axios";
 
 function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
@@ -22,7 +23,7 @@ function Post({ post, userProfile }) {
     const dropdownRef = useRef(null);
 
     const isAuthor = userProfile && String(userProfile.id) === String(post.authorId);
-    // console.log(userProfile, post.authorId);
+    const API_BASE_URL = "http://localhost:8080";
     
 
     const handlingShow = () => {
@@ -47,7 +48,29 @@ function Post({ post, userProfile }) {
     }
 
     const handleDeletePost = () => {
+        const token = localStorage.getItem('token');
 
+        try {
+            axios.delete(`${API_BASE_URL}/api/posts/${post.id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(() => {
+                    alert("đã xoá bài viết!");
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                })
+                .catch(() => {
+                    alert("chưa xoá được bài viết");
+                })
+        }   
+        catch (err) {
+            console.log(err);
+        }
     }
 
     const handlingSetDropdown = () => {

@@ -115,7 +115,7 @@ function HomePage() {
         const tokenLogout = "";
         localStorage.setItem("token", tokenLogout);
 
-        if (!token) navigate("/signin");
+        navigate("/signin");
     };
 
     const handlingScrollPage = useCallback(() => {

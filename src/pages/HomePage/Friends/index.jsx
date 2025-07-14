@@ -32,15 +32,18 @@ function Friends({ userProfile, friends, logout }) {
                 <div className="friends__list">
                 {friends.map((friend, index) => (
                     <div key={index} className="friends__item">
-                    <div className="friends__user">
-                        <img src={friend.avatarUrl} alt="friend avt" onClick={() => {navigate(`/profile/${friend.id}`)}}/>
-                        <div className="friends__user-info">
-                            <span className="friends__username" onClick={() => {navigate(`/profile/${friend.id}`)}}>{friend.fullName}</span>
-                            <span className="friends__description">đang hoạt động</span>
+                        <div className="friends__user">
+                            <img src={friend.avatarUrl} alt="friend avt" onClick={() => {navigate(`/profile/${friend.id}`)}}/>
+                            <div className="friends__user-info">
+                                <span className="friends__username" onClick={() => {navigate(`/profile/${friend.id}`)}}>{friend.fullName}</span>
+                                <span className="friends__description">đang hoạt động</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <span className="friends__chat-btn" onClick={() => {navigate(`/messages/${friend.id}`)}}>nhắn tin</span>
+                        <span 
+                            className="friends__chat-btn" 
+                            onClick={() => {navigate(`/messages/${friend.id}`)}}
+                        >nhắn tin</span>
                     </div>
                 ))}
                 </div>
