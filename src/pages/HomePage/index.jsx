@@ -123,7 +123,7 @@ function HomePage() {
         const scrollHeight = document.documentElement.scrollHeight;
         const clientHeight = document.documentElement.clientHeight;
         
-        // phần trăm quận đc
+        // phần trăm cuận đc
         const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
         
         if (scrollPercentage < 0.95 || loadingPosts || !hasMore) {

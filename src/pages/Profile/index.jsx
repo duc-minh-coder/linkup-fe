@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Profile.scss";
 import ProfileHeader from "./ProfileHeader";
@@ -13,8 +13,10 @@ function Profile() {
     const [posts, setPosts] = useState([]);
     const [isOwner, setIsOwner] = useState(false);
     const [userExisted, setUserExisted] = useState(false);
-    const [addFriend, setAddFriend] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [page, setPage] = useState(0);
+    const [loadingPosts, setLoadingPosts] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
 
     const handleSave = async (fullName, bio) => {
         try {
@@ -41,8 +43,8 @@ function Profile() {
         setShowEditModal(true);
     }
 
-
     const API_BASE_URL = "http://localhost:8080";
+    const PAGE_SIZE = 5;
 
     const getUser = async () => {
         try {
@@ -68,7 +70,7 @@ function Profile() {
             if (response.data.result) {
                 setUserExisted(true);
                 setUserInfo(response.data.result);
-                getAllPostByUser();
+                getPosts();
             }
         }
         catch (err) {
@@ -76,19 +78,73 @@ function Profile() {
         }
     }
     
-    const getAllPostByUser = async () => {
+    const getPosts = async (page = 0, initial = false) => {
         const token = localStorage.getItem("token");
 
-        const response = await axios.get(`${API_BASE_URL}/api/posts/user/${userId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
-        })
+        if (!token) return;
 
-        // console.log(response.data.result);
-        setPosts(response.data.result);
-    }
+        if (loadingPosts) return;
+
+        setLoadingPosts(true);
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/posts/all-post`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    page: page,
+                    size: PAGE_SIZE
+                }
+            })
+            const newPosts = response.data.result;
+
+            if (initial) 
+                setPosts(newPosts);
+            else 
+                setPosts(prevPosts => [...prevPosts, ...newPosts])
+
+            if (newPosts.length < PAGE_SIZE) 
+                setHasMore(false);
+            else 
+                setHasMore(true);
+
+            if (!initial) 
+                setPage(page);
+        }
+        catch (err) {
+            console.log(err);
+            setHasMore(false);
+        } finally {
+            setLoadingPosts(false);
+        }
+    };
+
+    const handlingScrollPage = useCallback(() => {
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        
+        // phần trăm cuận đc
+        const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+        
+        if (scrollPercentage < 0.95 || loadingPosts || !hasMore) {
+            return;
+        }
+
+        getPosts(page + 1, false);
+    }, [page, loadingPosts, hasMore]);
+
+    useEffect(() => {
+        window.addEventListener("scroll", handlingScrollPage);
+
+        console.log(hasMore, posts)
+
+        return () => 
+            window.removeEventListener("scroll", handlingScrollPage);
+    }, [handlingScrollPage])
+    
 
     useEffect(() => {
         getUser();
