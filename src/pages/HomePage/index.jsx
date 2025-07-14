@@ -19,6 +19,7 @@ function HomePage() {
     const navigate = useNavigate();
 
     const API_BASE_URL = "http://localhost:8080";
+    const PAGE_SIZE = 5;
 
     const getPosts = async (pageNumber = 0, initial = false) => {
         const token = localStorage.getItem("token");
@@ -37,10 +38,9 @@ function HomePage() {
                 },
                 params: {
                     page: pageNumber,
-                    size: 5
+                    size: PAGE_SIZE
                 }
             })
-            // setPosts(response.data.result);
             const newPosts = response.data.result;
 
             if (initial) 
@@ -48,13 +48,17 @@ function HomePage() {
             else 
                 setPosts(prevPosts => [...prevPosts, ...newPosts])
 
-            if (newPosts.length < 5) 
+            if (newPosts.length < PAGE_SIZE) 
                 setHasMore(false);
-            
-            setPageNumber(pageNumber);
+            else 
+                setHasMore(true);
+
+            if (!initial) 
+                setPageNumber(pageNumber);
         }
         catch (err) {
             console.log(err);
+            setHasMore(false);
         } finally {
             setLoadingPosts(false);
         }
@@ -114,18 +118,25 @@ function HomePage() {
         if (!token) navigate("/signin");
     };
 
-    // xử lí khi quận trang
     const handlingScrollPage = useCallback(() => {
-        if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || loadingPosts || !hasMore) {
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
+        
+        // phần trăm quận đc
+        const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+        
+        if (scrollPercentage < 0.95 || loadingPosts || !hasMore) {
             return;
         }
-        
-        // Load thêm bài viết khi scroll đến cuối trang
-        getPosts(pageNumber + 1);
+
+        getPosts(pageNumber + 1, false);
     }, [pageNumber, loadingPosts, hasMore]);
 
     useEffect(() => {
         window.addEventListener("scroll", handlingScrollPage);
+
+        console.log(hasMore, posts)
 
         return () => 
             window.removeEventListener("scroll", handlingScrollPage);
@@ -147,31 +158,26 @@ function HomePage() {
             <main className="main-content">
                 {!loadingProfile && (
                     <>
-                        <Feed posts={posts} userProfile={userProfile}/>
-            
+                        <div className="main-content__feed">
+                            <Feed posts={posts} userProfile={userProfile}/>
+
+                            {loadingPosts && (
+                                <div className="box-bottom">
+                                    Đang tải thêm bài viết...
+                                </div>
+                            )}
+                            
+                            {!hasMore && posts.length > 0 && (
+                                <div className="box-bottom">
+                                    Đã hiển thị hết tất cả bài viết
+                                </div>
+                            )}
+                        </div>
+                        
                         <Friends userProfile={userProfile} friends={friends} logout={handleLogout} />
                     </>
                 )}
 
-                {/* {loadingPosts && (
-                    <div style={{ 
-                        textAlign: 'center', 
-                        padding: '20px',
-                        color: '#666'
-                    }}>
-                        Đang tải thêm bài viết...
-                    </div>
-                )}
-                
-                {!hasMore && posts.length > 0 && (
-                    <div style={{ 
-                        textAlign: 'center', 
-                        padding: '20px',
-                        color: '#999'
-                    }}>
-                        Đã hiển thị hết tất cả bài viết
-                    </div>
-                )} */}
             </main>
         </div>
     );

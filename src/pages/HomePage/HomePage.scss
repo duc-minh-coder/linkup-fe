@@ -28,6 +28,12 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     min-height: 100vh;
 }
 
+.box-bottom {
+    text-align: center; 
+    padding: 20px;
+    color: #fff;
+}
+
 // Responsive styles
 @media (max-width: 1024px) {    
     .friends {
