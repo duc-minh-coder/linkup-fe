@@ -70,7 +70,6 @@ function Profile() {
             if (response.data.result) {
                 setUserExisted(true);
                 setUserInfo(response.data.result);
-                getPosts();
             }
         }
         catch (err) {
@@ -88,7 +87,7 @@ function Profile() {
         setLoadingPosts(true);
 
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/posts/all-post`, {
+            const response = await axios.get(`${API_BASE_URL}/api/posts/user/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -100,18 +99,20 @@ function Profile() {
             })
             const newPosts = response.data.result;
 
-            if (initial) 
+            if (initial) {
                 setPosts(newPosts);
-            else 
-                setPosts(prevPosts => [...prevPosts, ...newPosts])
-
+                setPage(0);
+            }
+                
+            else {
+                setPosts(prevPosts => [...prevPosts, ...newPosts]);
+                setPage(prevPage => prevPage + 1);
+            }
+                
             if (newPosts.length < PAGE_SIZE) 
                 setHasMore(false);
             else 
                 setHasMore(true);
-
-            if (!initial) 
-                setPage(page);
         }
         catch (err) {
             console.log(err);
@@ -148,7 +149,13 @@ function Profile() {
 
     useEffect(() => {
         getUser();
-    }, []);
+    }, [userId]);
+
+    useEffect(() => {
+        if (userExisted) {
+            getPosts(0, true);
+        }
+    }, [userExisted, userId]);
 
     return (
         <>
