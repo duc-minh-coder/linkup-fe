@@ -38,15 +38,25 @@ function FriendPage() {
     };
 
     const handleUnfriend = async (friendId) => {
+        const token = localStorage.getItem("token");
+
         try {
-            const token = localStorage.getItem("token");
-            await axios.delete(`${API_BASE_URL}/api/friendships/${friendId}`, {
+            await axios.delete(`${API_BASE_URL}/api/friendships/delete`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
-            });
-            // cập nhật lại danh sách
-            setFriends((prev) => prev.filter((f) => f.id !== friendId));
+                params: {
+                    friendId: friendId
+                }
+            }).then(() => {
+                alert("đã xoá kết bạn");
+            }).catch(() => {
+                alert("lỗi chưa xoá được kết bạn");
+            }).finally(() => {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            })
         } catch (err) {
             console.log("Lỗi huỷ kết bạn", err);
         }

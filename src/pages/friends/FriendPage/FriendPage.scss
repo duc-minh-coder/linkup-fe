@@ -3,79 +3,80 @@
         max-width: 100%;
         margin: 0 auto;
         padding: 2rem;
-    }
 
-    h2 {
-        margin-bottom: 1.5rem;
-        color: #fff;
-        font-size: 1.8rem;
-        text-align: center;
-    }
-
-    .friends-list {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-        &__item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: #1e1e1e;
-            border: 1px solid #333;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-
-            img {
-                width: 70px;
-                height: 70px;
-                border-radius: 50%;
-                object-fit: cover;
-                cursor: pointer;
-            }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
         }
 
-        &__info {
+        .friends-list {
             display: flex;
             flex-direction: column;
-            flex: 1;
+            gap: 20px;
 
-            p {
-                font-weight: 600;
-                margin-bottom: 0.8rem;
-                color: #fff;
-                font-size: 1.1rem;
+            &__item {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                background: #1e1e1e;
+                border: 1px solid #333;
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+                img {
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    cursor: pointer;
+                }
             }
 
-            .friend-actions {
+            &__info {
                 display: flex;
-                gap: 1rem;
+                flex-direction: column;
+                flex: 1;
 
-                button {
-                    padding: 8px 14px;
-                    font-size: 0.9rem;
-                    border: none;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    transition: all 0.2s ease;
+                p {
+                    font-weight: 600;
+                    margin-bottom: 0.8rem;
+                    color: #fff;
+                    font-size: 1.1rem;
+                }
 
-                    &:first-child {
-                        background-color: #0b8fee;
-                        color: white;
+                .friend-actions {
+                    display: flex;
+                    gap: 1rem;
 
-                        &:hover {
-                            background-color: #0071cc;
+                    button {
+                        padding: 8px 14px;
+                        font-size: 0.9rem;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-weight: 500;
+                        transition: all 0.2s ease;
+
+                        &:first-child {
+                            background-color: #0b8fee;
+                            color: white;
+
+                            &:hover {
+                                background-color: #0071cc;
+                            }
                         }
-                    }
 
-                    &:last-child {
-                        background-color: #f44336;
-                        color: white;
+                        &:last-child {
+                            background-color: #f44336;
+                            color: white;
 
-                        &:hover {
-                            background-color: #d32f2f;
+                            &:hover {
+                                background-color: #d32f2f;
+                            }
                         }
                     }
                 }
