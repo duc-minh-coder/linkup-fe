@@ -17,6 +17,11 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault(); 
 
+        if (username.length < 8) {
+            alert("tên tài khoản phải có đủ 8 kí tự.");
+            return;
+        }
+
         if (password == confirmPassword) {
 
             try {

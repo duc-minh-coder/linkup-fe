@@ -6,6 +6,7 @@ import ProfileHeader from "./ProfileHeader";
 import ProfileInfo from "./ProfileInfo";
 import Feed from "../HomePage/Feed/index.jsx";
 import EditProfile from "./EditProfile/index.jsx";
+import { toast } from "react-toastify";
 
 function Profile() {
     const { userId } = useParams();
@@ -132,13 +133,13 @@ function Profile() {
                         friendId: userInfo.id
                     }
                 }).then(() => {
-                    alert(`đã xoá kết bạn với ${userInfo.fullName}`);
+                    toast.success(`đã xoá kết bạn với ${userInfo.fullName}`);
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000)
+                    }, 3000)
                 }).catch(() => {
-                    alert(`lỗi không xoá được kết bạn`);
+                    toast.error(`lỗi không xoá được kết bạn`);
                 })
                 break;
             case "REQUEST_SENT":
@@ -151,13 +152,13 @@ function Profile() {
                         "Content-Type": "application/json"
                     }
                 }).then(() => {
-                    alert("đã huỷ gửi lời mời");
+                    toast.success("đã huỷ gửi lời mời");
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000)
+                    }, 3000)
                 }).catch(() => {
-                    alert("không thể huỷ gửi lời mời");
+                    toast.error("không thể huỷ gửi lời mời");
                 })
                 break;
             case "REQUEST_RECEIVED":
@@ -170,13 +171,13 @@ function Profile() {
                         "Content-Type": "application/json"
                     }
                 }).then(() => {
-                    alert(`đã kết bạn với ${userInfo.fullName}`);
+                    toast.success(`đã kết bạn với ${userInfo.fullName}`);
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000)
+                    }, 3000)
                 }).catch(() => {
-                    alert(`lỗi không kết bạn được`);
+                    toast.error(`lỗi không kết bạn được`);
                 })
                 break;
             default:
@@ -189,13 +190,13 @@ function Profile() {
                         "Content-Type": "application/json"
                     }
                 }).then(() => {
-                    alert("đã gửi lời mời kết bạn");
+                    toast.success("đã gửi lời mời kết bạn");
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000)
+                    }, 3000)
                 }).catch(() => {
-                    alert("không thể gửi lời mời");
+                    toast.error("không thể gửi lời mời");
                 })
                 break;
         }
@@ -214,13 +215,13 @@ function Profile() {
                     "Content-Type": "application/json"
                 }
             }).then(() => {
-                alert("đã từ chối lời mời kết bạn");
+                toast.success("đã từ chối lời mời kết bạn");
 
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000)
+                }, 3000)
             }).catch(() => {
-                alert("không thể từ chối lời mời");
+                toast.error("không thể từ chối lời mời");
             })
         } catch (error) {
             console.log(error);

@@ -2,6 +2,7 @@ import axios from "axios";
 import "./FriendPage.scss";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function FriendPage() {
     const navigate = useNavigate();
@@ -49,13 +50,13 @@ function FriendPage() {
                     friendId: friendId
                 }
             }).then(() => {
-                alert("đã xoá kết bạn");
+                toast.success("đã xoá kết bạn");
             }).catch(() => {
-                alert("lỗi chưa xoá được kết bạn");
+                toast.error("lỗi chưa xoá được kết bạn");
             }).finally(() => {
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000);
+                }, 3000);
             })
         } catch (err) {
             console.log("Lỗi huỷ kết bạn", err);

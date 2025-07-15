@@ -13,16 +13,27 @@ function SearchBar({ isOpen, onClose }) {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const debounceText = useDebounce(text, 300);
+    const [page, setPage] = useState(0);
+    const [initial, setInitial] = useState(true);
+    const bottomRef = useRef();
 
     const API_BASE_URL = "http://localhost:8080";
+    const PAGE_SIZE = "5";
 
     const handlingChangeText = (e) => {
         setText(e.target.value);
     }
 
+    const seeMore = () => {
+        setInitial(() => false);
+        setPage(prevPage => prevPage + 1);
+    }
+
     useEffect(() => {
-        if (isOpen) 
+        if (isOpen) {
+            setResults([]);
             inputRef.current?.focus();
+        }
     }, [isOpen]);
 
     useEffect(() => {
@@ -39,11 +50,18 @@ function SearchBar({ isOpen, onClose }) {
                     headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"
+                    },
+                    params: {
+                        page: page,
+                        size: PAGE_SIZE
                     }
                 }).then ((response) => {
-                    console.log(response.data.result);
-                    
-                    setResults(response.data.result)
+                    if (initial) {
+                        setResults(response.data.result);
+                    }
+                    else {
+                        setResults(prevResult => [...prevResult, ...response.data.result]);
+                    }   
                 }).catch((err) => {
                     console.log(err);
                     setResults([]);
@@ -56,7 +74,13 @@ function SearchBar({ isOpen, onClose }) {
                 console.log(err);
             }
         }
-    }, [debounceText])
+    }, [debounceText, page])
+
+    useEffect(() => {
+        if (!initial && bottomRef.current) {
+            bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }, [results]);
 
     if (!isOpen) return null;
 
@@ -83,13 +107,14 @@ function SearchBar({ isOpen, onClose }) {
                         <p>Đang tìm kiếm...</p>
                     ) : 
                     results.length > 0 ? (
-                        results.map((user) => (
+                        results.map((user, index) => (
                             <div 
                                 key={user.id} 
                                 className="search-sidebar__item" 
                                 onClick={() => {
                                     navigate(`/profile/${user.id}`)
                                 }}
+                                ref={index === results.length - 1 ? bottomRef : null}
                             >
                                 <img
                                     src={user.avatarUrl}
@@ -107,6 +132,8 @@ function SearchBar({ isOpen, onClose }) {
                         <p className="search-sidebar__no-result">Không có dữ liệu tìm kiếm</p>
                     )}
                 </div>
+
+                {!loading && results.length > 0 && <div className="see-more" onClick={seeMore}>xem thêm</div>}
             </div>
             
             <div className="search-overlay" onClick={onClose}></div>

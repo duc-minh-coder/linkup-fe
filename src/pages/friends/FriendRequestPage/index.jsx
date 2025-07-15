@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./FriendRequestPage.scss";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function FriendRequestsPage() {
     const [requests, setRequests] = useState([]);
@@ -41,13 +42,13 @@ function FriendRequestsPage() {
                     "Content-Type": "application/json"
                 },
             }).then(() => {
-                alert("đã đồng kết bạn");
+                toast.success("đã đồng kết bạn");
             }).catch(() => {
-                alert("lỗi chưa kết bạn được")
+                toast.error("lỗi chưa kết bạn được")
             }).finally(() => {
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000);
+                }, 3000);
             })
         } 
         catch (err) {
@@ -68,13 +69,13 @@ function FriendRequestsPage() {
                     "Content-Type": "application/json"
                 },
             }).then(() => {
-                alert("đã từ chối kết bạn");
+                toast.success("đã từ chối kết bạn");
             }).catch(() => {
-                alert("lỗi chưa từ chối kết bạn được")
+                toast.error("lỗi chưa từ chối kết bạn được")
             }).finally(() => {
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000);
+                }, 3000);
             })
         } 
         catch (err) {
