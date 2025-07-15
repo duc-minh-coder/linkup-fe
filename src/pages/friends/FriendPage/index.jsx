@@ -3,14 +3,15 @@ import "./FriendPage.scss";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
 
 function FriendPage() {
     const navigate = useNavigate();
     const [friends, setFriends] = useState([]);
     const userProfile = useOutletContext();
 
-    const API_BASE_URL = "http://localhost:8080";
-
+    const API_BASE_URL = GetApiBaseUrl();
+    
     const fetchFriends = async () => {
         const token = localStorage.getItem("token");
 

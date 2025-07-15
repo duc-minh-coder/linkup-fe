@@ -5,8 +5,8 @@ import { login, logout } from "../../actions/userAction";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { Suspense } from "react";
 import Sidebar from "../Sidebar";
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function LayoutDefault() {
     const dispatch = useDispatch();
@@ -14,7 +14,7 @@ function LayoutDefault() {
     const location = useLocation();
     const token = useSelector((state) => state.user.token);
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
 
     const [isChecking, setIsChecking] = useState(true);
     const [userInfo, setUserInfo] = useState({});

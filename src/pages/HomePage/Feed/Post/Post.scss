@@ -45,6 +45,8 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
     border-radius: 8px;
     background-color: $background-color;
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
 
     &__header {
         @include flex-between;
@@ -120,6 +122,11 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         svg {
             flex-shrink: 0;
         }
+    }
+
+    .post-container {
+        width: 90vw;
+        margin: 0 auto;
     }
 
     &__content {

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import GetAPiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function SearchBar({ isOpen, onClose }) {
     const inputRef = useRef();
@@ -17,7 +18,7 @@ function SearchBar({ isOpen, onClose }) {
     const [initial, setInitial] = useState(true);
     const bottomRef = useRef();
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetAPiBaseUrl();
     const PAGE_SIZE = "5";
 
     const handlingChangeText = (e) => {

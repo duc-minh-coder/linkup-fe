@@ -121,7 +121,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
                     />
-                    <button type="submit" disabled={!messageInput.trim()}>
+                    <button type="submit" disabled={!messageInput.trim()} className="submit">
                         Gửi
                     </button>
                 </form>

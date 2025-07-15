@@ -4,6 +4,7 @@ import passIcon from '../../assets/icon/passIcon.png';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
+import GetApiBaseUrl from '../../helpers/GetApiBaseUrl';
 
 function Signup() {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ function Signup() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [fullName, setFullName] = useState("");
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
 
     const handleSubmit = async (e) => {
         e.preventDefault(); 

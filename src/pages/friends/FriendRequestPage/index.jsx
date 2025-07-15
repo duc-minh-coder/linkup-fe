@@ -4,13 +4,13 @@ import axios from "axios";
 import "./FriendRequestPage.scss";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
 
 function FriendRequestsPage() {
     const [requests, setRequests] = useState([]);
     const navigate = useNavigate();
-    const userProfile = useOutletContext();
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
 
     const fetchRequests = async () => {
         try {

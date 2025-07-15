@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import "./EditPostModal.scss";
 import axios from "axios";
+import GetApiBaseUrl from "../../../../../helpers/GetApiBaseUrl";
 
 function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode = false }) {
     const [postText, setPostText] = useState("");
@@ -9,6 +10,8 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
     const [existingImages, setExistingImages] = useState([]);
     const fileInputRef = useRef();
     const submitBtnRef = useRef();
+
+    const API_BASE_URL = GetApiBaseUrl();
 
     // Initialize form with existing post data when editing
     useEffect(() => {
@@ -72,7 +75,7 @@ function EditPostModal({ handleCloseModal, userInfo, editPost = null, isEditMode
 
             if (isEditMode && editPost) {
                 // Update existing post
-                response = await axios.patch(`http://localhost:8080/api/posts/${editPost.id}`, 
+                response = await axios.patch(`${API_BASE_URL}/api/posts/${editPost.id}`, 
                     formData,
                     {
                         headers: {

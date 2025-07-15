@@ -4,6 +4,7 @@ import ConversationList from "./ConversationList";
 import "./Message.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function Message() {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ function Message() {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
 
     const getConversations = async () => {
         try {

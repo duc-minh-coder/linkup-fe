@@ -12,6 +12,7 @@ import { useRef, useState, useEffect } from "react";
 import EditPostModal from "./EditPostModal";
 import DropdownMenu from "./DropdownMenu";
 import axios from "axios";
+import GetApiBaseUrl from "../../../../helpers/GetApiBaseUrl";
 
 function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
@@ -23,7 +24,7 @@ function Post({ post, userProfile }) {
     const dropdownRef = useRef(null);
 
     const isAuthor = userProfile && String(userProfile.id) === String(post.authorId);
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
     
 
     const handlingShow = () => {
@@ -143,39 +144,41 @@ function Post({ post, userProfile }) {
                     />}
             </div>
 
-            <div className="post__content"> 
-                <span>{post.content}</span>
-            </div>
-
-            {post.postMedia && post.postMedia.length > 0 && (
-                <div className="post__media" onClick={() => setShowDetail(true)}>
-                    {post.postMedia.slice(0, 5).map((media, index) => (
-                        <div
-                        key={index}
-                        className={`post__image-wrapper ${
-                            index === 4 && post.postMedia.length > 5
-                            ? "post__image--more"
-                            : ""
-                        }`}
-                        >
-                        <img
-                            src={media.url}
-                            alt="Post content"
-                            className="post__image"
-                            onClick={() => setShowDetail(true)}
-                        />
-                        {index === 4 && post.postMedia.length > 5 && (
-                            <div
-                            className="post__image-overlay"
-                            onClick={() => setShowDetail(true)}
-                            >
-                            +{post.postMedia.length - 5}
-                            </div>
-                        )}
-                        </div>
-                    ))}
+            <div className="post-container">
+                <div className="post__content"> 
+                    <span>{post.content}</span>
                 </div>
-            )}
+
+                {post.postMedia && post.postMedia.length > 0 && (
+                    <div className="post__media" onClick={() => setShowDetail(true)}>
+                        {post.postMedia.slice(0, 5).map((media, index) => (
+                            <div
+                            key={index}
+                            className={`post__image-wrapper ${
+                                index === 4 && post.postMedia.length > 5
+                                ? "post__image--more"
+                                : ""
+                            }`}
+                            >
+                            <img
+                                src={media.url}
+                                alt="Post content"
+                                className="post__image"
+                                onClick={() => setShowDetail(true)}
+                            />
+                            {index === 4 && post.postMedia.length > 5 && (
+                                <div
+                                className="post__image-overlay"
+                                onClick={() => setShowDetail(true)}
+                                >
+                                +{post.postMedia.length - 5}
+                                </div>
+                            )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             <div className="post__actions">
                 <div className="post__actions-left">

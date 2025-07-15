@@ -106,21 +106,22 @@
         &__form {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             
             input {
-                flex: 1;
+                 flex: 1;
                 padding: 12px 16px;
                 border: 1px solid #dbdbdb;
                 border-radius: 20px;
                 font-size: 14px;
                 background: #262626;
                 color: #fff;
-                
+
                 &::placeholder {
                     color: #8e8e8e;
                 }
-                
+
                 &:focus {
                     outline: none;
                     border-color: #0095f6;
@@ -145,6 +146,20 @@
                 &:disabled {
                     background: #dbdbdb;
                     cursor: not-allowed;
+                }
+            }
+
+            @media (max-width: 640px) {
+                gap: 6px;
+
+                input {
+                    font-size: 13px;
+                    padding: 10px 12px;
+                }
+
+                button {
+                    font-size: 13px;
+                    padding: 10px 14px;
                 }
             }
         }

@@ -8,6 +8,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { login } from '../../actions/userAction';
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function Signin() {
     const navigate = useNavigate();
@@ -15,7 +16,7 @@ function Signin() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
     
     const handleSubmit = async (event) => {
         event.preventDefault(); 

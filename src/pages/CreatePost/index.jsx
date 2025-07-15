@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import "./CreatePost.scss";
 import axios from "axios";
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function CreatePost({ handleCloseModal, userInfo }) {
     const [postText, setPostText] = useState("");
@@ -9,6 +10,8 @@ function CreatePost({ handleCloseModal, userInfo }) {
     const fileInputRef = useRef();
     const submitBtnRef = useRef();
     const [post, setPost] = useState(null);
+
+    const API_BASE_URL = GetApiBaseUrl();
 
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
@@ -35,7 +38,7 @@ function CreatePost({ handleCloseModal, userInfo }) {
         })
 
         try {
-            const response = await axios.post("http://localhost:8080/api/posts", 
+            const response = await axios.post(`${API_BASE_URL}/api/posts`, 
                 formData,
                 {
                     headers: {

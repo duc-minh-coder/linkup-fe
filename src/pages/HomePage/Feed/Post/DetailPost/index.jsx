@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DropdownMenu from "../DropdownMenu";
+import GetApiBaseUrl from "../../../../../helpers/GetApiBaseUrl";
 
 function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
     const [comments, setComments] = useState(post.comments || []);
@@ -27,6 +28,8 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
     const [showEditModal, setShowEditModal] = useState(false);
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
+
+    const API_BASE_URL = GetApiBaseUrl();
 
     useEffect(() => {
         // Prevent body scroll when modal is open
@@ -78,7 +81,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
             setIsLiked(!isLiked);
             setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
 
-            const response = await axios.post("http://localhost:8080/api/post-like", null, {
+            const response = await axios.post(`${API_BASE_URL}/api/post-like`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -107,7 +110,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
             
             if (!token) return;
 
-            const response = await axios.post("http://localhost:8080/api/comments", {
+            const response = await axios.post(`${API_BASE_URL}/api/comments`, {
                 postId: post.id,
                 content: newComment
             }, {

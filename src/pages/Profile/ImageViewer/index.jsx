@@ -2,10 +2,11 @@ import { useRef } from "react";
 import "./ImageViewer.scss";
 import { X } from "lucide-react";
 import axios from "axios";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
 
 function ImageViewer({ isOwner, images, onClose }) {
   const fileInputRef = useRef();
-  const API_BASE_URL = "http://localhost:8080";
+  const API_BASE_URL = GetApiBaseUrl();
 
   const handlingAddAvatar = (e) => {
     const file = e.target.files[0];

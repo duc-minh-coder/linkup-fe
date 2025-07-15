@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import "./Friends.scss";
 import { NavLink, Outlet } from 'react-router-dom';
 import axios from "axios";
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function Friends() {
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
     const [userProfile, setUserProfile] = useState({});
 
     const getUserProfile = async () => {

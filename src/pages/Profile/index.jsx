@@ -7,6 +7,7 @@ import ProfileInfo from "./ProfileInfo";
 import Feed from "../HomePage/Feed/index.jsx";
 import EditProfile from "./EditProfile/index.jsx";
 import { toast } from "react-toastify";
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl/index.jsx";
 
 function Profile() {
     const { userId } = useParams();
@@ -44,7 +45,7 @@ function Profile() {
         setShowEditModal(true);
     }
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = 5;
 
     const getUser = async () => {

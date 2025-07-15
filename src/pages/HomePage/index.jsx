@@ -6,6 +6,7 @@ import { logout } from "../../actions/userAction";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function HomePage() {
     const [posts, setPosts] = useState([]);
@@ -18,7 +19,7 @@ function HomePage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = 5;
 
     const getPosts = async (pageNumber = 0, initial = false) => {
