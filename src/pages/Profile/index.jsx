@@ -201,6 +201,32 @@ function Profile() {
         }
     }
 
+    const handleNotAccept = async () => {
+        const token = localStorage.getItem('token');
+
+        try {
+            await axios.post(`${API_BASE_URL}/api/friendships/handling`, {
+                otherUserId: userInfo.id,
+                status: "NOT_FRIEND"
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }).then(() => {
+                alert("đã từ chối lời mời kết bạn");
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000)
+            }).catch(() => {
+                alert("không thể từ chối lời mời");
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handlingScrollPage = useCallback(() => {
         const scrollTop = document.documentElement.scrollTop;
         const scrollHeight = document.documentElement.scrollHeight;
@@ -223,7 +249,6 @@ function Profile() {
         return () => 
             window.removeEventListener("scroll", handlingScrollPage);
     }, [handlingScrollPage])
-    
 
     useEffect(() => {
         getUser();
@@ -248,6 +273,7 @@ function Profile() {
                         isOwner={isOwner} 
                         handlingOpenEditProfileComponent={handlingOpenEditProfileComponent} 
                         handleFriend={handleFriend}
+                        handleNotAccept={handleNotAccept}
                     />
 
                     <div className="profile__post-content">
