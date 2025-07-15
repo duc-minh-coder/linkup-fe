@@ -31,15 +31,10 @@ function LayoutDefault() {
                     "Content-Type": "application/json"
                 }
             })
-
-            // console.log(response.data.result);
             setUserInfo(response.data.result);
         }
         catch (err) {
             console.log(err);
-        } 
-        finally {
-
         }
     }
 
@@ -51,40 +46,33 @@ function LayoutDefault() {
         }
 
         const checkAuth = async () => {
-        const accessToken = token || localStorage.getItem("token");
+            const accessToken = token || localStorage.getItem("token");
 
-        if (!accessToken) {
-            navigate("/signin");
-            return;
-        }
-
-        try {
-            const res = await axios.post(
-            `${API_BASE_URL}/api/auth/introspect`,
-            {
-                token: accessToken,
+            if (!accessToken) {
+                navigate("/signin");
+                return;
             }
-            );
 
-            if (!res.data.result.valid) {
-            const refreshToken = await axios.post(
-                `${API_BASE_URL}/api/auth/refresh`,
-                {
-                token: accessToken,
+            try {
+                const res = await axios.post(`${API_BASE_URL}/api/auth/introspect`, {
+                    token: accessToken,
+                });
+
+                if (!res.data.result.valid) {
+                    const refreshToken = await axios.post( `${API_BASE_URL}/api/auth/refresh`, {
+                        token: accessToken,
+                    });
+
+                    const newToken = refreshToken.data.result.token;
+
+                    localStorage.setItem("token", newToken);
                 }
-            );
-
-            const newToken = refreshToken.data.result.token;
-
-            dispatch(login(newToken));
-            localStorage.setItem("token", newToken);
+            } catch (err) {
+                dispatch(logout(accessToken));
+                navigate("/signin");
+            } finally {
+                setIsChecking(false);
             }
-        } catch (err) {
-            dispatch(logout(accessToken));
-            navigate("/signin");
-        } finally {
-            setIsChecking(false);
-        }
         };
 
         checkAuth();

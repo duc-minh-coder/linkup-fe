@@ -2,14 +2,68 @@ import { useState } from "react";
 import "./ProfileInfo.scss";
 import { NavLink, useNavigate } from "react-router-dom";
 import ImageViewer from "../ImageViewer";
+import ConfigContainer from "../ConfigContainer";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, handleFriend, handleNotAccept }) {
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
     const [showImageViewer, setShowImageViewer] = useState(false);
+    const [showConfig, setShowConfig] = useState(false);
+
+    const API_BASE_URL = GetApiBaseUrl();
 
     const handlingViewAvatar = () => {
         setShowImageViewer(true);
+    }
+
+    const handlingCloseConfig = () => {
+        setShowConfig(false);
+    }
+
+    const handleLogout = async () => {
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.post(`${API_BASE_URL}/api/auth/logout`, {
+                token: token
+            }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(() => {
+                toast.success("đã đăng xuất");
+
+                navigate("/signin");
+            }).catch(() => {
+                toast.error("lỗi đăng xuất");
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.delete(`${API_BASE_URL}/api/users/delete`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }).then(() => {
+                toast.success("đã xoá tài khoản");
+
+                navigate("/signin");
+            }).catch(() => {
+                toast.error("lỗi chưa xoá được tài khoản");
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -66,8 +120,20 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, hand
                                             Chỉnh sửa trang cá nhân
                                     </button>
                                 )}
-                                
-                                <button className="more-btn">⋯</button>
+                                <div className="more-btn-container">
+                                    <button 
+                                        className="more-btn"
+                                        onClick={() => setShowConfig(true)}
+                                    >⋯</button>
+
+                                    {showConfig && 
+                                        <ConfigContainer 
+                                            isOwner={isOwner} 
+                                            handlingCloseConfig={handlingCloseConfig} 
+                                            handleLogout={handleLogout}
+                                            handleDeleteAccount={handleDeleteAccount}
+                                        />} 
+                                </div>
                             </div>
                         </div>
                         <div className="profile-stats">

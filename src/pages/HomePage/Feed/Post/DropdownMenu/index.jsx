@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Edit, Delete, EyeOff } from "lucide-react";
+import "./DropdownMenu.scss";
 
 function DropdownMenu({ isAuthor, handleEditPost, handleDeletePost, handleHidePost, handlingSetDropdown }) {
     const dropdownRef = useRef(null);

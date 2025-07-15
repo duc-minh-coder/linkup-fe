@@ -89,43 +89,8 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         }
     }
 
-    &__dropdown {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background: $background-color;
-        border: 1px solid $border-color;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        z-index: 10;
-        min-width: 200px;
-        padding: 8px 0;
-        animation: dropdownFadeIn 0.2s ease;
-    }
-
-    &__dropdown-item {
-        @include button-reset;
-        width: 100%;
-        padding: 12px 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 14px;
-        font-weight: 500;
-        color: $text-color;
-        transition: background-color 0.2s ease;
-
-        &:hover {
-            background-color: $hover-color;
-        }
-
-        svg {
-            flex-shrink: 0;
-        }
-    }
-
     .post-container {
-        width: 90vw;
+        width: 100%;
         margin: 0 auto;
     }
 
@@ -133,6 +98,7 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         display: block;
         padding: 10px;
         color: #fff;
+        width: 90vw;
     }
 
     &__media {
