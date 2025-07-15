@@ -3,8 +3,7 @@ import "./ProfileInfo.scss";
 import { NavLink, useNavigate } from "react-router-dom";
 import ImageViewer from "../ImageViewer";
 
-function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent }) {
-    const [addFriend, setAddFriend] = useState(false);
+function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, handleFriend }) {
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
     const [showImageViewer, setShowImageViewer] = useState(false);
@@ -32,12 +31,19 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent }) {
                                         className={`add-friend-btn ${userInfo.role == "FRIEND" ? 'is-friend' : ''}`}
                                         onMouseEnter={() => setIsHovered(true)}
                                         onMouseLeave={() => setIsHovered(false)}
+                                        onClick={() => handleFriend()}
                                     >
-                                        {userInfo.role === "FRIEND"
-                                            ? isHovered
-                                                ? "Hủy kết bạn"
-                                                : "Bạn bè"
-                                            : "Gửi kết bạn"}
+                                        {
+                                            userInfo.friendshipStatus === "FRIEND"
+                                                ? isHovered 
+                                                    ? "huỷ kết bạn"
+                                                    : "bạn bè"
+                                                : userInfo.friendshipStatus === "REQUEST_SENT" 
+                                                    ? "đã gửi kết bạn"
+                                                    : userInfo.friendshipStatus === "REQUEST_RECEIVED"
+                                                        ? "chấp nhận"
+                                                        : "gửi kết bạn"
+                                        }
 
                                     </button>
                                     <button className="message-btn" onClick={() => {navigate(`/messages/${userInfo.id}`)}}>Nhắn tin</button>

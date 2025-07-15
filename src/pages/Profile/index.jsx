@@ -119,6 +119,88 @@ function Profile() {
         }
     };
 
+    const handleFriend = async () => {
+        const token = localStorage.getItem("token");
+
+        switch (userInfo.friendshipStatus) {
+            case "FRIEND":
+                await axios.delete(`${API_BASE_URL}/api/friendships/delete`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }, params: {
+                        friendId: userInfo.id
+                    }
+                }).then(() => {
+                    alert(`đã xoá kết bạn với ${userInfo.fullName}`);
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000)
+                }).catch(() => {
+                    alert(`lỗi không xoá được kết bạn`);
+                })
+                break;
+            case "REQUEST_SENT":
+                await axios.post(`${API_BASE_URL}/api/friendships/handling`, {
+                    otherUserId: userInfo.id,
+                    status: "NOT_FRIEND"
+                },{
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }).then(() => {
+                    alert("đã huỷ gửi lời mời");
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000)
+                }).catch(() => {
+                    alert("không thể huỷ gửi lời mời");
+                })
+                break;
+            case "REQUEST_RECEIVED":
+                await axios.post(`${API_BASE_URL}/api/friendships/handling`, {
+                    otherUserId: userInfo.id,
+                    status: "FRIEND"
+                },{
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }).then(() => {
+                    alert(`đã kết bạn với ${userInfo.fullName}`);
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000)
+                }).catch(() => {
+                    alert(`lỗi không kết bạn được`);
+                })
+                break;
+            default:
+                await axios.post(`${API_BASE_URL}/api/friendships/send`, {
+                    otherUserId: userInfo.id,
+                    status: "REQUEST_SENT"
+                },{
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }).then(() => {
+                    alert("đã gửi lời mời kết bạn");
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000)
+                }).catch(() => {
+                    alert("không thể gửi lời mời");
+                })
+                break;
+        }
+    }
+
     const handlingScrollPage = useCallback(() => {
         const scrollTop = document.documentElement.scrollTop;
         const scrollHeight = document.documentElement.scrollHeight;
@@ -165,6 +247,7 @@ function Profile() {
                         userInfo={userInfo} 
                         isOwner={isOwner} 
                         handlingOpenEditProfileComponent={handlingOpenEditProfileComponent} 
+                        handleFriend={handleFriend}
                     />
 
                     <div className="profile__post-content">
