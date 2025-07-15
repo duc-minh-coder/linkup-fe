@@ -14,12 +14,13 @@ function FriendRequestsPage() {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get(`${API_BASE_URL}/api/friends/requests`, {
+            const res = await axios.get(`${API_BASE_URL}/api/friendships/request`, {
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
                 },
             });
+
             setRequests(res.data.result);
         } 
         catch (err) {
@@ -27,41 +28,58 @@ function FriendRequestsPage() {
         }
     };
 
-    useEffect(() => {
-        setRequests([
-            {
-                id: 1,
-                userId: 1,
-                fullName: "Nguyễn Văn A",
-                avatarUrl: "https://i.pravatar.cc/150?img=3"
-            },
-            {
-                id: 2,
-                userId: 1,
-                fullName: "Trần Thị B",
-                avatarUrl: "https://i.pravatar.cc/150?img=5"
-            },
-            {
-                id: 3,
-                userId: 1,
-                fullName: "Lê C",
-                avatarUrl: "https://i.pravatar.cc/150?img=7"
-            },
-            {
-                id: 4,
-                userId: 1,
-                fullName: "Cường donna",
-                avatarUrl: "https://i.pravatar.cc/150?img=7"
-            }
-        ]);
-    }, [userProfile]);
-
     const handleAccept = async (requestId) => {
-        // Call API accept friend
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.post(`${API_BASE_URL}/api/friendships/handling`, {
+                otherUserId: requestId,
+                status: "FRIEND"
+            },{
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            }).then(() => {
+                alert("đã đồng kết bạn");
+            }).catch(() => {
+                alert("lỗi chưa kết bạn được")
+            }).finally(() => {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            })
+        } 
+        catch (err) {
+            console.log(err);
+        }
     };
 
     const handleDecline = async (requestId) => {
-        // Call API decline friend
+        const token = localStorage.getItem("token");
+
+        try {
+            await axios.post(`${API_BASE_URL}/api/friendships/handling`, {
+                otherUserId: requestId,
+                status: "NOT_FRIEND"
+            },{
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+            }).then(() => {
+                alert("đã từ chối kết bạn");
+            }).catch(() => {
+                alert("lỗi chưa từ chối kết bạn được")
+            }).finally(() => {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            })
+        } 
+        catch (err) {
+            console.log(err);
+        }
     };
 
     useEffect(() => {
