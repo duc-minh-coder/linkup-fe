@@ -1,14 +1,16 @@
 import Post from "./Post";
-import Stories from "./Stories";
 import "./Feed.scss";
 
 function Feed({ posts, userProfile }) {
     return (
         <div className="feed">
             <div className="feed__posts">
-                {posts.map((post, index) => (
-                    <Post key={index} post={post} userProfile={userProfile} />
-                ))}
+                {posts && posts.length > 0 
+                    ? posts.map((post, index) => (
+                        <Post key={index} post={post} userProfile={userProfile} />
+                    ))
+                    : <div className="request-add-friend">hãy kết bạn để xem bài viết của họ!</div>}
+                {}
             </div>
         </div>
     );

@@ -54,7 +54,7 @@ function HomePage() {
                 setHasMore(true);
 
             if (!initial) 
-                setPageNumber(pageNumber);
+                setPageNumber(prevPage => prevPage + 1);
         }
         catch (err) {
             console.log(err);
@@ -144,6 +144,7 @@ function HomePage() {
 
     useEffect(() => {
         getUserProfile();
+        setPosts([]);
         getPosts(0, true);
     }, []);
 

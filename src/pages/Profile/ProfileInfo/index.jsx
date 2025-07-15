@@ -3,7 +3,7 @@ import "./ProfileInfo.scss";
 import { NavLink, useNavigate } from "react-router-dom";
 import ImageViewer from "../ImageViewer";
 
-function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, handleFriend }) {
+function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, handleFriend, handleNotAccept }) {
     const [isHovered, setIsHovered] = useState(false);
     const navigate = useNavigate();
     const [showImageViewer, setShowImageViewer] = useState(false);
@@ -46,6 +46,14 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, hand
                                         }
 
                                     </button>
+                                    {(userInfo.friendshipStatus === "REQUEST_RECEIVED") &&
+                                    <button
+                                        className={`add-friend-btn`}
+                                        onMouseEnter={() => setIsHovered(true)}
+                                        onMouseLeave={() => setIsHovered(false)}
+                                        onClick={() => handleNotAccept()}
+                                    >từ chối</button>
+                                    }
                                     <button className="message-btn" onClick={() => {navigate(`/messages/${userInfo.id}`)}}>Nhắn tin</button>
                                 </>
                                 )}

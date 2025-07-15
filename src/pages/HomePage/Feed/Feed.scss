@@ -2,8 +2,15 @@
     width: 620px;
 
     &__posts {
-    .post + .post {
-        margin-top: 24px;
+        .post + .post {
+            margin-top: 24px;
+        }
     }
+
+    .request-add-friend {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
     }
 }
