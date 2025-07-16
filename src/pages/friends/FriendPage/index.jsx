@@ -9,26 +9,35 @@ function FriendPage() {
     const navigate = useNavigate();
     const [friends, setFriends] = useState([]);
     const userProfile = useOutletContext();
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [initial, setInitial] = useState(true);
 
     const API_BASE_URL = GetApiBaseUrl();
+    const PAGE_SIZE = "10";
     
     const fetchFriends = async () => {
         const token = localStorage.getItem("token");
-
         if (!token) return;
 
         try {
-            const res = await axios.get(`${API_BASE_URL}/api/friendships/user/${userProfile.id}`, {
-                headers: { 
-                    Authorization: `Bearer ${token}` 
-                },
+            const res = await axios.get(`${API_BASE_URL}/api/friendships/friend/${userProfile.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+                params: { page, size: PAGE_SIZE }
             });
-            setFriends(res.data.result);
-        } 
-        catch (err) {
+
+            const pageResult = res.data.result;
+            setPage(prev => prev + 1);
+            setFriends(prev => [...prev, ...pageResult]);
+
+            if (pageResult.length < PAGE_SIZE) {
+                setHasMore(false);
+            }
+        } catch (err) {
             console.log(err);
         }
     };
+
 
     useEffect(() => {
         fetchFriends();
@@ -38,6 +47,11 @@ function FriendPage() {
         console.log("Nhắn tin tới", friendId);
         navigate(`/messages/${friendId}`);
     };
+
+    const seeMore = () => {
+        setInitial(false);
+        fetchFriends();
+    }
 
     const handleUnfriend = async (friendId) => {
         const token = localStorage.getItem("token");
@@ -84,6 +98,12 @@ function FriendPage() {
                             </div>
                         </div>
                     ))}
+
+                    {hasMore && (
+                        <div className="see-more" onClick={seeMore}>
+                            Xem thêm
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

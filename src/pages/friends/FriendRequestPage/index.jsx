@@ -15,7 +15,7 @@ function FriendRequestsPage() {
     const fetchRequests = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get(`${API_BASE_URL}/api/friendships/request`, {
+            const res = await axios.get(`${API_BASE_URL}/api/friendships/user/request`, {
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"

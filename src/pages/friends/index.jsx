@@ -20,8 +20,6 @@ function Friends() {
                     'Content-Type': 'application/json'
                 }
             })
-
-            // console.log(response.data.result);
             setUserProfile(response.data.result);
         }
         catch (err) {

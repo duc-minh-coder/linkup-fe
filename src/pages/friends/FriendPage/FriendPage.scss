@@ -81,6 +81,20 @@
                     }
                 }
             }
+
+                .see-more {
+                    margin-top: 6px;
+                    padding: 8px 12px;
+                    text-align: center;
+                    cursor: pointer;
+                    color: #fff;
+                    border-radius: 8px;
+                    transition: 0.2s;
+
+                    &:hover {
+                        background-color: #1a1a1a;
+                    }
+                }
         }
     }
 }
