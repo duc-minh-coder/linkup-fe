@@ -1,20 +1,21 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import "./ChatWindow.scss";
 import { Phone, Video, Bolt } from "lucide-react";
 
-function ChatWindow({ conversation, messages, loading, onSendMessage }) {
+function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId }) {
     const [messageInput, setMessageInput] = useState("");
     const messagesEndRef = useRef(null);
     const [currentUserId, setCurrentUserId] = useState(null);
+    const isLoadOldMessages = useRef(false);
+    const messagesContainerRef = useRef(null);
+    const prevScrollHeightRef = useRef(0);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     useEffect(() => {
-        setCurrentUserId(conversation?.userId);
-
-        scrollToBottom();
+        setCurrentUserId(currentId);
     }, [messages]);
 
     const handleSendMessage = (e) => {
@@ -24,6 +25,49 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
             setMessageInput("");
         }
     };
+
+    const handleScroll = () => {
+        if (!messagesContainerRef.current || loading) return;
+
+        const { scrollTop, scrollHeight } = messagesContainerRef.current;
+        if (scrollTop < 50 && hasMore) {
+            prevScrollHeightRef.current = scrollHeight;
+            isLoadOldMessages.current = true;
+            onLoadMore(); // Gọi load thêm tin nhắn
+        }
+    };
+
+    useEffect(() => {
+        const container = messagesContainerRef.current;
+        
+        if (container) {
+            container.addEventListener("scroll", handleScroll);
+        }
+        return () => {
+            if (container) {
+                container.removeEventListener("scroll", handleScroll);
+            }
+        };
+    }, [loading, hasMore]);
+
+    useLayoutEffect(() => {
+        const container = messagesContainerRef.current;
+        if (!container) return;
+
+        if (isLoadOldMessages.current && prevScrollHeightRef.current > 0) {
+            // Đang load tin nhắn cũ: giữ vị trí cũ
+            const newScrollHeight = container.scrollHeight;
+            const scrollDiff = newScrollHeight - prevScrollHeightRef.current;
+
+            container.scrollTop = scrollDiff;
+            prevScrollHeightRef.current = 0;
+            isLoadOldMessages.current = false;
+        } else {
+            // Chỉ scroll xuống khi gửi hoặc nhận tin nhắn mới
+            scrollToBottom();
+        }
+    }, [messages]);
+
 
     const formatTime = (timestamp) => {
         const date = new Date(timestamp);
@@ -71,7 +115,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage }) {
                 </div>
             </div>
 
-            <div className={`chat-window__messages ${loading ? 'loading' : ''}`}>
+            <div className={`chat-window__messages ${loading ? 'loading' : ''}`} ref={messagesContainerRef}>
                 {loading ? (
                     <div className="spinner"></div>
                 ) : (
