@@ -75,6 +75,26 @@ function Post({ post, userProfile }) {
         }
     }
 
+    const handleLikePost = () => {
+        const token = localStorage.getItem('token');
+
+        try {
+            axios.post(`${API_BASE_URL}/api/post-like/toggle-like`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }, params: {
+                    postId: post.id
+                }
+            }).then(() => {
+                setIsLiked(true);
+            })
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
     const handlingSetDropdown = () => {
         setShowDropdown(false);
     }
@@ -186,9 +206,9 @@ function Post({ post, userProfile }) {
                     <Heart
                         size={24}
                         className={`post__action-icon ${
-                        isLiked ? "post__action-icon--liked" : ""
+                        post.liked || isLiked ? "post__action-icon--liked" : ""
                         }`}
-                        onClick={() => setIsLiked(!isLiked)}
+                        onClick={handleLikePost}
                     />
                     <MessageCircle size={24} className="post__action-icon" onClick={() => setShowDetail(true)} />
                     <Send size={24} className="post__action-icon" onClick={handlingShare} />
