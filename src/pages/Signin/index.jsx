@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { login } from '../../actions/userAction';
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
+import { toast } from 'react-toastify';
 
 function Signin() {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ function Signin() {
             navigate("/");
         }
         catch(err) {
-            alert('Đăng nhập thất bại: ' + err.response?.data?.message || 'Lỗi không xác định');
+            toast.error('Đăng nhập thất bại: ' + err.response?.data?.message || 'Lỗi không xác định');
         }
     };
 

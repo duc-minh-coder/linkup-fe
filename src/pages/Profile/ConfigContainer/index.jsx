@@ -1,9 +1,24 @@
 import { useEffect, useRef, useState } from "react";
 import "./ConfigContainer.scss";
+import axios from "axios";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
+import { toast } from "react-toastify";
 
 function ConfigContainer({ isOwner, handlingCloseConfig, handleLogout, handleDeleteAccount }) {
     const dropdownRef = useRef(null);
     const [boxRequest, setBoxRequest] = useState(false);
+    const [boxChangePassword, setBoxChangePassword] = useState(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPass, setConfirmPass] = useState('');
+
+    const API_BASE_URL = GetApiBaseUrl();
+
+    const isPasswordValid = (pass) => {
+        const hasLetter = /[a-zA-Z]/.test(pass); 
+        const hasNumber = /[0-9]/.test(pass);
+        return hasLetter && hasNumber;
+    };
     
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -18,6 +33,44 @@ function ConfigContainer({ isOwner, handlingCloseConfig, handleLogout, handleDel
         };
     }, []);
 
+    const handleChangePassword = async () => {
+        if (newPassword !== confirmPass) {
+            toast.error("mật khẩu xác nhận không chính xác");
+            return;
+        }
+
+        if (!isPasswordValid(newPassword)) {
+                toast.warning("mật khẩu phải chứa chữ và số");
+                return;
+            }
+
+        const token = localStorage.getItem('token');
+
+        try {
+            await axios.post(`${API_BASE_URL}/api/users/update-password`, {
+                oldPassword: oldPassword,
+                newPassword: newPassword
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }).then(() => {
+                toast.success("đổi mật khẩu thành công!");
+
+                setBoxChangePassword(false);
+            }).catch((error) => {
+                console.log(error.response.data);
+                
+                toast.error(error.response.data.message);
+            }).finally(() => {
+                // window.location.reload();
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <div className="config" ref={dropdownRef}>
@@ -30,9 +83,54 @@ function ConfigContainer({ isOwner, handlingCloseConfig, handleLogout, handleDel
                         </button>
                         <button 
                             className="config__item"
+                            onClick={() => setBoxChangePassword(true)}
+                        >đổi mật khẩu</button>
+                        <button 
+                            className="config__item"
                             onClick={() => setBoxRequest(true)}
                         >Xoá tài khoản
                         </button>
+
+                        {boxChangePassword && 
+                            <div className="box-change-pass">
+                                <div className="overlay" onClick={() => setBoxChangePassword(false)}></div>
+
+                                <div className="request">
+                                    <h2>Đổi mật khẩu</h2>
+
+                                    <div className="request__change-box">
+                                        <input 
+                                            className="request__input" 
+                                            type="password"
+                                            placeholder="Mật khẩu hiện tại" 
+                                            onChange={(e) => setOldPassword(e.target.value)}
+                                        />
+                                        <input 
+                                            className="request__input" 
+                                            type="password"
+                                            placeholder="Mật khẩu mới" 
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                        />
+                                        <input 
+                                            className="request__input" 
+                                            type="password"
+                                            placeholder="Xác nhận mật khẩu mới" 
+                                            onChange={(e) => setConfirmPass(e.target.value)}
+                                        />
+                                    </div>
+
+                                    <div className="request__function">
+                                        <button 
+                                            className="request__btn" 
+                                            onClick={handleChangePassword}
+                                        >Xác nhận</button>
+                                        <button 
+                                            className="request__btn" 
+                                            onClick={() => setBoxChangePassword(false)}
+                                        >Huỷ</button>
+                                    </div>
+                                </div>
+                            </div>}
 
                         {boxRequest && 
                             <div className="box-request">

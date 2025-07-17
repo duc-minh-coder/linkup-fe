@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 import GetApiBaseUrl from '../../helpers/GetApiBaseUrl';
+import { toast } from 'react-toastify';
 
 function Signup() {
     const navigate = useNavigate();
@@ -15,15 +16,31 @@ function Signup() {
 
     const API_BASE_URL = GetApiBaseUrl();
 
+    const isPasswordValid = (pass) => {
+        const hasLetter = /[a-zA-Z]/.test(pass); 
+        const hasNumber = /[0-9]/.test(pass);
+        return hasLetter && hasNumber;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault(); 
 
         if (username.length < 8) {
-            alert("tên tài khoản phải có đủ 8 kí tự.");
+            toast.warning("tên tài khoản phải có đủ 8 kí tự.");
             return;
         }
 
         if (password == confirmPassword) {
+
+            if (password.length < 8) {
+                toast.warning("mật khẩu phải chứa 8 kí tự gồm số và chữ");
+                return;
+            }
+
+            if (!isPasswordValid(password)) {
+                toast.warning("mật khẩu phải chứa chữ và số");
+                return;
+            }
 
             try {
                 await axios.post(`${API_BASE_URL}/api/users`, {
@@ -35,10 +52,10 @@ function Signup() {
                 navigate('/signin');
             }
             catch(err) {
-                console.log(err);
+                toast.error('Đăng kí thất bại: ' + err.response?.data?.message || 'Lỗi không xác định');
             }
         }
-        else alert("mật khẩu nhập lại không đúng");
+        else toast.error("mật khẩu nhập lại không đúng");
     };
 
     return (
