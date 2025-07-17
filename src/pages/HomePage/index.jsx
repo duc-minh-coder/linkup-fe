@@ -19,9 +19,23 @@ function HomePage() {
     const navigate = useNavigate();
     const pageRef = useRef(0);
     const scrollTimeout = useRef(null);
+    const [friendPage, setFriendPage] = useState(0);
+    const [hasMoreFriend, setHasMoreFriend] = useState(true);
 
     const API_BASE_URL = GetApiBaseUrl();
-    const PAGE_SIZE = 5;
+    const PAGE_SIZE = 1;
+
+    const loadMore = () => {
+        const nextPage = friendPage + 1;
+        setFriendPage(nextPage);
+    }
+    
+    useEffect(() => {
+        if (userProfile.id && friendPage !== 0) {
+            getFriends(friendPage);
+        }
+    }, [friendPage]);
+
 
     const getPosts = async (pageNumber = 0, initial = false) => {
         const token = localStorage.getItem("token");
@@ -97,14 +111,29 @@ function HomePage() {
         if (!token) return;
 
         try {
-            const response = await axios.get(`${API_BASE_URL}/api/friendships/user/${userProfile.id}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/friendships/friend/${userProfile.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
+                }, params: {
+                    page: friendPage,
+                    size: PAGE_SIZE
                 }
             })
 
-            setFriends(response.data.result);
+            const newFriends = response.data.result;
+            console.log(newFriends);
+            
+
+            if (friendPage === 0) {
+                setFriends(newFriends);
+            } else {
+                setFriends(prev => [...prev, ...newFriends]);
+            }
+
+            if (newFriends.length < PAGE_SIZE) {
+                setHasMoreFriend(false);
+            }
         }
         catch (err) {
             console.log(err);
@@ -185,7 +214,13 @@ function HomePage() {
                             )}
                         </div>
                         
-                        <Friends userProfile={userProfile} friends={friends} logout={handleLogout} />
+                        <Friends 
+                            userProfile={userProfile} 
+                            friends={friends} 
+                            logout={handleLogout} 
+                            loadMore={loadMore} 
+                            hasMoreFriend={hasMoreFriend}
+                        />
                     </>
                 )}
 

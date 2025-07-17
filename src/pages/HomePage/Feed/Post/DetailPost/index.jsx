@@ -70,36 +70,25 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
         setShowDropdown(false);
     }
     
-    const handleLike = async () => {
+    const handleLikePost = () => {
+        const token = localStorage.getItem('token');
+
         try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                setError("Không tìm thấy token");
-                return;
-            }
-
-            setIsLiked(!isLiked);
-            setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
-
-            const response = await axios.post(`${API_BASE_URL}/api/post-like`, null, {
+            axios.post(`${API_BASE_URL}/api/post-like/toggle-like`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                params: {
+                    "Content-Type": "application/json"
+                }, params: {
                     postId: post.id
                 }
-            });
-
-            // console.log("Like response:", response.data.result);
-        } catch (err) {
-            console.error("Error liking post:", err);
-            setError("Có lỗi xảy ra khi thích bài viết");
-            // Revert optimistic update
-            setIsLiked(isLiked);
-            setLikeCount(prev => isLiked ? prev + 1 : prev - 1);
+            }).then(() => {
+                setIsLiked(true);
+            })
+        } catch (error) {
+            console.log(error);
+            
         }
-    };
+    }
 
     const handleAddComment = async () => {
         if (!newComment.trim()) return;
@@ -246,8 +235,8 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
                     <div className="detail-post__interactions">
                         <div className="detail-post__interactions-left">
                             <button 
-                                className={`detail-post__interaction-btn ${isLiked ? 'detail-post__interaction-btn--liked' : ''}`}
-                                onClick={handleLike}
+                                className={`detail-post__interaction-btn ${post.liked ? 'detail-post__interaction-btn--liked' : ''}`}
+                                onClick={handleLikePost}
                             >
                                 <Heart 
                                     size={24} 
