@@ -101,14 +101,17 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, hand
 
                                     </button>
                                     {(userInfo.friendshipStatus === "REQUEST_RECEIVED") &&
-                                    <button
-                                        className={`add-friend-btn`}
-                                        onMouseEnter={() => setIsHovered(true)}
-                                        onMouseLeave={() => setIsHovered(false)}
-                                        onClick={() => handleNotAccept()}
-                                    >từ chối</button>
-                                    }
-                                    <button className="message-btn" onClick={() => {navigate(`/messages/${userInfo.id}`)}}>Nhắn tin</button>
+                                        <button
+                                            className={`add-friend-btn`}
+                                            onMouseEnter={() => setIsHovered(true)}
+                                            onMouseLeave={() => setIsHovered(false)}
+                                            onClick={() => handleNotAccept()}
+                                        >từ chối</button>
+                                        }
+                                    <button 
+                                        className="message-btn" 
+                                        onClick={() => {navigate(`/messages/${userInfo.id}`)}}
+                                    >Nhắn tin</button>
                                 </>
                                 )}
                                 

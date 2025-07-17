@@ -23,7 +23,7 @@ function HomePage() {
     const [hasMoreFriend, setHasMoreFriend] = useState(true);
 
     const API_BASE_URL = GetApiBaseUrl();
-    const PAGE_SIZE = 1;
+    const PAGE_SIZE = 5;
 
     const loadMore = () => {
         const nextPage = friendPage + 1;

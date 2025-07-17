@@ -11,6 +11,7 @@ function FriendPage() {
     const userProfile = useOutletContext();
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+    const [boxRequest, setBoxRequest] = useState(false);
 
     const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = "5";
@@ -37,7 +38,6 @@ function FriendPage() {
         }
     };
 
-
     useEffect(() => {
         fetchFriends();
     }, [userProfile]);
@@ -52,6 +52,7 @@ function FriendPage() {
     }
 
     const handleUnfriend = async (friendId) => {
+
         const token = localStorage.getItem("token");
 
         try {
@@ -91,9 +92,31 @@ function FriendPage() {
 
                                 <div className="friend-actions">
                                     <button onClick={() => handleMessage(friend.id)}>Nhắn tin</button>
-                                    <button onClick={() => handleUnfriend(friend.id)}>Huỷ kết bạn</button>
+                                    <button onClick={() => setBoxRequest(true)}>Huỷ kết bạn</button>
                                 </div>
                             </div>
+
+                            {boxRequest && 
+                                <div className="box-request">
+                                    <div className="overlay" onClick={() => setBoxRequest(false)}></div>
+
+                                    <div className="request">
+                                        <h2>bạn có chắc muốn xoá kết bạn chứ chứ?</h2>
+
+                                        <div className="request__function">
+                                            <button 
+                                                className="request__btn"
+                                                onClick={() => handleUnfriend(friend.id)}
+                                            >có</button>
+                                            <button 
+                                                className="request__btn" 
+                                                onClick={() => {
+                                                    setBoxRequest(false)
+                                                }}
+                                            >không</button>
+                                        </div>
+                                    </div>
+                                </div>}         
                         </div>
                     ))}
 
