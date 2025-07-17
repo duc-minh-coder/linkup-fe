@@ -1,7 +1,7 @@
 import Feed from "./Feed";
 import "./HomePage.scss";
 import Friends from "./Friends";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { logout } from "../../actions/userAction";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -15,9 +15,10 @@ function HomePage() {
     const [loadingProfile, setLoadingProfile] = useState(true);
     const [loadingPosts, setLoadingPosts] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [pageNumber, setPageNumber] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const pageRef = useRef(0);
+    const scrollTimeout = useRef(null);
 
     const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = 5;
@@ -27,7 +28,7 @@ function HomePage() {
 
         if (!token) return;
 
-        if (loadingPosts) return;
+        if (loadingPosts || !hasMore) return;
 
         setLoadingPosts(true);
 
@@ -43,19 +44,22 @@ function HomePage() {
                 }
             })
             const newPosts = response.data.result;
+            
 
-            if (initial) 
+            if (initial) {
+                pageRef.current = 1;
                 setPosts(newPosts);
-            else 
+            }
+            else {
+                pageRef.current += 1;
                 setPosts(prevPosts => [...prevPosts, ...newPosts])
+            }
+                
 
             if (newPosts.length < PAGE_SIZE) 
                 setHasMore(false);
             else 
                 setHasMore(true);
-
-            if (!initial) 
-                setPageNumber(prevPage => prevPage + 1);
         }
         catch (err) {
             console.log(err);
@@ -100,14 +104,12 @@ function HomePage() {
                 }
             })
 
-            // console.log(response.data.result);
             setFriends(response.data.result);
         }
         catch (err) {
             console.log(err);
         }
     }
-
     
     const handleLogout = async () => {
         const token = localStorage.getItem("token");
@@ -120,24 +122,26 @@ function HomePage() {
     };
 
     const handlingScrollPage = useCallback(() => {
-        const scrollTop = document.documentElement.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const clientHeight = document.documentElement.clientHeight;
-        
-        // phần trăm cuận đc
-        const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
-        
-        if (scrollPercentage < 0.95 || loadingPosts || !hasMore) {
-            return;
-        }
+        if (scrollTimeout.current) return;
 
-        getPosts(pageNumber + 1, false);
-    }, [pageNumber, loadingPosts, hasMore]);
+        scrollTimeout.current = setTimeout(() => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight;
+
+            const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+
+            if (scrollPercentage >= 0.95 && !loadingPosts && hasMore) {
+                // console.log(pageRef.current);
+                getPosts(pageRef.current, false);
+            }
+
+            scrollTimeout.current = null;
+        }, 200);
+    }, [loadingPosts, hasMore]);
 
     useEffect(() => {
         window.addEventListener("scroll", handlingScrollPage);
-
-        console.log(hasMore, posts)
 
         return () => 
             window.removeEventListener("scroll", handlingScrollPage);
@@ -146,6 +150,7 @@ function HomePage() {
     useEffect(() => {
         getUserProfile();
         setPosts([]);
+        pageRef.current = 0;
         getPosts(0, true);
     }, []);
 
@@ -154,6 +159,10 @@ function HomePage() {
             getFriends();
         }
     }, [userProfile]);
+
+    useEffect(() => {
+        console.log(posts);
+    }, [posts])
 
     return (
         <div className="linkup-app">

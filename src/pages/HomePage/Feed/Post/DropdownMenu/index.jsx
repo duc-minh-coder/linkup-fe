@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Edit, Delete, EyeOff } from "lucide-react";
 import "./DropdownMenu.scss";
 
 function DropdownMenu({ isAuthor, handleEditPost, handleDeletePost, handleHidePost, handlingSetDropdown }) {
     const dropdownRef = useRef(null);
-
+    const [boxDelete, setBoxDelete] = useState(false);
     
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -32,7 +32,7 @@ function DropdownMenu({ isAuthor, handleEditPost, handleDeletePost, handleHidePo
                     </button>
                     <button 
                         className="post__dropdown-item"
-                        onClick={handleDeletePost}
+                        onClick={() => setBoxDelete(true)}
                     >
                         <Delete size={16} />
                         Xoá bài viết
@@ -48,6 +48,30 @@ function DropdownMenu({ isAuthor, handleEditPost, handleDeletePost, handleHidePo
                     Ẩn bài viết
                 </button>
             )}
+
+            {
+                boxDelete && 
+                    <div className="box-request">
+                        <div className="overlay" onClick={() => setBoxDelete(false)}></div>
+
+                        <div className="request">
+                            <h2>bạn có chắc muốn xoá bài viết chứ?</h2>
+
+                            <div className="request__function">
+                                <button 
+                                    className="request__btn"
+                                    onClick={() => handleDeletePost()}
+                                >có</button>
+                                <button 
+                                    className="request__btn" 
+                                    onClick={() => {
+                                        setBoxDelete(false)
+                                    }}
+                                >không</button>
+                            </div>
+                        </div>
+                    </div>
+            }
         </div>
     );
 }

@@ -3,6 +3,7 @@ import "./ConfigContainer.scss";
 import axios from "axios";
 import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function ConfigContainer({ isOwner, handlingCloseConfig, handleLogout, handleDeleteAccount }) {
     const dropdownRef = useRef(null);
@@ -11,6 +12,7 @@ function ConfigContainer({ isOwner, handlingCloseConfig, handleLogout, handleDel
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
+    const navigate = useNavigate();
 
     const API_BASE_URL = GetApiBaseUrl();
 
@@ -59,12 +61,12 @@ function ConfigContainer({ isOwner, handlingCloseConfig, handleLogout, handleDel
                 toast.success("đổi mật khẩu thành công!");
 
                 setBoxChangePassword(false);
+                
+                navigate("/signin");
             }).catch((error) => {
                 console.log(error.response.data);
                 
                 toast.error(error.response.data.message);
-            }).finally(() => {
-                // window.location.reload();
             })
         } catch (error) {
             console.log(error);
@@ -84,7 +86,7 @@ function ConfigContainer({ isOwner, handlingCloseConfig, handleLogout, handleDel
                         <button 
                             className="config__item"
                             onClick={() => setBoxChangePassword(true)}
-                        >đổi mật khẩu</button>
+                        >Đổi mật khẩu</button>
                         <button 
                             className="config__item"
                             onClick={() => setBoxRequest(true)}

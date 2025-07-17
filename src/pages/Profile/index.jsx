@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./Profile.scss";
 import ProfileHeader from "./ProfileHeader";
@@ -19,6 +19,8 @@ function Profile() {
     const [page, setPage] = useState(0);
     const [loadingPosts, setLoadingPosts] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const scrollTimeout = useRef(null);
+    const pageRef = useRef(0);
 
     const handleSave = async (fullName, bio) => {
         try {
@@ -101,11 +103,11 @@ function Profile() {
 
             if (initial) {
                 setPosts(newPosts);
-                setPage(0);
+                pageRef.current = 1;
             } 
             else {
                 setPosts(prevPosts => [...prevPosts, ...newPosts]);
-                setPage(prevPage => prevPage + 1);
+                pageRef.current += 1;
             }
                 
             if (newPosts.length < PAGE_SIZE) 
@@ -230,19 +232,23 @@ function Profile() {
     }
 
     const handlingScrollPage = useCallback(() => {
-        const scrollTop = document.documentElement.scrollTop;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const clientHeight = document.documentElement.clientHeight;
-        
-        // phần trăm cuận đc
-        const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
-        
-        if (scrollPercentage < 0.95 || loadingPosts || !hasMore) {
-            return;
-        }
+        if (scrollTimeout.current) return;
 
-        getPosts(page + 1, false);
-    }, [page, loadingPosts, hasMore]);
+        scrollTimeout.current = setTimeout(() => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight;
+
+            const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+
+            if (scrollPercentage >= 0.95 && !loadingPosts && hasMore) {
+                // console.log(pageRef.current);
+                getPosts(pageRef.current, false);
+            }
+
+            scrollTimeout.current = null;
+        }, 200); // delay 200ms để tránh gọi liên tục
+    }, [loadingPosts, hasMore]);
 
     useEffect(() => {
         window.addEventListener("scroll", handlingScrollPage);

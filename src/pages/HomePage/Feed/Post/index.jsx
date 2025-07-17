@@ -13,6 +13,7 @@ import EditPostModal from "./EditPostModal";
 import DropdownMenu from "./DropdownMenu";
 import axios from "axios";
 import GetApiBaseUrl from "../../../../helpers/GetApiBaseUrl";
+import { toast } from "react-toastify";
 
 function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
@@ -59,14 +60,14 @@ function Post({ post, userProfile }) {
                 }
             })
                 .then(() => {
-                    alert("đã xoá bài viết!");
+                    toast.success("đã xoá bài viết!");
 
                     setTimeout(() => {
                         window.location.reload();
-                    }, 1000);
+                    }, 3000);
                 })
                 .catch(() => {
-                    alert("chưa xoá được bài viết");
+                    toast.error("chưa xoá được bài viết");
                 })
         }   
         catch (err) {
