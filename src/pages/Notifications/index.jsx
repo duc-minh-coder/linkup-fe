@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Notifications.scss";
+import { Bell, Heart, MessageSquareText, User } from "lucide-react";
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -124,13 +125,13 @@ function Notifications() {
     const getNotificationIcon = (type) => {
         switch (type) {
             case "like":
-                return "❤️";
+                return <Heart size={24} color="white" />;
             case "comment":
-                return "💬";
+                return <MessageSquareText size={24} color="white" />;
             case "send-request":
-                return "👤";
+                return <User size={24} color="white" />;
             default:
-                return "🔔";
+                return <Bell size={24} color="white" />;
         }
     };
 
@@ -166,6 +167,7 @@ function Notifications() {
                 <div className="container">
                     <div className="header-content">
                         <h1>Thông báo</h1>
+
                         {notifications.some(n => !n.isRead) && (
                             <button 
                                 className="mark-all-read-btn"
@@ -182,7 +184,7 @@ function Notifications() {
                 <div className="container">
                     {notifications.length === 0 ? (
                         <div className="empty-notifications">
-                            <div className="empty-icon">🔔</div>
+                            <div className="empty-icon"><Bell size={48} color="white" /></div>
                             <h3>Chưa có thông báo nào...</h3>
                         </div>
                     ) : (

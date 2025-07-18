@@ -32,6 +32,7 @@
             font-weight: bold;
             margin: 0;
             color: #fff;
+            text-align: center;
         }
         
         .mark-all-read-btn {
@@ -43,7 +44,7 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.2s;
             
             &:hover {
                 background: #1877f2;
@@ -111,7 +112,7 @@
             padding: 15px 0;
             border-bottom: 1px solid #262626;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.2s;
             position: relative;
             
             &:hover {
@@ -195,6 +196,9 @@
 @media (max-width: 768px) {
     .notifications-header {
         .header-content {
+            flex-direction: column;
+            gap: 12px;
+
             .mark-all-read-btn {
                 font-size: 12px;
                 padding: 6px 12px;

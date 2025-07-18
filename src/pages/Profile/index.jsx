@@ -23,24 +23,27 @@ function Profile() {
     const pageRef = useRef(0);
 
     const handleSave = async (fullName, bio) => {
-        try {
-            const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
-            const response = await axios.post(`http://localhost:8080/api/profiles/update-profile`, {
-                fullName: fullName,
-                bio: bio
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
-            });
-
-            console.log(response.data.result);
-            setShowEditModal(false);
-        } catch (error) {
-            console.error("Lỗi khi lưu:", error);
-        }
+        await axios.post(`http://localhost:8080/api/profiles/update-profile`, {
+            fullName: fullName,
+            bio: bio
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        }).then(res => {
+            toast.success("đã thay đổi thành công");
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 4000);
+        }).catch(err => {
+            toast.error(err.response.data.message);
+            
+        })
+        setShowEditModal(false);    
     };
 
     const handlingOpenEditProfileComponent = () => {
@@ -253,7 +256,7 @@ function Profile() {
     useEffect(() => {
         window.addEventListener("scroll", handlingScrollPage);
 
-        console.log(posts)
+        // console.log(posts)
         return () => 
             window.removeEventListener("scroll", handlingScrollPage);
     }, [handlingScrollPage])

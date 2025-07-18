@@ -47,7 +47,7 @@ function About() {
             </div>
 
             <footer className="footer">
-                <p>&copy; 2025 LinkUp. Một sản phẩm kết nối con người.</p>
+                <p>&copy; 2025 LinkUp. Làm ra bởi MinhZom.</p>
             </footer>
         </div>
     );
