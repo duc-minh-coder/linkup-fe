@@ -259,7 +259,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
                         >
                             <Bookmark 
                                 size={24} 
-                                fill={isSaved ? '#fff' : 'none'}
+                                fill={post.saved ? '#fff' : 'none'}
                             />
                         </button>
                     </div>

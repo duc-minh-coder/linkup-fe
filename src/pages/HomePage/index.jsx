@@ -122,7 +122,6 @@ function HomePage() {
             })
 
             const newFriends = response.data.result;
-            console.log(newFriends);
             
 
             if (friendPage === 0) {

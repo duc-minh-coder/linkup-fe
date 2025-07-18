@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Heart, MessageCircle, Image, BookmarkX, ImageIcon } from "lucide-react";
+import { Heart, MessageCircle, Image, Bookmark, ImageIcon } from "lucide-react";
 import "./BookmarkCard.scss";
+import { useNavigate } from "react-router-dom";
 
 function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
+    const navigate = useNavigate();
 
     const handleUnsave = async (e) => {
+        console.log(post);
         
     };
 
@@ -22,11 +25,10 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
             year: 'numeric'
         });
     };
-    
 
     return (
-        <div className="bookmark-card" onClick={handleCardClick}>
-            <div className="bookmark-card__media">
+        <div className="bookmark-card">
+            <div className="bookmark-card__media"  onClick={handleCardClick}>
                 {post.postMedia && post.postMedia.length > 0 && (
                     <>
                         <img 
@@ -46,7 +48,7 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
 
             <div className="bookmark-card__content">
                 <div className="bookmark-card__header">
-                    <div className="bookmark-card__header-left">
+                    <div className="bookmark-card__header-left" onClick={() => navigate(`/profile/${post.authorId}`)}>
                         <img 
                             src={post.authorAvatarUrl} 
                             alt={post.authorName}
@@ -58,22 +60,22 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
                     </div>
                     <div className="bookmark-card__header-right">
                         <button 
-                            className="bookmark-card__unsave-btn"
+                            className="bookmark-card__unsave-btn "
                             onClick={handleUnsave}
                             title="Bỏ lưu"
                         >
-                            <BookmarkX size={18} />
+                            <Bookmark size={20} fill={post.saved ? '#fff' : 'none'} />
                         </button>
                     </div>
                 </div>
 
                 {post.content && (
-                    <div className="bookmark-card__text">
+                    <div className="bookmark-card__text"  onClick={handleCardClick}>
                         {post.content}
                     </div>
                 )}
 
-                <div className="bookmark-card__footer">
+                <div className="bookmark-card__footer"  onClick={handleCardClick}>
                     <div className="bookmark-card__stats">
                         <span>
                             <Heart size={14} />

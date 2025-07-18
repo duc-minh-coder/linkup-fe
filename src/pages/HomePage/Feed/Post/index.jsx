@@ -17,7 +17,6 @@ import { toast } from "react-toastify";
 
 function Post({ post, userProfile }) {
     const [isLiked, setIsLiked] = useState(false);
-    const [isSaved, setIsSaved] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -47,6 +46,28 @@ function Post({ post, userProfile }) {
 
     const handleHidePost = () => {
 
+    }
+
+    const handlingBookmark = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const res = await axios.post(`${API_BASE_URL}/api/bookmarks/create`, {
+                postId: post.id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+            
+            toast.success(res.data.result);
+
+        } catch (error) {
+            toast.error(error);
+        }
     }
 
     const handleDeletePost = () => {
@@ -216,9 +237,9 @@ function Post({ post, userProfile }) {
                 <Bookmark
                     size={24}
                     className={`post__action-icon ${
-                        isSaved ? "post__action-icon--saved" : ""
+                        post.saved ? "post__action-icon--saved" : ""
                     }`}
-                    onClick={() => setIsSaved(!isSaved)}
+                    onClick={handlingBookmark}
                 />
             </div>
 
