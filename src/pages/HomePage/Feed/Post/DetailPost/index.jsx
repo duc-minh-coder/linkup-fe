@@ -14,6 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DropdownMenu from "../DropdownMenu";
 import GetApiBaseUrl from "../../../../../helpers/GetApiBaseUrl";
+import { toast } from "react-toastify";
 
 function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
     const [comments, setComments] = useState(post.comments || []);
@@ -63,6 +64,28 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
 
     const handleDeletePost = () => {
 
+    }
+
+    const handlingBookmark = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const res = await axios.post(`${API_BASE_URL}/api/bookmarks/create`, {
+                postId: post.id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+            
+            toast.success(res.data.result);
+
+        } catch (error) {
+            toast.error(error);
+        }
     }
 
     
@@ -126,6 +149,10 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
 
     const handlingOpenFriendProfile = () => {
         navigate(`/profile/${post.authorId}`);
+    }
+
+    const handleBookmark = () => {
+        handlingBookmark();
     }
 
     const formatDate = (dateString) => {
@@ -260,6 +287,7 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
                             <Bookmark 
                                 size={24} 
                                 fill={post.saved ? '#fff' : 'none'}
+                                onClick={handleBookmark}
                             />
                         </button>
                     </div>

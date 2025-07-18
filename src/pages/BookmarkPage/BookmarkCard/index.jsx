@@ -2,14 +2,35 @@ import { useState } from "react";
 import { Heart, MessageCircle, Image, Bookmark, ImageIcon } from "lucide-react";
 import "./BookmarkCard.scss";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
+import { toast } from "react-toastify";
 
 function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
     const navigate = useNavigate();
 
-    const handleUnsave = async (e) => {
-        console.log(post);
-        
-    };
+    const API_BASE_URL = GetApiBaseUrl();
+
+    const handlingBookmark = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const res = await axios.post(`${API_BASE_URL}/api/bookmarks/create`, {
+                postId: post.id
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+            
+            toast.success(res.data.result);
+        } catch (error) {
+            toast.error(error);
+        }
+    }
 
     const handleCardClick = () => {
         onViewDetail(post);
@@ -61,7 +82,7 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
                     <div className="bookmark-card__header-right">
                         <button 
                             className="bookmark-card__unsave-btn "
-                            onClick={handleUnsave}
+                            onClick={handlingBookmark}
                             title="Bỏ lưu"
                         >
                             <Bookmark size={20} fill={post.saved ? '#fff' : 'none'} />

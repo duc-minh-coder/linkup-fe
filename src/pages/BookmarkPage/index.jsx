@@ -19,7 +19,7 @@ function BookmarkPage() {
     const [page, setPage] = useState(0);
 
     const API_BASE_URL = GetApiBaseUrl();
-    const PAGE_SIZE = "5";
+    const PAGE_SIZE = "2";
 
     useEffect(() => {
         getUserProfile();
@@ -126,7 +126,7 @@ function BookmarkPage() {
                 <h1>Bài viết đã lưu</h1>
                 <div className="bookmark-page__header-info">
                     {bookmarks.length > 0 
-                        ? `${bookmarks.length} bài viết` 
+                        ? `${bookmarks.length} bài viết hiển thị` 
                         : "Chưa có bài viết nào"
                     }
                 </div>
