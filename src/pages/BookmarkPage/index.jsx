@@ -17,10 +17,9 @@ function BookmarkPage() {
     const [showDetail, setShowDetail] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(0);
-    const [init, setInit] = useState(false);
 
     const API_BASE_URL = GetApiBaseUrl();
-    const PAGE_SIZE = "2";
+    const PAGE_SIZE = "5";
 
     useEffect(() => {
         getUserProfile();
@@ -42,7 +41,6 @@ function BookmarkPage() {
             setUserProfile(response.data.result);
             setLoadingProfile(false);
 
-            setInit(true);
             setPage(0);
             fetchBookmarks(0);
         }
@@ -52,45 +50,37 @@ function BookmarkPage() {
         }
     }
 
-    const fetchBookmarks = async () => {
+    const fetchBookmarks = async (page) => {
         const token = localStorage.getItem("token");
 
         if (!token) return;
 
         try {
-            axios.get(`${API_BASE_URL}/api/bookmarks/list`, {
+            const res = await axios.get(`${API_BASE_URL}/api/bookmarks/list`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }, params: {
-                    page: page,
+                    page,
                     size: PAGE_SIZE
                 }
-            }).then(res => {
-                const data = res.data.result;
-
-                if (init) {
-                    setBookmarks(data);
-                    setPage(prev => prev + 1);
-                    setInit(false);
-                }
-                else {
-                    setBookmarks(prev => [...prev, ...data]);
-                    setPage(prev => prev + 1);
-                }
-
-                if (bookmarks.length < PAGE_SIZE) {
-                    setHasMore(false);
-                }
-            }).catch(() => {
-                toast.error("lỗi chưa lấy đc bài viết đã lưu");
             })
+
+            const data = res.data.result;
+
+            setPage(prev => prev + 1);
+            setBookmarks(prev => [...prev, ...data]);
+
+            if (data.length < PAGE_SIZE) {
+                setHasMore(false);
+            }
+
         } catch (error) {
-            console.log(error);
+            toast("lỗi chưa lấy đc bài viết đã lưu");
         }
     };
 
     const showMore = () => {
-
+        fetchBookmarks(page);
     }
 
     const handleUnsave = async (postId) => {
@@ -175,8 +165,8 @@ function BookmarkPage() {
                     </div>
                 )}
 
-                {hasMore && bookmarks.length < 0 &&
-                    <div className="show-more">
+                {(hasMore) &&
+                    <div className="show-more" onClick={() => showMore()}>
                         xem thêm
                     </div>
                 }
