@@ -3,19 +3,9 @@ import { Heart, MessageCircle, Image, BookmarkX, ImageIcon } from "lucide-react"
 import "./BookmarkCard.scss";
 
 function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
-    const [isUnsaving, setIsUnsaving] = useState(false);
 
     const handleUnsave = async (e) => {
-        e.stopPropagation();
-        setIsUnsaving(true);
         
-        try {
-            await onUnsave(post.id);
-        } catch (error) {
-            console.error("Error unsaving post:", error);
-        } finally {
-            setIsUnsaving(false);
-        }
     };
 
     const handleCardClick = () => {
@@ -24,33 +14,15 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = now - date;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        
-        if (diffDays === 0) {
-            return "Hôm nay";
-        } else if (diffDays === 1) {
-            return "Hôm qua";
-        } else if (diffDays < 7) {
-            return `${diffDays} ngày trước`;
-        } else {
-            return date.toLocaleDateString('vi-VN', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
+        return date.toLocaleDateString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
     };
-
-    const formatCount = (count) => {
-        if (count >= 1000000) {
-            return (count / 1000000).toFixed(1) + 'M';
-        } else if (count >= 1000) {
-            return (count / 1000).toFixed(1) + 'K';
-        }
-        return count.toString();
-    };
+    
 
     return (
         <div className="bookmark-card" onClick={handleCardClick}>
@@ -76,7 +48,7 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
                 <div className="bookmark-card__header">
                     <div className="bookmark-card__header-left">
                         <img 
-                            src={post.authorAvatarUrl || userAvatar} 
+                            src={post.authorAvatarUrl} 
                             alt={post.authorName}
                             className="bookmark-card__avatar"
                         />
@@ -88,7 +60,6 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
                         <button 
                             className="bookmark-card__unsave-btn"
                             onClick={handleUnsave}
-                            disabled={isUnsaving}
                             title="Bỏ lưu"
                         >
                             <BookmarkX size={18} />
@@ -106,11 +77,11 @@ function BookmarkCard({ post, onViewDetail, onUnsave, userAvatar, userName }) {
                     <div className="bookmark-card__stats">
                         <span>
                             <Heart size={14} />
-                            {formatCount(post.userLikes?.length || 0)}
+                            {post.userLikes.length}
                         </span>
                         <span>
                             <MessageCircle size={14} />
-                            {formatCount(post.comments?.length || 0)}
+                            {post.comments.length}
                         </span>
                     </div>
                     <div className="bookmark-card__date">

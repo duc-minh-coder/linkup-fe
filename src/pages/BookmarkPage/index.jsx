@@ -5,52 +5,93 @@ import BookmarkCard from "./BookmarkCard";
 import DetailPost from "../HomePage/Feed/Post/DetailPost";
 import "./BookmarkPage.scss";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
+import { toast } from "react-toastify";
 
-function BookmarkPage({ userAvatar, userName }) {
+function BookmarkPage() {
+    const [userProfile, setUserProfile] = useState({});
+    const [loadingProfile, setLoadingProfile] = useState(true);
     const [bookmarks, setBookmarks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedPost, setSelectedPost] = useState(null);
     const [showDetail, setShowDetail] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const [page, setPage] = useState(0);
+    const [init, setInit] = useState(false);
 
     const API_BASE_URL = GetApiBaseUrl();
-
-    const test = [
-        {
-            "id": 12,
-            "content": "Bài viết thú vị về UX",
-            "updatedTime": "2025-07-17T01:23:45",
-            "authorId": 3,
-            "authorName": "Minh Đức",
-            "authorAvatarUrl": "/images/avatars/minhduc.jpg",
-            "postMedia": [
-                {
-                    "url": "/images/posts/ux1.jpg"
-                }
-            ],
-            "userLikes": [5, 7, 9],        // Có thể là userId hoặc object tuỳ bạn
-            "comments": []            // Tuỳ format của bạn
-        },
-        {
-            "id": 13,
-            "content": "Bài viết test",
-            "updatedTime": "2025-07-17T01:23:45",
-            "authorId": 3,
-            "authorName": "Minh Zom",
-            "authorAvatarUrl": "/images/avatars/minhduc.jpg",
-            "userLikes": [5, 7, 9],        // Có thể là userId hoặc object tuỳ bạn
-            "comments": []            // Tuỳ format của bạn
-        }
-    ]
+    const PAGE_SIZE = "2";
 
     useEffect(() => {
-        setBookmarks(test);
-        // fetchBookmarks();
-    }, []);
+        getUserProfile();
+    }, [])
+
+    const getUserProfile = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            setUserProfile(response.data.result);
+            setLoadingProfile(false);
+
+            setInit(true);
+            setPage(0);
+            fetchBookmarks(0);
+        }
+        catch (err) {
+            console.log(err);
+            setLoadingProfile(false);
+        }
+    }
 
     const fetchBookmarks = async () => {
-        
+        const token = localStorage.getItem("token");
+
+        if (!token) return;
+
+        try {
+            axios.get(`${API_BASE_URL}/api/bookmarks/list`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }, params: {
+                    page: page,
+                    size: PAGE_SIZE
+                }
+            }).then(res => {
+                const data = res.data.result;
+
+                if (init) {
+                    setBookmarks(data);
+                    setPage(prev => prev + 1);
+                    setInit(false);
+                }
+                else {
+                    setBookmarks(prev => [...prev, ...data]);
+                    setPage(prev => prev + 1);
+                }
+
+                if (bookmarks.length < PAGE_SIZE) {
+                    setHasMore(false);
+                }
+            }).catch(() => {
+                toast.error("lỗi chưa lấy đc bài viết đã lưu");
+            })
+        } catch (error) {
+            console.log(error);
+        }
     };
+
+    const showMore = () => {
+
+    }
 
     const handleUnsave = async (postId) => {
         
@@ -121,27 +162,33 @@ function BookmarkPage({ userAvatar, userName }) {
 
                 {!error && bookmarks.length > 0 && (
                     <div className="bookmark-page__list">
-                        {bookmarks.map((post) => (
+                        {bookmarks.map((post, index) => (
                             <BookmarkCard
-                                key={post.id}
-                                post={post}
+                                key={index}
+                                post={post.postResponse}
                                 onViewDetail={handleViewDetail}
                                 onUnsave={handleUnsave}
-                                userAvatar={userAvatar}
-                                userName={userName}
+                                userAvatar={post.authorAvatarUrl}
+                                userName={post.authorName}
                             />
                         ))}
                     </div>
                 )}
+
+                {hasMore && bookmarks.length < 0 &&
+                    <div className="show-more">
+                        xem thêm
+                    </div>
+                }
             </div>
 
             {showDetail && selectedPost && (
                 <DetailPost
                     post={selectedPost}
                     handlingShow={handleCloseDetail}
-                    userAvatar={userAvatar}
-                    userName={userName}
-                    isAuthor={selectedPost.authorId === userName} // Adjust this logic as needed
+                    userAvatar={userProfile.avatarUrl}
+                    userName={userProfile.fullName}
+                    isAuthor={selectedPost.authorId === userProfile.id} // Adjust this logic as needed
                 />
             )}
         </div>

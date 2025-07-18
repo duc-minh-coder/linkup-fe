@@ -86,6 +86,22 @@ $hover-color: #1a1a1a;
         display: flex;
         flex-direction: column;
         gap: 20px;
+
+        
+    }
+    .show-more {
+        text-align: center;
+        color: #fff;
+        border: 1px solid #1a1a1a;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-top: 12px;
+
+        &:hover {
+            background-color: #262626;
+        }
     }
 
     &__loading {
