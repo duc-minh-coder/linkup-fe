@@ -20,6 +20,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
 
     const handleSendMessage = (e) => {
         e.preventDefault();
+        
         if (messageInput.trim() && onSendMessage) {
             onSendMessage(messageInput.trim());
             setMessageInput("");

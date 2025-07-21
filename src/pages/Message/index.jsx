@@ -5,6 +5,8 @@ import "./Message.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 function Message() {
     const navigate = useNavigate();
@@ -15,9 +17,27 @@ function Message() {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+    const [userInfo, setUserInfo] = useState({});
+    const [stompCli, setStompCli] = useState(null);
 
     const API_BASE_URL = GetApiBaseUrl();
+    const SOCKET_URL = `${API_BASE_URL}/ws`;
     const PAGE_SIZE = "10";
+
+    const getUserInfo = async () => {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setUserInfo(response.data.result);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const getConversations = async () => {
         try {
@@ -30,8 +50,6 @@ function Message() {
                     }
                 }
             );
-
-            // console.log(response.data.result);
             setConversations(response.data.result);
         } catch (err) {
             console.log(err);
@@ -70,26 +88,16 @@ function Message() {
     };
 
     const sendMessage = async (content) => {
-        try {
-            const token = localStorage.getItem("token");
-
-            const response = await axios.post(`${API_BASE_URL}/api/messages/send`, {
-                        receiverId: conversation.userId,
-                        content: content,
-                    },
-                    {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        } catch (err) {
-            console.log(err);
+        if (!stompCli || conversation) {
+            return;
         }
+
+        stompCli.send("/app/chat.sendMessage", {}, JSON.stringify({
+            senderId: userInfo.id,
+            receiverId: conversation.userId,
+            content: content,
+            type: "CHAT"
+        }))
     };
 
     const selectConversation = (conversation) => {
@@ -102,13 +110,44 @@ function Message() {
     };
 
     useEffect(() => {
+        getUserInfo();
         setMessages([]);
         getConversations();
     }, []);
 
     useEffect(() => {
-        console.log(messages);
-    }, [messages])
+        if (!userInfo?.id) return;
+
+        const socket = new SockJS(SOCKET_URL);
+        const stompClient = Stomp.over(socket);
+        setStompCli(stompClient);
+
+        stompClient.connect({}, () => {
+            console.log("connected to ws");
+            
+            //đưa user lên sv
+            stompClient.send("/app/chat.addUser", {}, JSON.stringify({
+                senderId: userInfo.id,
+                type: "ONLINE"
+            }))
+
+            // nghe tin nhắn đc gửi từ sv
+            stompClient.subscribe(`/user/${userInfo.id}/queue/messages`, (message) => {
+                const messageBody = JSON.parse(message.body);
+                console.log(messageBody);
+
+                if (conversation?.userId === messageBody.senderId) {
+                    setMessages(prev => [...prev, messageBody]);
+                }
+                
+            })
+
+            return () => {
+                if (stompClient && stompClient.connect) 
+                    stompClient.disconnect();
+            }
+        })
+    }, [userInfo])
 
     useEffect(() => {
         if (receiverId && conversations.length > 0) {

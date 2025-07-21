@@ -54,12 +54,12 @@ function LayoutDefault() {
             }
 
             try {
-                const res = await axios.post(`${API_BASE_URL}/api/auth/introspect`, {
+                const res = await axios.post(`${API_BASE_URL}/auth/introspect`, {
                     token: accessToken,
                 });
 
                 if (!res.data.result.valid) {
-                    const refreshToken = await axios.post( `${API_BASE_URL}/api/auth/refresh`, {
+                    const refreshToken = await axios.post( `${API_BASE_URL}/auth/refresh`, {
                         token: accessToken,
                     });
 

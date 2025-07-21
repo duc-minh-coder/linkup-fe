@@ -188,10 +188,6 @@ function HomePage() {
         }
     }, [userProfile]);
 
-    useEffect(() => {
-        console.log(posts);
-    }, [posts])
-
     return (
         <div className="linkup-app">
             <main className="main-content">
