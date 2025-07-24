@@ -2,17 +2,17 @@ import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import "./ChatWindow.scss";
 import { Phone, Video, Bolt } from "lucide-react";
 
-function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId }) {
+function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId, isTyping, handleTyping, handleStopTyping }) {
     const [messageInput, setMessageInput] = useState("");
     const messagesEndRef = useRef(null);
     const isLoadOldMessages = useRef(false);
     const messagesContainerRef = useRef(null);
     const prevScrollHeightRef = useRef(0);
+    const typingTimeout = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
-
 
     const handleSendMessage = (e) => {
         e.preventDefault();
@@ -33,6 +33,25 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
             onLoadMore(); //load thêm tin nhắn
         }
     };
+
+    const  handleTypingChange = (e) => {
+        const value = e.target.value;
+        setMessageInput(value);
+
+        if (!value.trim()) {
+            handleStopTyping();
+            return;
+        }
+        handleTyping();
+
+        if (typingTimeout.current) {
+            clearTimeout(typingTimeout.current);
+        }
+
+        typingTimeout.current = setTimeout(() => {
+            handleStopTyping();
+        }, 3000);
+    }
 
     useEffect(() => {
         const container = messagesContainerRef.current;
@@ -64,7 +83,6 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
             scrollToBottom();
         }
     }, [messages]);
-
 
     const formatTime = (timestamp) => {
         const date = new Date(timestamp);
@@ -151,6 +169,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                         <div ref={messagesEndRef} />
                     </>
                 )}
+                {isTyping && <p>đang nhập...</p>}
             </div>
 
             <div className="chat-window__input">
@@ -159,7 +178,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                         type="text"
                         placeholder="Nhập tin nhắn..."
                         value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
+                        onChange={handleTypingChange}
                     />
                     <button type="submit" disabled={!messageInput.trim()} className="submit">
                         Gửi

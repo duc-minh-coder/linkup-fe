@@ -22,6 +22,7 @@ function Message() {
     const stompConnection = useRef(null);
     const [initSelected, setInitSelected] = useState(false);
     const conversationRef = useRef(null);
+    const [isTyping, setIsTyping] = useState(false);
 
     const API_BASE_URL = GetApiBaseUrl();
     const SOCKET_URL = `${API_BASE_URL}/ws`;
@@ -96,12 +97,32 @@ function Message() {
         }
     };
 
-    const typing = async () => {
+    const handleTyping = async () => {
+        if (!stompCli || !conversation) {
+            return;
+        }
+        const messageData = {
+            senderId: userInfo.id,
+            receiverId: conversation.userId,
+            typing: "TYPING",
+            createdTime: new Date()
+        }
 
+        stompCli.send("/app/chat.typing", {}, JSON.stringify(messageData))
     }
 
-    const stopTyping = async () => {
+    const handleStopTyping = async () => {
+        if (!stompCli || !conversation) {
+            return;
+        }
+        const messageData = {
+            senderId: userInfo.id,
+            receiverId: conversation.userId,
+            typing: "STOP_TYPING",
+            createdTime: new Date()
+        }
 
+        stompCli.send("/app/chat.stopTyping", {}, JSON.stringify(messageData))
     }
 
     const sendMessage = async (content) => {
@@ -134,10 +155,8 @@ function Message() {
     };
 
     const initWebsocket = (userId) => {
-        if (stompConnection.current) {
+        if (stompConnection.current) 
             stompConnection.current.disconnect();
-        }
-
         if (!userId) return;
 
         const socket = new SockJS(`${SOCKET_URL}?senderId=${userId}`);
@@ -161,8 +180,22 @@ function Message() {
 
                     //     return [...prev, messageBody];
                     // });
-
-                    setMessages(prev => [...prev, messageBody]);
+                    console.log(messageBody);
+                    
+                    switch (messageBody.type) {
+                        case "CHAT":
+                            setMessages(prev => [...prev, messageBody]);
+                            break;
+                        case "TYPING":
+                            setIsTyping(true);
+                            break;
+                        case "STOP_TYPING":
+                            setIsTyping(false);
+                            break;
+                        default:
+                            break;
+                    }
+                    
                 }
                 else {
                     setConversations(prevConversations => 
@@ -174,7 +207,6 @@ function Message() {
                     )
                 }
             })
-
             setStompCli(stompClient);
             stompConnection.current = stompClient;
         } , (err) => {
@@ -244,6 +276,9 @@ function Message() {
                     }}
                     hasMore={hasMore}
                     currentId={userInfo.id}
+                    isTyping={isTyping}
+                    handleTyping={handleTyping}
+                    handleStopTyping={handleStopTyping}
                 />
             </div>
         </div>
