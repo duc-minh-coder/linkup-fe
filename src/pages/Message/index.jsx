@@ -13,7 +13,6 @@ function Message() {
     const { receiverId } = useParams();
     const [conversations, setConversations] = useState([]);
     const [conversation, setConversation] = useState(null);
-    const conversationRef = useRef();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
@@ -21,6 +20,8 @@ function Message() {
     const [userInfo, setUserInfo] = useState({});
     const [stompCli, setStompCli] = useState(null);
     const stompConnection = useRef(null);
+    const [initSelected, setInitSelected] = useState(false);
+    const conversationRef = useRef(null);
 
     const API_BASE_URL = GetApiBaseUrl();
     const SOCKET_URL = `${API_BASE_URL}/ws`;
@@ -76,7 +77,13 @@ function Message() {
             );
             const messageList = response.data.result.reverse();
 
-            setMessages(prev => [...messageList, ...prev]);
+            setMessages(prev => {
+                const existingIds = new Set(prev.map(msg => msg.id));
+                const newMessages = messageList.filter(msg => !existingIds.has(msg.id));
+
+                return [...newMessages, ...prev];
+            });
+            
             setPage(prevPage => prevPage + 1);
     
             if (messageList.length < PAGE_SIZE) 
@@ -115,16 +122,15 @@ function Message() {
         setMessages(prev => [...prev, messageData]);
     };
 
-    const selectConversation = (conversation) => {
-        setConversation(conversation);
-        setMessages([]);
-        setPage(0); 
-        setHasMore(true);
-        navigate(`/messages/${conversation.userId}`)
+    const selectConversation = async (newConversation) => {
+        if (conversation && conversation?.userId === newConversation.userId) return;
 
-        setTimeout(() => {
-            getMessages(conversation.userId)
-        }, 0);
+        setMessages([]);
+        setPage(0);
+        setHasMore(true);
+        setConversation(newConversation);
+        navigate(`/messages/${newConversation.userId}`);
+        await getMessages(newConversation.userId);
     };
 
     const initWebsocket = (userId) => {
@@ -136,13 +142,6 @@ function Message() {
 
         const socket = new SockJS(`${SOCKET_URL}?senderId=${userId}`);
         const stompClient = Stomp.over(socket);
-        
-
-        stompClient.debug = (str) => {
-            console.log('STOMP Debug:', str);
-        };
-
-        setStompCli(stompClient);
 
         stompClient.connect({}, () => {
             //đưa user lên sv
@@ -154,14 +153,17 @@ function Message() {
             // tự động thêm /user/id vào trc vì be dùng convertAndSendToUser
             stompClient.subscribe(`/user/queue/messages`, (message) => {
                 const messageBody = JSON.parse(message.body);
-                const currentConversation = conversationRef.current;
 
-                console.log("Nhận message từ:", messageBody.senderId);
-                console.log("Đang chat với:", currentConversation?.userId);
+                if (conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)) {
+                    // setMessages(prev => {
+                    //     const existingId = prev.some(msg => msg.id === messageBody.id);
+                    //     if (existingId) return prev;
 
-                if (String(currentConversation.userId) === String(messageBody.senderId)) {
+                    //     return [...prev, messageBody];
+                    // });
+
                     setMessages(prev => [...prev, messageBody]);
-                } 
+                }
                 else {
                     setConversations(prevConversations => 
                         prevConversations.map(prevConversation => 
@@ -185,6 +187,7 @@ function Message() {
     useEffect(() => {
         getUserInfo();
         getConversations();
+        setInitSelected(false);
 
         return () => {
             if (stompConnection.current) {
@@ -206,15 +209,17 @@ function Message() {
     }, [userInfo.id])
 
     useEffect(() => {
-        if (receiverId && conversations.length > 0) {
-            const conversationChoice = conversations.find((c) => 
-                String(c.userId) === String(receiverId)
-            );
+        if (!receiverId || conversations.length === 0 || initSelected) return;
 
-            if (conversationChoice) 
-                selectConversation(conversationChoice);
+        const conversationChoice = conversations.find((c) => 
+            String(c.userId) === String(receiverId)
+        );
+
+        if (conversationChoice) {
+            selectConversation(conversationChoice);
+            setInitSelected(true);
         }
-    }, [receiverId, conversations]);
+    }, [receiverId, conversations, initSelected]);
 
     useEffect(() => {
         conversationRef.current = conversation;
@@ -234,7 +239,8 @@ function Message() {
                     loading={loading}
                     onSendMessage={sendMessage}
                     onLoadMore={() => {
-                        getMessages(conversation.userId);
+                        if (conversation)
+                            getMessages(conversation.userId);
                     }}
                     hasMore={hasMore}
                     currentId={userInfo.id}
