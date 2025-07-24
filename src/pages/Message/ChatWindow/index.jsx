@@ -5,7 +5,6 @@ import { Phone, Video, Bolt } from "lucide-react";
 function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId }) {
     const [messageInput, setMessageInput] = useState("");
     const messagesEndRef = useRef(null);
-    const [currentUserId, setCurrentUserId] = useState(null);
     const isLoadOldMessages = useRef(false);
     const messagesContainerRef = useRef(null);
     const prevScrollHeightRef = useRef(0);
@@ -14,9 +13,6 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    useEffect(() => {
-        setCurrentUserId(currentId);
-    }, [messages]);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
@@ -34,7 +30,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
         if (scrollTop < 50 && hasMore) {
             prevScrollHeightRef.current = scrollHeight;
             isLoadOldMessages.current = true;
-            onLoadMore(); // Gọi load thêm tin nhắn
+            onLoadMore(); //load thêm tin nhắn
         }
     };
 
@@ -90,7 +86,6 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
         return (
             <div className="chat-window">
                 <div className="chat-window__empty">
-                    <h3>Chọn một cuộc trò chuyện</h3>
                     <p>Chọn một cuộc trò chuyện để bắt đầu nhắn tin</p>
                 </div>
             </div>
@@ -131,10 +126,10 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                                 <div
                                     key={index}
                                     className={`message-item ${
-                                        String(message.senderId) !== String(currentUserId) ? 'own' : 'other'
+                                        String(message.senderId) === String(currentId) ? 'own' : 'other'
                                     }`}
                                 >
-                                    {String(message.senderId) === String(currentUserId) && (
+                                    {String(message.senderId) !== String(currentId) && (
                                         <img
                                             src={conversation.userAvatarUrl}
                                             alt={conversation.username}

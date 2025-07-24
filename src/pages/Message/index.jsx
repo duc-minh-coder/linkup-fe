@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ChatWindow from "./ChatWindow";
 import ConversationList from "./ConversationList";
 import "./Message.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 import SockJS from "sockjs-client";
@@ -13,12 +13,14 @@ function Message() {
     const { receiverId } = useParams();
     const [conversations, setConversations] = useState([]);
     const [conversation, setConversation] = useState(null);
+    const conversationRef = useRef();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [userInfo, setUserInfo] = useState({});
     const [stompCli, setStompCli] = useState(null);
+    const stompConnection = useRef(null);
 
     const API_BASE_URL = GetApiBaseUrl();
     const SOCKET_URL = `${API_BASE_URL}/ws`;
@@ -87,17 +89,30 @@ function Message() {
         }
     };
 
+    const typing = async () => {
+
+    }
+
+    const stopTyping = async () => {
+
+    }
+
     const sendMessage = async (content) => {
-        if (!stompCli || conversation) {
+        if (!stompCli || !conversation) {
             return;
         }
 
-        stompCli.send("/app/chat.sendMessage", {}, JSON.stringify({
+        const messageData = {
             senderId: userInfo.id,
             receiverId: conversation.userId,
             content: content,
-            type: "CHAT"
-        }))
+            type: "CHAT",
+            createdTime: new Date()
+        };
+
+        stompCli.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
+
+        setMessages(prev => [...prev, messageData]);
     };
 
     const selectConversation = (conversation) => {
@@ -105,49 +120,90 @@ function Message() {
         setMessages([]);
         setPage(0); 
         setHasMore(true);
-        getMessages(conversation.userId);
         navigate(`/messages/${conversation.userId}`)
+
+        setTimeout(() => {
+            getMessages(conversation.userId)
+        }, 0);
     };
 
-    useEffect(() => {
-        getUserInfo();
-        setMessages([]);
-        getConversations();
-    }, []);
+    const initWebsocket = (userId) => {
+        if (stompConnection.current) {
+            stompConnection.current.disconnect();
+        }
 
-    useEffect(() => {
-        if (!userInfo?.id) return;
+        if (!userId) return;
 
-        const socket = new SockJS(SOCKET_URL);
+        const socket = new SockJS(`${SOCKET_URL}?senderId=${userId}`);
         const stompClient = Stomp.over(socket);
+        
+
+        stompClient.debug = (str) => {
+            console.log('STOMP Debug:', str);
+        };
+
         setStompCli(stompClient);
 
         stompClient.connect({}, () => {
-            console.log("connected to ws");
-            
             //đưa user lên sv
             stompClient.send("/app/chat.addUser", {}, JSON.stringify({
-                senderId: userInfo.id,
+                senderId: userId,
                 type: "ONLINE"
             }))
-
             // nghe tin nhắn đc gửi từ sv
-            stompClient.subscribe(`/user/${userInfo.id}/queue/messages`, (message) => {
+            // tự động thêm /user/id vào trc vì be dùng convertAndSendToUser
+            stompClient.subscribe(`/user/queue/messages`, (message) => {
                 const messageBody = JSON.parse(message.body);
-                console.log(messageBody);
+                const currentConversation = conversationRef.current;
 
-                if (conversation?.userId === messageBody.senderId) {
+                console.log("Nhận message từ:", messageBody.senderId);
+                console.log("Đang chat với:", currentConversation?.userId);
+
+                if (String(currentConversation.userId) === String(messageBody.senderId)) {
                     setMessages(prev => [...prev, messageBody]);
+                } 
+                else {
+                    setConversations(prevConversations => 
+                        prevConversations.map(prevConversation => 
+                            prevConversation.userId === messageBody.senderId
+                            ? { ...prevConversation, lastMessage: messageBody.content} 
+                            : prevConversation
+                        )
+                    )
                 }
-                
             })
 
-            return () => {
-                if (stompClient && stompClient.connect) 
-                    stompClient.disconnect();
-            }
+            setStompCli(stompClient);
+            stompConnection.current = stompClient;
+        } , (err) => {
+            console.log(err);
         })
-    }, [userInfo])
+
+        return stompClient;
+    }
+
+    useEffect(() => {
+        getUserInfo();
+        getConversations();
+
+        return () => {
+            if (stompConnection.current) {
+                stompConnection.current.disconnect();
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        if (userInfo?.id) {
+            initWebsocket(userInfo.id);
+        }
+
+        return () => {
+            if (stompConnection.current) {
+                stompConnection.current.disconnect();
+            }
+        }
+    }, [userInfo.id])
 
     useEffect(() => {
         if (receiverId && conversations.length > 0) {
@@ -159,6 +215,10 @@ function Message() {
                 selectConversation(conversationChoice);
         }
     }, [receiverId, conversations]);
+
+    useEffect(() => {
+        conversationRef.current = conversation;
+    }, [conversation])
 
     return (
         <div className="message">
@@ -177,7 +237,7 @@ function Message() {
                         getMessages(conversation.userId);
                     }}
                     hasMore={hasMore}
-                    currentId={receiverId}
+                    currentId={userInfo.id}
                 />
             </div>
         </div>

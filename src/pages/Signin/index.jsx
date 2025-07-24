@@ -26,7 +26,7 @@ function Signin() {
                 username: username,
                 password: password
             });
-
+            
             const token = response.data.result.token;
             
             localStorage.setItem("token", token);

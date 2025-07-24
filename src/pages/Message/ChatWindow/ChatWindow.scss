@@ -6,10 +6,8 @@
 
     
     .no-messages {
-        display: flex;
-        color: #fff;
-        align-items: center;
-        justify-content: center;
+        text-align: center;
+        color: #8e8e8e;
         font-size: 24px;
 
         @media (max-width: 640px) {
@@ -166,11 +164,10 @@
     }
 
     &__empty {
-        flex: 1;
+        flex: 1;    
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         color: #8e8e8e;
         
         h3 {
