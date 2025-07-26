@@ -221,7 +221,9 @@ function Message() {
                         prevConversations.map(prevConversation => 
                             prevConversation.userId === messageBody.senderId
                             ? { ...prevConversation, 
-                                lastMessage: messageBody.content, lastMessageTime: new Date(), userSentLast: true 
+                                lastMessage: messageBody.content ?? prevConversation.lastMessage, 
+                                lastMessageTime: new Date(), 
+                                userSentLast: false
                             } 
                             : prevConversation
                         )
@@ -239,7 +241,6 @@ function Message() {
 
     useEffect(() => {
         getUserInfo();
-        getConversations();
         setInitSelected(false);
 
         return () => {
@@ -251,6 +252,7 @@ function Message() {
 
     useEffect(() => {
         if (userInfo?.id) {
+            getConversations();
             initWebsocket(userInfo.id);
         }
 

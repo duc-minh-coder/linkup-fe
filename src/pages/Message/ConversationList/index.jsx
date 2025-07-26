@@ -60,7 +60,7 @@ function ConversationList({ conversations, otherUserId, onSelectConversation }) 
 
                                 <p className="conversation-item__info__message">
                                     {conversation.userSentLast ? 'bạn: ' : ''}
-                                    {conversation.lastMessage || 'Chưa có tin nhắn'}
+                                    {conversation.lastMessage}
                                 </p>
                             </div>
                             <span className="conversation-item__time">
