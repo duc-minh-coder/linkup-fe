@@ -50,7 +50,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
 
         typingTimeout.current = setTimeout(() => {
             handleStopTyping();
-        }, 3000);
+        }, 2000);
     }
 
     useEffect(() => {

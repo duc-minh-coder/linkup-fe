@@ -137,10 +137,20 @@ function Message() {
             type: "CHAT",
             createdTime: new Date()
         };
-
+        
         stompCli.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
 
         setMessages(prev => [...prev, messageData]);
+
+        setConversations(prevConversations => 
+            prevConversations.map(prevConversation => 
+                prevConversation.userId === messageData.receiverId
+                ? { ...prevConversation, 
+                    lastMessage: messageData.content, lastMessageTime: new Date(), userSentLast: true 
+                }
+                : prevConversation
+            )
+        )
     };
 
     const selectConversation = async (newConversation) => {
@@ -180,11 +190,20 @@ function Message() {
 
                     //     return [...prev, messageBody];
                     // });
-                    console.log(messageBody);
                     
                     switch (messageBody.type) {
                         case "CHAT":
                             setMessages(prev => [...prev, messageBody]);
+
+                            setConversations(prevConversations => 
+                                prevConversations.map(prevConversation => 
+                                    prevConversation.userId === messageBody.senderId
+                                    ? { ...prevConversation, 
+                                        lastMessage: messageBody.content, lastMessageTime: new Date(), userSentLast: false
+                                     }
+                                    : prevConversation
+                                )
+                            )
                             break;
                         case "TYPING":
                             setIsTyping(true);
@@ -201,7 +220,9 @@ function Message() {
                     setConversations(prevConversations => 
                         prevConversations.map(prevConversation => 
                             prevConversation.userId === messageBody.senderId
-                            ? { ...prevConversation, lastMessage: messageBody.content} 
+                            ? { ...prevConversation, 
+                                lastMessage: messageBody.content, lastMessageTime: new Date(), userSentLast: true 
+                            } 
                             : prevConversation
                         )
                     )
