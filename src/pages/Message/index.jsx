@@ -142,15 +142,24 @@ function Message() {
 
         setMessages(prev => [...prev, messageData]);
 
-        setConversations(prevConversations => 
-            prevConversations.map(prevConversation => 
+        setConversations(prevConversations => {
+            const updated = prevConversations.map(prevConversation => 
                 prevConversation.userId === messageData.receiverId
                 ? { ...prevConversation, 
-                    lastMessage: messageData.content, lastMessageTime: new Date(), userSentLast: true 
-                }
+                    lastMessage: messageData.content, 
+                    lastMessageTime: new Date(), 
+                    userSentLast: true
+                    }
                 : prevConversation
             )
-        )
+
+            const targetConversation = 
+                updated.find(conversation => conversation.userId === messageData.receiverId);
+            const otherConversation = 
+                updated.filter(conversation => conversation.userId !== messageData.receiverId);
+
+            return [targetConversation, ...otherConversation];
+        })
     };
 
     const selectConversation = async (newConversation) => {
@@ -195,15 +204,24 @@ function Message() {
                         case "CHAT":
                             setMessages(prev => [...prev, messageBody]);
 
-                            setConversations(prevConversations => 
-                                prevConversations.map(prevConversation => 
+                            setConversations(prevConversations => {
+                                const updated = prevConversations.map(prevConversation => 
                                     prevConversation.userId === messageBody.senderId
                                     ? { ...prevConversation, 
-                                        lastMessage: messageBody.content, lastMessageTime: new Date(), userSentLast: false
+                                        lastMessage: messageBody.content ?? prevConversation.lastMessage, 
+                                        lastMessageTime: new Date(), 
+                                        userSentLast: false
                                      }
                                     : prevConversation
                                 )
-                            )
+
+                                const targetConversation = 
+                                    updated.find(conversation => conversation.userId === messageBody.senderId);
+                                const otherConversation = 
+                                    updated.filter(conversation => conversation.userId !== messageBody.senderId);
+
+                                return [targetConversation, ...otherConversation];
+                            })
                             break;
                         case "TYPING":
                             setIsTyping(true);
@@ -217,17 +235,24 @@ function Message() {
                     
                 }
                 else {
-                    setConversations(prevConversations => 
-                        prevConversations.map(prevConversation => 
+                    setConversations(prevConversations => {
+                        const updated = prevConversations.map(prevConversation => 
                             prevConversation.userId === messageBody.senderId
                             ? { ...prevConversation, 
                                 lastMessage: messageBody.content ?? prevConversation.lastMessage, 
                                 lastMessageTime: new Date(), 
                                 userSentLast: false
-                            } 
+                                }
                             : prevConversation
                         )
-                    )
+
+                        const targetConversation = 
+                            updated.find(conversation => conversation.userId === messageBody.senderId);
+                        const otherConversation = 
+                            updated.filter(conversation => conversation.userId !== messageBody.senderId);
+
+                        return [targetConversation, ...otherConversation];
+                    })
                 }
             })
             setStompCli(stompClient);
@@ -286,7 +311,7 @@ function Message() {
                 <ConversationList
                     conversations={conversations}
                     otherUserId={receiverId}
-                    onSelectConversation={selectConversation}
+                    onSelectConversation={selectConversation} 
                 />
                 <ChatWindow
                     conversation={conversation}

@@ -8,6 +8,18 @@ function ConversationList({ conversations, otherUserId, onSelectConversation }) 
         conversation.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const getRelativeTime = (dateSting) => {
+        const date = new Date(dateSting);
+        const now = new Date();
+
+        const diffInSeconds = Math.floor((now - date) / 1000);
+
+        if (diffInSeconds < 60) return "vừa xong";
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} phút trước`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
+        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
+    }
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('vi-VN', {
@@ -60,11 +72,12 @@ function ConversationList({ conversations, otherUserId, onSelectConversation }) 
 
                                 <p className="conversation-item__info__message">
                                     {conversation.userSentLast ? 'bạn: ' : ''}
-                                    {conversation.lastMessage}
+                                    {conversation.lastMessage ? conversation.lastMessage : 'Chưa có tin nhắn'}
                                 </p>
                             </div>
                             <span className="conversation-item__time">
-                                {conversation.lastMessageTime && formatDate(conversation.lastMessageTime)}
+                                {conversation.lastMessageTime && 
+                                    getRelativeTime(conversation.lastMessageTime)}
                             </span>
                         </div>
                     ))
