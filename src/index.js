@@ -6,13 +6,16 @@ import { createStore } from 'redux';
 import allReducers from './reducers/index.js';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { WebsocketProvider } from './contexts/WebsocketContext.jsx';
 const store = createStore(allReducers);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={ store }>
     <BrowserRouter>
-      <App />  
+      <WebsocketProvider>
+        <App />  
+      </WebsocketProvider>
     </BrowserRouter>
   </Provider>
 );

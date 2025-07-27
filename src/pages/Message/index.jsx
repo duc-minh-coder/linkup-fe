@@ -2,11 +2,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import ChatWindow from "./ChatWindow";
 import ConversationList from "./ConversationList";
 import "./Message.scss";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
-import SockJS from "sockjs-client";
-import { Stomp } from "@stomp/stompjs";
+import { WebsocketContext, WebsocketProvider } from "../../contexts/WebsocketContext";
 
 function Message() {
     const navigate = useNavigate();
@@ -17,31 +16,14 @@ function Message() {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [userInfo, setUserInfo] = useState({});
-    const [stompCli, setStompCli] = useState(null);
-    const stompConnection = useRef(null);
     const [initSelected, setInitSelected] = useState(false);
     const conversationRef = useRef(null);
     const [isTyping, setIsTyping] = useState(false);
 
     const API_BASE_URL = GetApiBaseUrl();
-    const SOCKET_URL = `${API_BASE_URL}/ws`;
     const PAGE_SIZE = "10";
 
-    const getUserInfo = async () => {
-        const token = localStorage.getItem("token");
-
-        try {
-            const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            setUserInfo(response.data.result);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const { stompCli, userInfo } = useContext(WebsocketContext);
 
     const getConversations = async () => {
         try {
@@ -173,120 +155,56 @@ function Message() {
         await getMessages(newConversation.userId);
     };
 
-    const initWebsocket = (userId) => {
-        if (stompConnection.current) 
-            stompConnection.current.disconnect();
-        if (!userId) return;
-
-        const socket = new SockJS(`${SOCKET_URL}?senderId=${userId}`);
-        const stompClient = Stomp.over(socket);
-
-        stompClient.connect({}, () => {
-            //đưa user lên sv
-            stompClient.send("/app/chat.addUser", {}, JSON.stringify({
-                senderId: userId,
-                type: "ONLINE"
-            }))
-            // nghe tin nhắn đc gửi từ sv
-            // tự động thêm /user/id vào trc vì be dùng convertAndSendToUser
-            stompClient.subscribe(`/user/queue/messages`, (message) => {
-                const messageBody = JSON.parse(message.body);
-
-                if (conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)) {
-                    // setMessages(prev => {
-                    //     const existingId = prev.some(msg => msg.id === messageBody.id);
-                    //     if (existingId) return prev;
-
-                    //     return [...prev, messageBody];
-                    // });
-                    
-                    switch (messageBody.type) {
-                        case "CHAT":
-                            setMessages(prev => [...prev, messageBody]);
-
-                            setConversations(prevConversations => {
-                                const updated = prevConversations.map(prevConversation => 
-                                    prevConversation.userId === messageBody.senderId
-                                    ? { ...prevConversation, 
-                                        lastMessage: messageBody.content ?? prevConversation.lastMessage, 
-                                        lastMessageTime: new Date(), 
-                                        userSentLast: false
-                                     }
-                                    : prevConversation
-                                )
-
-                                const targetConversation = 
-                                    updated.find(conversation => conversation.userId === messageBody.senderId);
-                                const otherConversation = 
-                                    updated.filter(conversation => conversation.userId !== messageBody.senderId);
-
-                                return [targetConversation, ...otherConversation];
-                            })
-                            break;
-                        case "TYPING":
-                            setIsTyping(true);
-                            break;
-                        case "STOP_TYPING":
-                            setIsTyping(false);
-                            break;
-                        default:
-                            break;
-                    }
-                    
-                }
-                else {
-                    setConversations(prevConversations => {
-                        const updated = prevConversations.map(prevConversation => 
-                            prevConversation.userId === messageBody.senderId
-                            ? { ...prevConversation, 
-                                lastMessage: messageBody.content ?? prevConversation.lastMessage, 
-                                lastMessageTime: new Date(), 
-                                userSentLast: false
-                                }
-                            : prevConversation
-                        )
-
-                        const targetConversation = 
-                            updated.find(conversation => conversation.userId === messageBody.senderId);
-                        const otherConversation = 
-                            updated.filter(conversation => conversation.userId !== messageBody.senderId);
-
-                        return [targetConversation, ...otherConversation];
-                    })
-                }
-            })
-            setStompCli(stompClient);
-            stompConnection.current = stompClient;
-        } , (err) => {
-            console.log(err);
-        })
-
-        return stompClient;
-    }
-
     useEffect(() => {
-        getUserInfo();
         setInitSelected(false);
-
-        return () => {
-            if (stompConnection.current) {
-                stompConnection.current.disconnect();
-            }
-        }
+        getConversations();
     }, []);
 
     useEffect(() => {
-        if (userInfo?.id) {
-            getConversations();
-            initWebsocket(userInfo.id);
-        }
+        if (!stompCli) return;
+        
+        stompCli.subscribe(`/user/queue/messages`, (message) => {
+            const messageBody = JSON.parse(message.body);
 
-        return () => {
-            if (stompConnection.current) {
-                stompConnection.current.disconnect();
+            if (conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)) {
+                switch (messageBody.type) {
+                    case "CHAT":
+                        setMessages(prev => [...prev, messageBody]);
+                        break;
+                    case "TYPING":
+                        setIsTyping(true);
+                        break;
+                    case "STOP_TYPING":
+                        setIsTyping(false);
+                        break;
+                    default:
+                        break;
+                }
+                
             }
-        }
-    }, [userInfo.id])
+            
+            setConversations(prevConversations => {
+                const updated = prevConversations.map(prevConversation => 
+                    prevConversation.userId === messageBody.senderId
+                    ? { ...prevConversation, 
+                        lastMessage: messageBody.content ?? prevConversation.lastMessage, 
+                        lastMessageTime: new Date(), 
+                        userSentLast: false
+                        }
+                    : prevConversation
+                )
+
+                const targetConversation = 
+                    updated.find(conversation => conversation.userId === messageBody.senderId);
+                const otherConversation = 
+                    updated.filter(conversation => conversation.userId !== messageBody.senderId);
+
+                return [targetConversation, ...otherConversation];
+            })
+        })
+        console.log("done");
+        
+    }, [stompCli, userInfo])
 
     useEffect(() => {
         if (!receiverId || conversations.length === 0 || initSelected) return;

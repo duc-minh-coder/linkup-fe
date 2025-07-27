@@ -2,16 +2,19 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import "./LayoutDefault.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../../actions/userAction";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
 
 function LayoutDefault() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+
     const token = useSelector((state) => state.user.token);
 
     const API_BASE_URL = GetApiBaseUrl();

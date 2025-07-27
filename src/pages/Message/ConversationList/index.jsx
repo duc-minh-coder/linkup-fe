@@ -46,7 +46,7 @@ function ConversationList({ conversations, otherUserId, onSelectConversation }) 
                 {filteredConversations.length === 0 ? 
                 (
                     <div className="no-conversations">
-                        <p>Chưa có cuộc trò chuyện nào</p>
+                        <p>Kết thêm bạn để nhắn tin</p>
                     </div>
                 ) : 
                 (
