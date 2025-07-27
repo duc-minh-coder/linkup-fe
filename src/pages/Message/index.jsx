@@ -5,7 +5,7 @@ import "./Message.scss";
 import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
-import { WebsocketContext, WebsocketProvider } from "../../contexts/WebsocketContext";
+import { WebsocketContext } from "../../contexts/WebsocketContext";
 
 function Message() {
     const navigate = useNavigate();
@@ -23,7 +23,7 @@ function Message() {
     const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = "10";
 
-    const { stompCli, userInfo } = useContext(WebsocketContext);
+    const { stompCli, userInfo, onlineList } = useContext(WebsocketContext);
 
     const getConversations = async () => {
         try {
@@ -162,48 +162,54 @@ function Message() {
 
     useEffect(() => {
         if (!stompCli) return;
-        
-        stompCli.subscribe(`/user/queue/messages`, (message) => {
-            const messageBody = JSON.parse(message.body);
 
-            if (conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)) {
-                switch (messageBody.type) {
-                    case "CHAT":
-                        setMessages(prev => [...prev, messageBody]);
-                        break;
-                    case "TYPING":
-                        setIsTyping(true);
-                        break;
-                    case "STOP_TYPING":
-                        setIsTyping(false);
-                        break;
-                    default:
-                        break;
-                }
-                
-            }
-            
-            setConversations(prevConversations => {
-                const updated = prevConversations.map(prevConversation => 
-                    prevConversation.userId === messageBody.senderId
-                    ? { ...prevConversation, 
-                        lastMessage: messageBody.content ?? prevConversation.lastMessage, 
-                        lastMessageTime: new Date(), 
-                        userSentLast: false
+        const trySubscribe = () => {
+            if (stompCli.connected) {
+                stompCli.subscribe(`/user/queue/messages`, (message) => {
+                    const messageBody = JSON.parse(message.body);
+
+                    if (conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)) {
+                        switch (messageBody.type) {
+                            case "CHAT":
+                                setMessages(prev => [...prev, messageBody]);
+                                break;
+                            case "TYPING":
+                                setIsTyping(true);
+                                break;
+                            case "STOP_TYPING":
+                                setIsTyping(false);
+                                break;
+                            default:
+                                break;
                         }
-                    : prevConversation
-                )
+                    }
+                    
+                    setConversations(prevConversations => {
+                        const updated = prevConversations.map(prevConversation => 
+                            prevConversation.userId === messageBody.senderId
+                            ? { ...prevConversation, 
+                                lastMessage: messageBody.content ?? prevConversation.lastMessage, 
+                                lastMessageTime: new Date(), 
+                                userSentLast: false
+                                }
+                            : prevConversation
+                        )
 
-                const targetConversation = 
-                    updated.find(conversation => conversation.userId === messageBody.senderId);
-                const otherConversation = 
-                    updated.filter(conversation => conversation.userId !== messageBody.senderId);
+                        const targetConversation = 
+                            updated.find(conversation => conversation.userId === messageBody.senderId);
+                        const otherConversation = 
+                            updated.filter(conversation => conversation.userId !== messageBody.senderId);
 
-                return [targetConversation, ...otherConversation];
-            })
-        })
-        console.log("done");
-        
+                        return [targetConversation, ...otherConversation];
+                    })
+                })
+            }
+            else {
+                console.log("chưa kết nối được chờ 2s");
+                setTimeout(trySubscribe, 2000);
+            }
+        }
+        trySubscribe();
     }, [stompCli, userInfo])
 
     useEffect(() => {
@@ -230,6 +236,7 @@ function Message() {
                     conversations={conversations}
                     otherUserId={receiverId}
                     onSelectConversation={selectConversation} 
+                    onlineList={onlineList}
                 />
                 <ChatWindow
                     conversation={conversation}

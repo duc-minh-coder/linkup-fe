@@ -9,6 +9,7 @@ export const WebsocketContext = createContext();
 export const WebsocketProvider = ({ children }) => {
     const [stompCli, setStompCli] = useState(null);
     const [userInfo, setUserInfo] = useState({});
+    const [onlineList, setOnlineList] = useState([]);
     const stompConnection = useRef(null);
 
     const API_BASE_URL = GetApiBaseUrl();
@@ -35,14 +36,34 @@ export const WebsocketProvider = ({ children }) => {
         if (!userId) return;
 
         const client = Stomp.over(() => new SockJS(`${SOCKET_URL}?senderId=${userId}`));
-
+        client.reconnectDelay = 5000;
+        setStompCli(client);
+        
         client.connect({}, () => {
             client.send("/app/chat.addUser", {}, JSON.stringify({
                 senderId: userId,
                 type: "ONLINE"
             }));
-            setStompCli(client);
+
+            client.subscribe("/topic/status", (message) => {
+                const statusInfo = JSON.parse(message.body);
+
+                setOnlineList(prev => {
+                    if (statusInfo.type === "ONLINE") {
+                        return prev.some(u => u.userId === statusInfo.senderId)
+                            ? prev
+                            : [...prev, statusInfo]
+                    }
+                    else if (statusInfo.type === "OFFLINE") {
+                        return prev.filter(u => u.userId !== statusInfo.senderId);
+                    }
+
+                    return prev;
+                })
+            })
+            
             stompConnection.current = client;
+            
         }, (err) => {
             console.error("WebSocket error:", err);
         });
@@ -59,7 +80,7 @@ export const WebsocketProvider = ({ children }) => {
 
         const handleBeforeUnload = () => {
             if (stompConnection.current) {
-                stompConnection.current.send("app/chat.addUser", {}, JSON.stringify({
+                stompConnection.current.send("/app/chat.addUser", {}, JSON.stringify({
                     senderId: userInfo.id,
                     type: "OFFLINE"
                 }))
@@ -81,7 +102,7 @@ export const WebsocketProvider = ({ children }) => {
     }, [userInfo?.id])
 
     return (
-        <WebsocketContext.Provider value={{ stompCli, userInfo }}>
+        <WebsocketContext.Provider value={{ stompCli, userInfo, onlineList }}>
             {children}
         </WebsocketContext.Provider>
     );

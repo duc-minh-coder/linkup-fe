@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./ConversationList.scss";
 
-function ConversationList({ conversations, otherUserId, onSelectConversation }) {
+function ConversationList({ conversations, otherUserId, onSelectConversation, onlineList }) {
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredConversations = conversations.filter(conversation =>
@@ -68,6 +68,11 @@ function ConversationList({ conversations, otherUserId, onSelectConversation }) 
                             <div className="conversation-item__info">
                                 <h4 className="conversation-item__info__name">
                                     {conversation.username}
+                                    {Array.isArray(onlineList) && 
+                                        onlineList.find(u => String(u.senderId) === String(conversation.userId)) 
+                                            ? " - online" 
+                                            : ""
+                                    }
                                 </h4>
 
                                 <p className="conversation-item__info__message">

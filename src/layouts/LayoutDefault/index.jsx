@@ -7,8 +7,6 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
-import SockJS from "sockjs-client";
-import { Stomp } from "@stomp/stompjs";
 
 function LayoutDefault() {
     const dispatch = useDispatch();
