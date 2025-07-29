@@ -1,9 +1,10 @@
 import axios from "axios";
 import "./FriendPage.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
 import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
+import { WebsocketContext } from "../../../contexts/WebsocketContext";
 
 function FriendPage() {
     const navigate = useNavigate();
@@ -15,7 +16,8 @@ function FriendPage() {
 
     const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = "5";
-    
+    const { onlineList } = useContext(WebsocketContext);
+
     const fetchFriends = async () => {
         const token = localStorage.getItem("token");
         if (!token) return;
@@ -83,10 +85,19 @@ function FriendPage() {
                 <h2>Danh sách bạn bè</h2>
                 
                 <div className="friends-list">
-                    {friends.map((friend) => (
-                        <div className="friends-list__item" key={friend.id}>
-                            <img src={friend.avatarUrl} alt={friend.fullName} onClick={() => navigate(`/profile/${friend.id}`)} />
+                    {friends.map((friend) => {
+                        const isOnline = onlineList.some(user => user.senderId === friend.id);
 
+                        return (<div className="friends-list__item" key={friend.id}>
+                            <div className="friends-list__avatar-wrapper">
+                                <img 
+                                    src={friend.avatarUrl} 
+                                    alt={friend.fullName} 
+                                    onClick={() => navigate(`/profile/${friend.id}`)} 
+                                />
+
+                                {isOnline && <span className="online-indicator" />}
+                            </div>
                             <div className="friends-list__info">
                                 <p>{friend.fullName}</p>
 
@@ -118,7 +129,7 @@ function FriendPage() {
                                     </div>
                                 </div>}         
                         </div>
-                    ))}
+                    )})}
 
                     {hasMore && (
                         <div className="see-more" onClick={seeMore}>

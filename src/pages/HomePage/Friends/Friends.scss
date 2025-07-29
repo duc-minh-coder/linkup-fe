@@ -161,6 +161,21 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         }
     }
 
+    &__avatar-wrapper {
+        position: relative;
+    }
+
+    .online-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 6px;
+        width: 9px;
+        height: 9px;
+        background-color: #28a745;
+        border: 2px solid #000;
+        border-radius: 50%;
+    } 
+
     &__description {
         color: $text-muted;
         font-size: 12px;

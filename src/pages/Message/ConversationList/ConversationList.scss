@@ -86,13 +86,18 @@
 
         .online-indicator {
             position: absolute;
-            bottom: 2px;
-            right: 2px;
+            bottom: -4px;
+            right: -4px;
             width: 12px;
             height: 12px;
             background-color: #28a745; // xanh lá
             border: 2px solid #000;
             border-radius: 50%;
+
+            @media (max-width: 1180px) {
+                bottom: 4px;
+                right: 4px;
+            }
         }
     }
 

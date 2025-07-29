@@ -50,10 +50,7 @@ function Friends() {
             </div>
 
             <div className="friend-content">
-                {
-                    userProfile.id ? <Outlet context={userProfile}/> : <div>Đang tải dữ liệu...</div>
-                }
-                 
+                {userProfile.id ? <Outlet context={userProfile}/> : <div>Đang tải dữ liệu...</div>}
             </div>            
         </div>
     );

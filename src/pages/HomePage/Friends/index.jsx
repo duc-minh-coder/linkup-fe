@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./Friends.scss";
 
-function Friends({ userProfile, friends, logout, loadMore, hasMoreFriend }) {
+function Friends({ userProfile, friends, logout, loadMore, hasMoreFriend, onlineList }) {
     const navigate = useNavigate();
 
     const handlingShowAllFriend = (e) => {
@@ -23,17 +23,28 @@ function Friends({ userProfile, friends, logout, loadMore, hasMoreFriend }) {
                 <span className="friends__switch-btn" onClick={() => logout()}>đăng xuất</span>
             </div>
             
-            <div className="friends__content">
+            <div className="friends__content">  
                 <div className="friends__title">
-                    <span>Bạn bè của bạn</span>
+                    <span>Đang hoạt động</span>
                     <button className="friends__see-all" onClick={handlingShowAllFriend}>Xem tất cả</button>
                 </div>
                 
                 <div className="friends__list">
-                    {friends.map((friend, index) => (
-                        <div key={index} className="friends__item">
+                    {friends.map((friend, index) => {
+                        const isOnline = onlineList.some(user => user.senderId === friend.id);
+
+                        return isOnline
+                        && (<div key={index} className="friends__item">
                             <div className="friends__user">
-                                <img src={friend.avatarUrl} alt="friend avt" onClick={() => {navigate(`/profile/${friend.id}`)}}/>
+                                <div className="friends__avatar-wrapper">
+                                    <img 
+                                        src={friend.avatarUrl} 
+                                        alt="friend avt" 
+                                        onClick={() => {navigate(`/profile/${friend.id}`)}}
+                                    />
+                                    <span className="online-indicator" />
+                                </div>
+                                
                                 <div className="friends__user-info">
                                     <span 
                                         className="friends__username" 
@@ -48,8 +59,8 @@ function Friends({ userProfile, friends, logout, loadMore, hasMoreFriend }) {
                                 className="friends__chat-btn" 
                                 onClick={() => {navigate(`/messages/${friend.id}`)}}
                             >nhắn tin</span>
-                        </div>
-                    ))}
+                        </div>)
+                    })}
 
                     {hasMoreFriend && 
                         <div className="show-more" onClick={() => loadMore()}>xem thêm</div>}

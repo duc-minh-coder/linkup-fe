@@ -36,6 +36,21 @@
                 }
             }
 
+            &__avatar-wrapper {
+                position: relative;
+
+                .online-indicator {
+                    position: absolute;
+                    bottom: 2px;
+                    right: -2px;
+                    width: 18px;
+                    height: 18px;
+                    background-color: #28a745;
+                    border: 2px solid #000;
+                    border-radius: 50%;
+                } 
+            }
+
             &__info {
                 display: flex;
                 flex-direction: column;
