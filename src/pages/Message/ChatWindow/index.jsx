@@ -145,11 +145,18 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
     return (
         <div className="chat-window">
             <div className="chat-window__header">
-                <img
-                    src={conversation.userAvatarUrl || '/default-avatar.png'}
-                    alt={conversation.username}
-                    className="chat-window__header__avatar"
-                />
+                <div className="chat-window__avatar-wrapper">
+                    <img
+                        src={conversation.userAvatarUrl}
+                        alt={conversation.username}
+                        className="chat-window__header__avatar"
+                    />
+                    {Array.isArray(onlineList) &&
+                        onlineList.find(u => String(u.senderId) === String(conversation.userId)) && (
+                            <span className="online-indicator" />
+                        )
+                    }
+                </div>
                 <div className="chat-window__header__info">
                     <h4>{conversation.username}</h4>
                     <p>{isOnline && 'Đang hoạt động'}</p>

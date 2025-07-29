@@ -124,7 +124,7 @@ export const WebsocketProvider = ({ children }) => {
         if (!userInfo?.id || !stompCli?.connected) return;
 
         const interval = setInterval(() => {
-            stompCli.send("app/chat.addUser", {}, JSON.stringify({
+            stompCli.send("/app/chat.addUser", {}, JSON.stringify({
                 senderId: userInfo.id,
                 type: "ONLINE"
             }))

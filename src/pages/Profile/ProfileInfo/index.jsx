@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./ProfileInfo.scss";
 import { NavLink, useNavigate } from "react-router-dom";
 import ImageViewer from "../ImageViewer";
@@ -6,6 +6,7 @@ import ConfigContainer from "../ConfigContainer";
 import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { WebsocketContext } from "../../../contexts/WebsocketContext";
 
 function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, handleFriend, handleNotAccept }) {
     const [isHovered, setIsHovered] = useState(false);
@@ -14,6 +15,7 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, hand
     const [showConfig, setShowConfig] = useState(false);
 
     const API_BASE_URL = GetApiBaseUrl();
+    const { stompCli, onlineList } = useContext(WebsocketContext);
 
     const handlingViewAvatar = () => {
         setShowImageViewer(true);
@@ -70,8 +72,18 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, hand
         <div className="profile-info">
             <div className="container">
                 <div className="profile-content">
-                    <div className="profile-avatar">
-                        <img src={userInfo.avatarUrl} alt="Profile" onClick={handlingViewAvatar}/>
+                    <div className="profile-info__avatar-wrapper">
+                        <img
+                            src={userInfo.avatarUrl}
+                            alt="avatar"
+                            className="profile-info__avatar"
+                            onClick={handlingViewAvatar}
+                        />
+                        {Array.isArray(onlineList) &&
+                            onlineList.find(u => String(u.senderId) === String(userInfo.id)) && (
+                                <span className="online-indicator" />
+                            )
+                        }
                     </div>
                     
                     <div className="profile-details">
