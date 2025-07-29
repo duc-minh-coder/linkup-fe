@@ -1,6 +1,9 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect, useContext } from "react";
 import "./ChatWindow.scss";
 import { Phone, Video, Bolt } from "lucide-react";
+import { WebsocketContext } from "../../../contexts/WebsocketContext";
+import axios from "axios";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
 
 function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId, isTyping, handleTyping, handleStopTyping }) {
     const [messageInput, setMessageInput] = useState("");
@@ -9,6 +12,10 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
     const messagesContainerRef = useRef(null);
     const prevScrollHeightRef = useRef(0);
     const typingTimeout = useRef(null);
+    const [isOnline, setIsOnline] = useState(false);
+
+    const { stompCli, userInfo, onlineList, isReady } = useContext(WebsocketContext);
+    const API_BASE_URL = GetApiBaseUrl();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -84,6 +91,31 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
         }
     }, [messages]);
 
+    useEffect(() => {
+        if (!userInfo?.id || !stompCli?.connected || !conversation?.userId) return;
+        const token = localStorage.getItem("token");
+
+        const checkOnline = async () => {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/api/online/checking/${conversation.userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+                setIsOnline(response.data.result);
+            } catch (error) {
+                console.log(error);
+                setIsOnline(false);
+            }
+            
+        }
+        checkOnline();//gọi lần đầu khi chạy
+
+        const interval = setInterval(checkOnline, 10000);
+
+        return () => clearInterval(interval);
+    }, [userInfo?.id, stompCli?.connected, conversation?.userId])
+
     const formatTime = (timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -120,7 +152,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                 />
                 <div className="chat-window__header__info">
                     <h4>{conversation.username}</h4>
-                    <p>Đang hoạt động</p>
+                    <p>{isOnline && 'Đang hoạt động'}</p>
                 </div>
                 <div className="chat-window__header__actions">
                     <button><Phone size={20}/></button>

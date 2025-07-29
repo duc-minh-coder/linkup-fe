@@ -27,7 +27,7 @@ function ProfileInfo({ userInfo, isOwner, handlingOpenEditProfileComponent, hand
         const token = localStorage.getItem("token");
 
         try {
-            await axios.post(`${API_BASE_URL}/api/auth/logout`, {
+            await axios.post(`${API_BASE_URL}/auth/logout`, {
                 token: token
             }, {
                 headers: {

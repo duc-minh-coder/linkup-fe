@@ -23,7 +23,7 @@ function Message() {
     const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = "10";
 
-    const { stompCli, userInfo, onlineList } = useContext(WebsocketContext);
+    const { stompCli, userInfo, onlineList, isReady } = useContext(WebsocketContext);
 
     const getConversations = async () => {
         try {
@@ -229,6 +229,14 @@ function Message() {
         conversationRef.current = conversation;
     }, [conversation])
 
+    if (!isReady) {
+        return (
+            <div className="loading">
+                đang tải dữ liệu người dùng
+            </div>
+        );
+    }
+    
     return (
         <div className="message">
             <div className="message__content">

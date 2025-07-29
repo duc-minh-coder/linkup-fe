@@ -60,19 +60,21 @@ function ConversationList({ conversations, otherUserId, onSelectConversation, on
                                 onSelectConversation(conversation)
                             }}
                         >
-                            <img
-                                src={conversation.userAvatarUrl}
-                                alt={conversation.username}
-                                className="conversation-item__avatar"
-                            />
+                            <div className="conversation-item__avatar-wrapper">
+                                <img
+                                    src={conversation.userAvatarUrl}
+                                    alt={conversation.username}
+                                    className="conversation-item__avatar"
+                                />
+                                {Array.isArray(onlineList) &&
+                                    onlineList.find(u => String(u.senderId) === String(conversation.userId)) && (
+                                        <span className="online-indicator" />
+                                    )
+                                }
+                            </div>
                             <div className="conversation-item__info">
                                 <h4 className="conversation-item__info__name">
                                     {conversation.username}
-                                    {Array.isArray(onlineList) && 
-                                        onlineList.find(u => String(u.senderId) === String(conversation.userId)) 
-                                            ? " - online" 
-                                            : ""
-                                    }
                                 </h4>
 
                                 <p className="conversation-item__info__message">

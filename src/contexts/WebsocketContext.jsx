@@ -10,6 +10,8 @@ export const WebsocketProvider = ({ children }) => {
     const [stompCli, setStompCli] = useState(null);
     const [userInfo, setUserInfo] = useState({});
     const [onlineList, setOnlineList] = useState([]);
+
+    const [isReady, setIsReady] = useState(false);
     const stompConnection = useRef(null);
 
     const API_BASE_URL = GetApiBaseUrl();
@@ -27,6 +29,7 @@ export const WebsocketProvider = ({ children }) => {
             })
             
             setUserInfo(response.data.result);
+            setIsReady(true);
         } catch (error) {
             console.log(error);
         }
@@ -35,6 +38,7 @@ export const WebsocketProvider = ({ children }) => {
     const initWebSocket = (userId) => {
         if (!userId) return;
 
+        const token = localStorage.getItem("token");
         const client = Stomp.over(() => new SockJS(`${SOCKET_URL}?senderId=${userId}`));
         client.reconnectDelay = 5000;
         setStompCli(client);
@@ -44,6 +48,21 @@ export const WebsocketProvider = ({ children }) => {
                 senderId: userId,
                 type: "ONLINE"
             }));
+
+            axios.get(`${API_BASE_URL}/api/online`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            }).then((res) => {
+                const result = res.data.result;
+
+                const mapOnlineIds = result.map(id => ({
+                    senderId: id,
+                    type: "ONLINE"
+                }))
+
+                setOnlineList(mapOnlineIds);
+            })
 
             client.subscribe("/topic/status", (message) => {
                 const statusInfo = JSON.parse(message.body);
@@ -101,8 +120,21 @@ export const WebsocketProvider = ({ children }) => {
         }
     }, [userInfo?.id])
 
+    useEffect(() => {
+        if (!userInfo?.id || !stompCli?.connected) return;
+
+        const interval = setInterval(() => {
+            stompCli.send("app/chat.addUser", {}, JSON.stringify({
+                senderId: userInfo.id,
+                type: "ONLINE"
+            }))
+        }, 10000);
+
+        return () => clearInterval(interval);
+    }, [userInfo?.id, stompCli?.connected])
+
     return (
-        <WebsocketContext.Provider value={{ stompCli, userInfo, onlineList }}>
+        <WebsocketContext.Provider value={{ stompCli, userInfo, onlineList, isReady }}>
             {children}
         </WebsocketContext.Provider>
     );
