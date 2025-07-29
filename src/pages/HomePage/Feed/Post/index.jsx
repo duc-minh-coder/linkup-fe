@@ -8,14 +8,14 @@ import {
 import "./Post.scss";
 import DetailPost from "./DetailPost";
 import { useNavigate } from "react-router-dom";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback, useContext } from "react";
 import EditPostModal from "./EditPostModal";
 import DropdownMenu from "./DropdownMenu";
 import axios from "axios";
 import GetApiBaseUrl from "../../../../helpers/GetApiBaseUrl";
 import { toast } from "react-toastify";
 
-function Post({ post, userProfile }) {
+function Post({ post, userProfile, onlineList }) {
     const [isLiked, setIsLiked] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -25,7 +25,6 @@ function Post({ post, userProfile }) {
 
     const isAuthor = userProfile && String(userProfile.id) === String(post.authorId);
     const API_BASE_URL = GetApiBaseUrl();
-    
 
     const handlingShow = () => {
         setShowDetail(false);
@@ -144,6 +143,7 @@ function Post({ post, userProfile }) {
                     userName={post.authorName}
                     handlingShow={handlingShow}
                     isAuthor={isAuthor}
+                    onlineList={onlineList}
                 />
             )}
 
@@ -156,12 +156,19 @@ function Post({ post, userProfile }) {
 
             <div className="post__header">
                 <div className="post__user" onClick={handlingOpenProfile}>
-                    <img
-                        src={post.authorAvatarUrl}
-                        alt={post.authorAvatarUrl}
-                        className="post__user-avatar"
-                        onClick={handlingOpenProfile}
-                    />
+                    <div className="post__avatar-wrapper">
+                        <img
+                            src={post.authorAvatarUrl}
+                            alt={post.authorAvatarUrl}
+                            className="post__user-avatar"
+                            onClick={handlingOpenProfile}
+                        />
+                        {Array.isArray(onlineList) &&
+                            onlineList.find(u => String(u.senderId) === String(post.authorId)) && (
+                                <span className="online-indicator" />
+                            )
+                        }
+                    </div>
                     <div className="post__user-info">
                         <span className="post__username">{post.authorName}</span>
                         <span 

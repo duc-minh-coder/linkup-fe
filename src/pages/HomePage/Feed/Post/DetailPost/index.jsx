@@ -16,7 +16,7 @@ import DropdownMenu from "../DropdownMenu";
 import GetApiBaseUrl from "../../../../../helpers/GetApiBaseUrl";
 import { toast } from "react-toastify";
 
-function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
+function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor, onlineList }) {
     const [comments, setComments] = useState(post.comments || []);
     const [newComment, setNewComment] = useState("");
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
@@ -193,12 +193,20 @@ function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor }) {
                     {/* Post Header */}
                     <div className="detail-post__post-header">
                         <div className="detail-post__user">
-                            <img 
-                                src={post.authorAvatarUrl} 
-                                alt={post.authorName}
-                                className="detail-post__avatar"
-                                onClick={handlingOpenFriendProfile}
-                            />
+                            <div className="detail-post__avatar-wrapper">
+                                <img 
+                                    src={post.authorAvatarUrl} 
+                                    alt={post.authorName}
+                                    className="detail-post__avatar"
+                                    onClick={handlingOpenFriendProfile}
+                                />
+                                {Array.isArray(onlineList) &&
+                                    onlineList.find(u => String(u.senderId) === String(post.authorId)) && (
+                                        <span className="online-indicator" />
+                                    )
+                                }
+                            </div>
+
                             <div className="detail-post__user-info">
                                 <h3 className="detail-post__author">{post.authorName}</h3>
                                 <time className="detail-post__date">{formatDate(post.updatedTime)}</time>

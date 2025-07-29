@@ -58,10 +58,26 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
         @include flex-center;
     }
 
+    &__avatar-wrapper {
+        position: relative;
+        cursor: pointer;
+    }
+
     &__user-avatar {
         @include avatar(32px);
         margin-right: 12px;
     }
+
+    .online-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 4px;
+        width: 9px;
+        height: 9px;
+        background-color: #28a745; // xanh lá
+        border: 2px solid #000;
+        border-radius: 50%;
+    }   
 
     &__user-info {
         display: flex;

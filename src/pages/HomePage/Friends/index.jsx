@@ -35,7 +35,11 @@ function Friends({ userProfile, friends, logout, loadMore, hasMoreFriend }) {
                             <div className="friends__user">
                                 <img src={friend.avatarUrl} alt="friend avt" onClick={() => {navigate(`/profile/${friend.id}`)}}/>
                                 <div className="friends__user-info">
-                                    <span className="friends__username" onClick={() => {navigate(`/profile/${friend.id}`)}}>{friend.fullName}</span>
+                                    <span 
+                                        className="friends__username" 
+                                        onClick={() => {navigate(`/profile/${friend.id}`)}}
+                                    >{friend.fullName}</span>
+
                                     <span className="friends__description">đang hoạt động</span>
                                 </div>
                             </div>

@@ -1,12 +1,13 @@
 import Feed from "./Feed";
 import "./HomePage.scss";
 import Friends from "./Friends";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { logout } from "../../actions/userAction";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
+import { WebsocketContext } from "../../contexts/WebsocketContext";
 
 function HomePage() {
     const [posts, setPosts] = useState([]);
@@ -24,6 +25,7 @@ function HomePage() {
 
     const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = 5;
+    const { stompCli, onlineList } = useContext(WebsocketContext);
 
     const loadMore = () => {
         const nextPage = friendPage + 1;
@@ -194,7 +196,7 @@ function HomePage() {
                 {!loadingProfile && (
                     <>
                         <div className="main-content__feed">
-                            <Feed posts={posts} userProfile={userProfile}/>
+                            <Feed posts={posts} userProfile={userProfile} onlineList={onlineList}/>
 
                             {loadingPosts && (
                                 <div className="box-bottom">
@@ -215,6 +217,7 @@ function HomePage() {
                             logout={handleLogout} 
                             loadMore={loadMore} 
                             hasMoreFriend={hasMoreFriend}
+                            onlineList={onlineList}
                         />
                     </>
                 )}
