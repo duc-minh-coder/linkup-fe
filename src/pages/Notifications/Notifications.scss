@@ -23,7 +23,7 @@
     
     .header-content {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         padding: 15px 0;
         
@@ -33,22 +33,6 @@
             margin: 0;
             color: #fff;
             text-align: center;
-        }
-        
-        .mark-all-read-btn {
-            background: #0095f6;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            
-            &:hover {
-                background: #1877f2;
-            }
         }
     }
 }
@@ -192,7 +176,6 @@
     100% { transform: rotate(360deg); }
 }
 
-// Mobile responsive
 @media (max-width: 768px) {
     .notifications-header {
         .header-content {

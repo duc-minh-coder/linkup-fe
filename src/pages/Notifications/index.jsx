@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Notifications.scss";
 import { Bell, Heart, MessageSquareText, User } from "lucide-react";
+import axios from "axios";
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -8,68 +9,18 @@ function Notifications() {
 
     const API_BASE_URL = "http://localhost:8080";
 
-    // Mock data cho demo
-    const mockNotifications = [
-        {
-            id: 1,
-            type: "like",
-            message: "Nguyễn Văn A đã thích bài viết của bạn",
-            avatar: "https://via.placeholder.com/40",
-            time: "2 giờ trước",
-            isRead: false
-        },
-        {
-            id: 2,
-            type: "comment",
-            message: "Trần Thị B đã bình luận về bài viết của bạn",
-            avatar: "https://via.placeholder.com/40",
-            time: "5 giờ trước",
-            isRead: false
-        },
-        {
-            id: 3,
-            type: "send-request",
-            message: "Lê Văn C đã gửi cho bạn 1 lời mời kết bạn",
-            avatar: "https://via.placeholder.com/40",
-            time: "1 ngày trước",
-            isRead: true
-        },
-        {
-            id: 4,
-            type: "like",
-            message: "Phạm Thị D đã thích bài viết của bạn",
-            avatar: "https://via.placeholder.com/40",
-            time: "2 ngày trước",
-            isRead: true
-        },
-        {
-            id: 5,
-            type: "comment",
-            message: "Hoàng Văn E đã nhắc đến bạn trong một bình luận",
-            avatar: "https://via.placeholder.com/40",
-            time: "3 ngày trước",
-            isRead: true
-        }
-    ];
-
     const getNotifications = async () => {
         try {
             const token = localStorage.getItem("token");
             
-            // Uncomment khi có API thật
-            // const response = await axios.get(`${API_BASE_URL}/api/notifications`, {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`,
-            //         "Content-Type": "application/json"
-            //     }
-            // });
-            // setNotifications(response.data.result);
-            
-            // Sử dụng mock data
-            setTimeout(() => {
-                setNotifications(mockNotifications);
-                setLoading(false);
-            }, 1000);
+            const response = await axios.get(`${API_BASE_URL}/api/notifications`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            setNotifications(response.data.result);
+            setLoading(false);
         } catch (err) {
             console.log(err);
             setLoading(false);
@@ -124,12 +75,29 @@ function Notifications() {
 
     const getNotificationIcon = (type) => {
         switch (type) {
-            case "like":
+            case "POST_LIKE":
                 return <Heart size={24} color="white" />;
-            case "comment":
+            case "POST_COMMENT":
                 return <MessageSquareText size={24} color="white" />;
-            case "send-request":
+            case "FRIEND_REQUEST":
                 return <User size={24} color="white" />;
+            case "FRIEND_ACCEPTED":
+                return <User size={24} color="blue" />;
+            default:
+                return <Bell size={24} color="white" />;
+        }
+    };
+
+    const getNotificationMessage = (senderName, type) => {
+        switch (type) {
+            case "POST_LIKE":
+                return `${senderName} đã like bài viết của bạn`;
+            case "POST_COMMENT":
+                return `${senderName} đã comment bài viết của bạn`;
+            case "FRIEND_REQUEST":
+                return `${senderName} đã gửi cho bạn lời mời kết bạn`;
+            case "FRIEND_ACCEPTED":
+                return `${senderName} đã chấp nhận lời mời kết bạn`;
             default:
                 return <Bell size={24} color="white" />;
         }
@@ -149,6 +117,7 @@ function Notifications() {
                         </div>
                     </div>
                 </div>
+
                 <div className="notifications-content">
                     <div className="container">
                         <div className="loading">
@@ -167,15 +136,6 @@ function Notifications() {
                 <div className="container">
                     <div className="header-content">
                         <h1>Thông báo</h1>
-
-                        {notifications.some(n => !n.isRead) && (
-                            <button 
-                                className="mark-all-read-btn"
-                                onClick={markAllAsRead}
-                            >
-                                Đánh dấu tất cả đã đọc
-                            </button>
-                        )}
                     </div>
                 </div>
             </div>
@@ -193,10 +153,10 @@ function Notifications() {
                                 <div 
                                     key={notification.id} 
                                     className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
-                                    onClick={() => !notification.isRead && markAsRead(notification.id)}
+                                    // onClick={() => !notification.isRead && markAsRead(notification.id)}
                                 >
                                     <div className="notification-avatar">
-                                        <img src={notification.avatar} alt="Avatar" />
+                                        <img src={notification.actorAvt} alt="Avatar" />
                                         <span className="notification-type-icon">
                                             {getNotificationIcon(notification.type)}
                                         </span>
@@ -204,7 +164,7 @@ function Notifications() {
                                     
                                     <div className="notification-content">
                                         <p className="notification-message">
-                                            {notification.message}
+                                            {getNotificationMessage(notification.actorName, notification.type)}
                                         </p>
                                         <span className="notification-time">
                                             {notification.time}

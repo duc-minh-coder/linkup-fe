@@ -185,10 +185,10 @@ function HomePage() {
     }, []);
 
     useEffect(() => {
-        if (userProfile.id) {
-            getFriends();
-        }
-    }, [userProfile]);
+        if (!userProfile.id) return;
+
+        getFriends();
+    }, [userProfile?.id]);
 
     return (
         <div className="linkup-app">
