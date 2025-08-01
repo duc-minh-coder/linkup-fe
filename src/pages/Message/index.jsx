@@ -157,8 +157,9 @@ function Message() {
 
     useEffect(() => {
         setInitSelected(false);
-        getConversations();
-    }, []);
+        if (userInfo?.id) 
+            getConversations();
+    }, [userInfo]);
 
     useEffect(() => {
         if (!stompCli) return;
@@ -229,7 +230,7 @@ function Message() {
         conversationRef.current = conversation;
     }, [conversation])
 
-    if (!isReady) {
+    if (!isReady || !userInfo?.id) {
         return (
             <div className="loading">
                 đang tải dữ liệu người dùng

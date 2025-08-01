@@ -20,6 +20,8 @@ export const WebsocketProvider = ({ children }) => {
     const getUserInfo = async () => {
         const token = localStorage.getItem("token");
 
+        if (!token) return;
+
         try {
             const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
                 headers: {
