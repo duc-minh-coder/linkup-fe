@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import "./Notifications.scss";
 import { Bell, Heart, MessageSquareText, User } from "lucide-react";
 import axios from "axios";
+import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = GetApiBaseUrl();
 
     const getNotifications = async () => {
         try {
@@ -19,6 +20,8 @@ function Notifications() {
                     "Content-Type": "application/json"
                 }
             });
+            console.log(response.data.result);
+            
             setNotifications(response.data.result);
             setLoading(false);
         } catch (err) {
@@ -30,20 +33,17 @@ function Notifications() {
     const markAsRead = async (notificationId) => {
         try {
             const token = localStorage.getItem("token");
-            
-            // Uncomment khi có API thật
-            // await axios.patch(`${API_BASE_URL}/api/notifications/${notificationId}/read`, {}, {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`,
-            //         "Content-Type": "application/json"
-            //     }
-            // });
-            
-            // Cập nhật local state
+
+            await axios.post(`${API_BASE_URL}/api/notifications/${notificationId}/read`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
             setNotifications(prev => 
                 prev.map(notification => 
                     notification.id === notificationId 
-                        ? { ...notification, isRead: true }
+                        ? { ...notification, read: true }
                         : notification
                 )
             );
@@ -55,18 +55,17 @@ function Notifications() {
     const markAllAsRead = async () => {
         try {
             const token = localStorage.getItem("token");
-            
-            // Uncomment khi có API thật
-            // await axios.patch(`${API_BASE_URL}/api/notifications/read-all`, {}, {
-            //     headers: {
-            //         Authorization: `Bearer ${token}`,
-            //         "Content-Type": "application/json"
-            //     }
-            // });
+
+            await axios.post(`${API_BASE_URL}/api/notifications/read-all`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
             
             // Cập nhật local state
             setNotifications(prev => 
-                prev.map(notification => ({ ...notification, isRead: true }))
+                prev.map(notification => ({ ...notification, read: true }))
             );
         } catch (err) {
             console.log(err);
@@ -110,19 +109,19 @@ function Notifications() {
     if (loading) {
         return (
             <div className="notifications">
-                <div className="notifications-header">
-                    <div className="container">
-                        <div className="header-content">
-                            <h1>Thông báo</h1>
+                <div className="notifications__header">
+                    <div className="notifications__container">
+                        <div className="notifications__header-content">
+                            <h1 className="notifications__title">Thông báo</h1>
                         </div>
                     </div>
                 </div>
 
-                <div className="notifications-content">
-                    <div className="container">
-                        <div className="loading">
-                            <div className="loading-spinner"></div>
-                            <p>Đang tải thông báo...</p>
+                <div className="notifications__content">
+                    <div className="notifications__container">
+                        <div className="notifications__loading">
+                            <div className="notifications__spinner"></div>
+                            <p className="notifications__loading-text">Đang tải thông báo...</p>
                         </div>
                     </div>
                 </div>
@@ -132,47 +131,53 @@ function Notifications() {
 
     return (
         <div className="notifications">
-            <div className="notifications-header">
-                <div className="container">
-                    <div className="header-content">
-                        <h1>Thông báo</h1>
+            <div className="notifications__header">
+                <div className="notifications__container">
+                    <div className="notifications__header-content">
+                        <h1 className="notifications__title">Thông báo</h1>
+                        <button
+                            className="notifications__read-all"
+                            onClick={markAllAsRead}
+                        >
+                            Đánh dấu đã đọc
+                        </button>
                     </div>
                 </div>
             </div>
-            
-            <div className="notifications-content">
-                <div className="container">
+
+            <div className="notifications__content">
+                <div className="notifications__container">
                     {notifications.length === 0 ? (
-                        <div className="empty-notifications">
-                            <div className="empty-icon"><Bell size={48} color="white" /></div>
-                            <h3>Chưa có thông báo nào...</h3>
+                        <div className="notifications__empty">
+                            <div className="notifications__empty-icon"><Bell size={48} color="white" /></div>
+                            <h3 className="notifications__empty-title">Chưa có thông báo nào...</h3>
                         </div>
                     ) : (
-                        <div className="notifications-list">
+                        <div className="notifications__list">
                             {notifications.map(notification => (
-                                <div 
-                                    key={notification.id} 
-                                    className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
-                                    // onClick={() => !notification.isRead && markAsRead(notification.id)}
+                                <div
+                                    key={notification.id}
+                                    className={`notifications__item ${!notification.read ? 'notifications__item--unread' : ''}`}
+                                    onClick={() => !notification.read && markAsRead(notification.id)}
                                 >
-                                    <div className="notification-avatar">
+                                    <div className="notifications__avatar">
                                         <img src={notification.actorAvt} alt="Avatar" />
-                                        <span className="notification-type-icon">
+                                        <span className="notifications__icon">
                                             {getNotificationIcon(notification.type)}
                                         </span>
                                     </div>
-                                    
-                                    <div className="notification-content">
-                                        <p className="notification-message">
+
+                                    <div className="notifications__body">
+                                        <p className="notifications__message">
                                             {getNotificationMessage(notification.actorName, notification.type)}
                                         </p>
-                                        <span className="notification-time">
+                                        <span className="notifications__time">
                                             {notification.time}
                                         </span>
                                     </div>
-                                    
-                                    {!notification.isRead && (
-                                        <div className="unread-indicator"></div>
+
+                                    {!notification.read && (
+                                        <div className="notifications__unread-dot"></div>
                                     )}
                                 </div>
                             ))}
