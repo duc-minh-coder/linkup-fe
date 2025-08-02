@@ -3,10 +3,12 @@ import "./Notifications.scss";
 import { Bell, Heart, MessageSquareText, User } from "lucide-react";
 import axios from "axios";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
+import { useNavigate } from "react-router-dom";
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     const API_BASE_URL = GetApiBaseUrl();
 
@@ -47,6 +49,8 @@ function Notifications() {
                         : notification
                 )
             );
+
+
         } catch (err) {
             console.log(err);
         }
@@ -71,6 +75,29 @@ function Notifications() {
             console.log(err);
         }
     };
+
+    const handleNotificationClick = async (notification) => {
+        if (!notification.read) await markAsRead(notification.id);
+
+        action(notification.type, notification.actorId, notification.postId);
+    }
+
+    const action = (type, actorId, postId) => {
+        switch (type) {
+            case "POST_LIKE":
+                
+                break;
+            case "POST_COMMENT":
+                
+                break;
+            case "FRIEND_REQUEST":
+                navigate(`/profile/${actorId}`);
+                break;
+            case "FRIEND_ACCEPTED":
+                navigate(`/profile/${actorId}`);
+                break;
+        }
+    }
 
     const getNotificationIcon = (type) => {
         switch (type) {
@@ -158,7 +185,7 @@ function Notifications() {
                                 <div
                                     key={notification.id}
                                     className={`notifications__item ${!notification.read ? 'notifications__item--unread' : ''}`}
-                                    onClick={() => !notification.read && markAsRead(notification.id)}
+                                    onClick={() => handleNotificationClick(notification)}
                                 >
                                     <div className="notifications__avatar">
                                         <img src={notification.actorAvt} alt="Avatar" />
