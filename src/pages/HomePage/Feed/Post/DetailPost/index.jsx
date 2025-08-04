@@ -16,7 +16,7 @@ import DropdownMenu from "../DropdownMenu";
 import GetApiBaseUrl from "../../../../../helpers/GetApiBaseUrl";
 import { toast } from "react-toastify";
 
-function DetailPost({ post, handlingShow, userAvatar, userName, isAuthor, onlineList }) {
+function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList }) {
     const [comments, setComments] = useState(post.comments || []);
     const [newComment, setNewComment] = useState("");
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);

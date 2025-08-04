@@ -139,8 +139,7 @@ function Post({ post, userProfile, onlineList }) {
             {showDetail && (
                 <DetailPost
                     post={post} 
-                    userAvatar={post.authorAvatarUrl} 
-                    userName={post.authorName}
+                    userAvatar={userProfile.avatarUrl} 
                     handlingShow={handlingShow}
                     isAuthor={isAuthor}
                     onlineList={onlineList}

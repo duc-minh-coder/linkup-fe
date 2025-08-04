@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./Notifications.scss";
 import { Bell, Heart, MessageSquareText, User } from "lucide-react";
 import axios from "axios";
 import GetApiBaseUrl from "../../helpers/GetApiBaseUrl";
 import { useNavigate } from "react-router-dom";
+import DetailPost from "../HomePage/Feed/Post/DetailPost";
+import { WebsocketContext } from "../../contexts/WebsocketContext"
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [choicePost, setChoicePost] = useState({});
+    const [showDetail, setShowDetail] = useState(false);
     const navigate = useNavigate();
+    const { userInfo, onlineList } = useContext(WebsocketContext);
 
     const API_BASE_URL = GetApiBaseUrl();
 
@@ -22,7 +27,6 @@ function Notifications() {
                     "Content-Type": "application/json"
                 }
             });
-            console.log(response.data.result);
             
             setNotifications(response.data.result);
             setLoading(false);
@@ -67,7 +71,6 @@ function Notifications() {
                 }
             });
             
-            // Cập nhật local state
             setNotifications(prev => 
                 prev.map(notification => ({ ...notification, read: true }))
             );
@@ -76,23 +79,43 @@ function Notifications() {
         }
     };
 
+    const handlingShow = () => {
+        setShowDetail(false);
+    }
+
     const handleNotificationClick = async (notification) => {
         if (!notification.read) await markAsRead(notification.id);
 
         action(notification.type, notification.actorId, notification.postId);
     }
 
+    const getPostContent = async (postId) => {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/posts/${postId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setChoicePost(response.data.result);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handlingOpenDetailPost = async (postId) => {
+        await getPostContent(postId);
+        setShowDetail(true);
+    }
+
     const action = (type, actorId, postId) => {
         switch (type) {
             case "POST_LIKE":
-                
-                break;
             case "POST_COMMENT":
-                
+                handlingOpenDetailPost(postId);
                 break;
             case "FRIEND_REQUEST":
-                navigate(`/profile/${actorId}`);
-                break;
             case "FRIEND_ACCEPTED":
                 navigate(`/profile/${actorId}`);
                 break;
@@ -147,7 +170,6 @@ function Notifications() {
                 <div className="notifications__content">
                     <div className="notifications__container">
                         <div className="notifications__loading">
-                            <div className="notifications__spinner"></div>
                             <p className="notifications__loading-text">Đang tải thông báo...</p>
                         </div>
                     </div>
@@ -212,6 +234,15 @@ function Notifications() {
                     )}
                 </div>
             </div>
+
+            {showDetail && 
+                <DetailPost
+                    post={choicePost} 
+                    userAvatar={userInfo.avatarUrl} 
+                    handlingShow={handlingShow}
+                    isAuthor={userInfo.id === choicePost.authorId ? true : false}
+                    onlineList={onlineList}
+                />}
         </div>
     );
 }
