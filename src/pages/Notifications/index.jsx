@@ -11,6 +11,7 @@ function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [choicePost, setChoicePost] = useState({});
+    const [commentId, setCommentId] = useState(null);
     const [showDetail, setShowDetail] = useState(false);
     const navigate = useNavigate();
     const { userInfo, onlineList } = useContext(WebsocketContext);
@@ -86,7 +87,7 @@ function Notifications() {
     const handleNotificationClick = async (notification) => {
         if (!notification.read) await markAsRead(notification.id);
 
-        action(notification.type, notification.actorId, notification.postId);
+        action(notification.type, notification.actorId, notification.postId, notification.commentId);
     }
 
     const getPostContent = async (postId) => {
@@ -109,10 +110,13 @@ function Notifications() {
         setShowDetail(true);
     }
 
-    const action = (type, actorId, postId) => {
+    const action = (type, actorId, postId, commentId) => {
         switch (type) {
             case "POST_LIKE":
+                handlingOpenDetailPost(postId);
+                break;
             case "POST_COMMENT":
+                setCommentId(commentId);
                 handlingOpenDetailPost(postId);
                 break;
             case "FRIEND_REQUEST":
@@ -242,6 +246,7 @@ function Notifications() {
                     handlingShow={handlingShow}
                     isAuthor={userInfo.id === choicePost.authorId ? true : false}
                     onlineList={onlineList}
+                    commentId={commentId}
                 />}
         </div>
     );

@@ -16,7 +16,7 @@ import DropdownMenu from "../DropdownMenu";
 import GetApiBaseUrl from "../../../../../helpers/GetApiBaseUrl";
 import { toast } from "react-toastify";
 
-function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList }) {
+function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList, commentId }) {
     const [comments, setComments] = useState(post.comments || []);
     const [newComment, setNewComment] = useState("");
     const [likeCount, setLikeCount] = useState(post.userLikes?.length || 0);
@@ -177,6 +177,23 @@ function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList }) {
             prev > 0 ? prev - 1 : post.postMedia.length - 1
         );
     };
+
+    useEffect(() => {
+        if (post.comments) {
+            const sortedComments = [...post.comments];
+
+            if (commentId) {
+                const index = sortedComments.findIndex(c => c.id === commentId);
+
+                if (index !== -1) {
+                    const [focusComment] = sortedComments.splice(index, 1);
+                    sortedComments.unshift(focusComment);
+                }
+            }
+
+            setComments(sortedComments);
+        }
+    }, [post.comments, commentId])
 
     return (
         <>
@@ -344,14 +361,14 @@ function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList }) {
                         {/* Comments List */}
                         <div className="detail-post__comments-list">
                             {comments.map((comment, index) => (
-                                <div key={comment.id || index} className="detail-post__comment">
+                                <div key={comment.id || index} className={"detail-post__comment"}>
                                     <img 
                                         src={comment.avatarUrl} 
                                         alt={comment.fullName}
                                         className="detail-post__comment-avatar"
                                     />
                                     <div className="detail-post__comment-content">
-                                        <div className="detail-post__comment-bubble">
+                                        <div className={`detail-post__comment-bubble detail-post__comment ${String(comment.id) === String(commentId) ? "highlighted" : ""}`}>
                                             <strong className="detail-post__comment-author">
                                                 {comment.fullName}
                                             </strong>

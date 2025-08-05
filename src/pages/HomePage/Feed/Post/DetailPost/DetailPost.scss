@@ -317,7 +317,7 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
             font-weight: 600;
             color: #fff;
         }
-    }
+    }   
 
     &__add-comment {
         display: flex;
@@ -404,6 +404,12 @@ $gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 
     &__comment-content {
         flex: 1;
+
+        .highlighted {
+            background-color: #6e6e6e;
+            transition: background-color 1s ease;
+            color: #000;
+        }
     }
 
     &__comment-bubble {
