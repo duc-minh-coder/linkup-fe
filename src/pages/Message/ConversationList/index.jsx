@@ -20,17 +20,6 @@ function ConversationList({ conversations, otherUserId, onSelectConversation, on
         if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
     }
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    };
-
     return (
         <div className="conversation-list">       
             <div className="conversation-list__search">

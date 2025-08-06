@@ -4,6 +4,7 @@ import { Phone, Video, Bolt } from "lucide-react";
 import { WebsocketContext } from "../../../contexts/WebsocketContext";
 import axios from "axios";
 import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
+import { toast } from "react-toastify";
 
 function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId, isTyping, handleTyping, handleStopTyping }) {
     const [messageInput, setMessageInput] = useState("");
@@ -116,10 +117,28 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
         return () => clearInterval(interval);
     }, [userInfo?.id, stompCli?.connected, conversation?.userId])
 
-    const formatTime = (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    };
+    useEffect(() => {
+        if (!conversation?.userId) return;
+        const token = localStorage.getItem("token");
+
+        const markAsRead = async () => {
+            try {
+                await axios.post(`${API_BASE_URL}/api/messages/mark-read`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    params: {
+                        otherUserId: conversation.userId
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        markAsRead();
+    }, [conversation?.userId])
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -207,6 +226,20 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                         )}
                         <div ref={messagesEndRef} />
                     </>
+                )}
+                {messages.length > 0 && (
+                    (() => {
+                        const lastMessage = messages[messages.length - 1];
+                        if (lastMessage.senderId === currentId && lastMessage.read) {
+                            return (
+                                <div className="message-read-status">
+                                    Đã xem
+                                </div>
+                            );
+                        }
+                        else 
+                            return null;
+                    })()
                 )}
                 {isTyping && <p>đang nhập...</p>}
             </div>

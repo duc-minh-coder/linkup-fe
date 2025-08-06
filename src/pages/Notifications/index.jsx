@@ -113,6 +113,7 @@ function Notifications() {
     const action = (type, actorId, postId, commentId) => {
         switch (type) {
             case "POST_LIKE":
+                setCommentId({});
                 handlingOpenDetailPost(postId);
                 break;
             case "POST_COMMENT":
