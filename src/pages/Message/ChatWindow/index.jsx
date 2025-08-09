@@ -4,7 +4,6 @@ import { Phone, Video, Bolt } from "lucide-react";
 import { WebsocketContext } from "../../../contexts/WebsocketContext";
 import axios from "axios";
 import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
-import { toast } from "react-toastify";
 
 function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId, isTyping, handleTyping, handleStopTyping }) {
     const [messageInput, setMessageInput] = useState("");

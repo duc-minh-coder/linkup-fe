@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import "./ConversationList.scss";
 
-function ConversationList({ conversations, otherUserId, onSelectConversation, onlineList }) {
+function ConversationList({ conversations = [], otherUserId, onSelectConversation, onlineList, unreadCounts }) {
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredConversations = conversations.filter(conversation =>
@@ -60,10 +60,15 @@ function ConversationList({ conversations, otherUserId, onSelectConversation, on
                                         <span className="online-indicator" />
                                     )
                                 }
+                                {unreadCounts[conversation.userId] > 0 && (
+                                    <span className="unread-badge">
+                                        {unreadCounts[conversation.userId] > 99 ? '99+' : unreadCounts[conversation.userId]}
+                                    </span>
+                                )}
                             </div>
                             <div className="conversation-item__info">
                                 <h4 className="conversation-item__info__name">
-                                    {conversation.username}
+                                    {conversation.username} 
                                 </h4>
 
                                 <p className="conversation-item__info__message">

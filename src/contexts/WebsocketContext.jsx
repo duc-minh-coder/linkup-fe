@@ -32,6 +32,8 @@ export const WebsocketProvider = ({ children }) => {
             
             setUserInfo(response.data.result);
             setIsReady(true);
+
+            initWebSocket(response.data.result.id);
         } catch (error) {
             console.log(error);
         }

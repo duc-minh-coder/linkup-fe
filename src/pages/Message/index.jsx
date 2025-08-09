@@ -19,6 +19,7 @@ function Message() {
     const [initSelected, setInitSelected] = useState(false);
     const conversationRef = useRef(null);
     const [isTyping, setIsTyping] = useState(false);
+    const [unreadCounts, setUnreadCounts] = useState({});
 
     const API_BASE_URL = GetApiBaseUrl();
     const PAGE_SIZE = "10";
@@ -41,6 +42,24 @@ function Message() {
             console.log(err);
         }
     };
+
+    const getUnreadCounts = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            axios.get(`${API_BASE_URL}/api/messages/unread-counts`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                const data = res.data.result;
+                setUnreadCounts(data);
+            }).catch((err) => console.log(err))
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const getMessages = async (receiverId) => {
         try {
@@ -131,12 +150,13 @@ function Message() {
                     lastMessage: messageData.content, 
                     lastMessageTime: new Date(), 
                     userSentLast: true
-                    }
+                }
                 : prevConversation
             )
 
             const targetConversation = 
                 updated.find(conversation => conversation.userId === messageData.receiverId);
+
             const otherConversation = 
                 updated.filter(conversation => conversation.userId !== messageData.receiverId);
 
@@ -147,29 +167,41 @@ function Message() {
     const selectConversation = async (newConversation) => {
         if (conversation && conversation?.userId === newConversation.userId) return;
 
+        conversationRef.current = newConversation;
         setMessages([]);
         setPage(0);
         setHasMore(true);
         setConversation(newConversation);
+        setUnreadCounts(prev => ({
+            ...prev,
+            [newConversation.userId]: 0
+        }))
         navigate(`/messages/${newConversation.userId}`);
         await getMessages(newConversation.userId);
     };
 
     useEffect(() => {
         setInitSelected(false);
-        if (userInfo?.id) 
+        if (userInfo?.id) {
+            getUnreadCounts();
             getConversations();
+        }
+            
     }, [userInfo]);
 
     useEffect(() => {
         if (!stompCli) return;
 
+        let subscribe;
+
         const trySubscribe = () => {
             if (stompCli.connected) {
-                stompCli.subscribe(`/user/queue/messages`, (message) => {
+                subscribe = stompCli.subscribe(`/user/queue/messages`, (message) => {
                     const messageBody = JSON.parse(message.body);
 
-                    if (conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)) {
+                    if (
+                        conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)
+                    ) {
                         switch (messageBody.type) {
                             case "CHAT":
                                 setMessages(prev => [...prev, messageBody]);
@@ -183,25 +215,37 @@ function Message() {
                             default:
                                 break;
                         }
+                    } else { // thuộc về đoạn chat khác
+                        if (messageBody.type === "CHAT") {
+                            setUnreadCounts(prevConversation => ({
+                                ...prevConversation,
+                                [messageBody.senderId]: ((prevConversation[messageBody.senderId] || 0) + 1)
+                            }))
+                        }      
                     }
                     
-                    setConversations(prevConversations => {
+                    setConversations(prevConversations => {             
                         const updated = prevConversations.map(prevConversation => 
                             prevConversation.userId === messageBody.senderId
-                            ? { ...prevConversation, 
-                                lastMessage: messageBody.content ?? prevConversation.lastMessage, 
-                                lastMessageTime: new Date(), 
+                            ? { 
+                                ...prevConversation, 
+                                lastMessage:messageBody.type === "CHAT" ? messageBody.content : prevConversation.lastMessage, 
+                                lastMessageTime:messageBody.type === "CHAT" ? new Date() : prevConversation.createdTime, 
                                 userSentLast: false
-                                }
+                            }
                             : prevConversation
                         )
+                        if (messageBody.type === "CHAT") {
+                            const targetConversation = 
+                                updated.find(conversation => conversation.userId === messageBody.senderId);
 
-                        const targetConversation = 
-                            updated.find(conversation => conversation.userId === messageBody.senderId);
-                        const otherConversation = 
-                            updated.filter(conversation => conversation.userId !== messageBody.senderId);
+                            const otherConversation = 
+                                updated.filter(conversation => conversation.userId !== messageBody.senderId); // phần còn lại
 
-                        return [targetConversation, ...otherConversation];
+                            return [targetConversation, ...otherConversation];
+                        }
+                        
+                        return updated;
                     })
                 })
             }
@@ -211,7 +255,11 @@ function Message() {
             }
         }
         trySubscribe();
-    }, [stompCli, userInfo])
+
+        return () => {
+            if (subscribe) subscribe.unsubscribe();
+        }
+    }, [stompCli])
 
     useEffect(() => {
         if (!receiverId || conversations.length === 0 || initSelected) return;
@@ -225,10 +273,6 @@ function Message() {
             setInitSelected(true);
         }
     }, [receiverId, conversations, initSelected]);
-
-    useEffect(() => {
-        conversationRef.current = conversation;
-    }, [conversation])
 
     if (!isReady || !userInfo?.id) {
         return (
@@ -246,6 +290,7 @@ function Message() {
                     otherUserId={receiverId}
                     onSelectConversation={selectConversation} 
                     onlineList={onlineList}
+                    unreadCounts={unreadCounts}
                 />
                 <ChatWindow
                     conversation={conversation}
