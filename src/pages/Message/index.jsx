@@ -198,10 +198,22 @@ function Message() {
             if (stompCli.connected) {
                 subscribe = stompCli.subscribe(`/user/queue/messages`, (message) => {
                     const messageBody = JSON.parse(message.body);
+                    const token = localStorage.getItem("token");
 
                     if (
                         conversationRef && String(conversationRef.current.userId) === String(messageBody.senderId)
                     ) {
+                        if (userInfo.id !== messageBody.senderId) {
+                            axios.post(`${API_BASE_URL}/api/messages/mark-read`, {}, {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                    "Content-Type": "application/json"
+                                }, params: {
+                                    otherUserId: messageBody.senderId
+                                }
+                            })
+                        }
+                        
                         switch (messageBody.type) {
                             case "CHAT":
                                 setMessages(prev => [...prev, messageBody]);
