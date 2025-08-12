@@ -8,17 +8,48 @@ function ConversationList({ conversations = [], otherUserId, onSelectConversatio
         conversation.username.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const getRelativeTime = (dateSting) => {
-        const date = new Date(dateSting);
-        const now = new Date();
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        
+        try {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInMs = now - date;
+            const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+            const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+            const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-        const diffInSeconds = Math.floor((now - date) / 1000);
-
-        if (diffInSeconds < 60) return "vừa xong";
-        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} phút trước`;
-        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
-        if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
-    }
+            // Nếu trong vòng 1 phút
+            if (diffInMinutes < 1) {
+                return 'Vừa xong';
+            }
+            // Nếu trong vòng 1 giờ
+            else if (diffInMinutes < 60) {
+                return `${diffInMinutes} phút trước`;
+            }
+            // Nếu trong vòng 24 giờ
+            else if (diffInHours < 24) {
+                return `${diffInHours} giờ trước`;
+            }
+            // Nếu trong vòng 7 ngày
+            else if (diffInDays < 7) {
+                return `${diffInDays} ngày trước`;
+            }
+            // Ngày cụ thể
+            else {
+                return date.toLocaleDateString('vi-VN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+                });
+            }
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return '';
+        }
+    };
 
     return (
         <div className="conversation-list">       
@@ -78,7 +109,7 @@ function ConversationList({ conversations = [], otherUserId, onSelectConversatio
                             </div>
                             <span className="conversation-item__time">
                                 {conversation.lastMessageTime && 
-                                    getRelativeTime(conversation.lastMessageTime)}
+                                    formatDate(conversation.lastMessageTime)}
                             </span>
                         </div>
                     ))

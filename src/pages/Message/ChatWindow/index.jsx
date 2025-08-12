@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useLayoutEffect, useContext } from "react";
 import "./ChatWindow.scss";
-import { Phone, Video, Bolt } from "lucide-react";
+import { Phone, Video, Bolt, Send } from "lucide-react";
 import { WebsocketContext } from "../../../contexts/WebsocketContext";
 import axios from "axios";
 import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
+import ChatBubble from "./ChatBubble";
 
 function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore, hasMore, currentId, isTyping, handleTyping, handleStopTyping }) {
     const [messageInput, setMessageInput] = useState("");
@@ -14,7 +15,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
     const typingTimeout = useRef(null);
     const [isOnline, setIsOnline] = useState(false);
 
-    const { stompCli, userInfo, onlineList, isReady } = useContext(WebsocketContext);
+    const { stompCli, userInfo, onlineList } = useContext(WebsocketContext);
     const API_BASE_URL = GetApiBaseUrl();
 
     const scrollToBottom = () => {
@@ -139,17 +140,6 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
         markAsRead();
     }, [conversation?.userId])
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('vi-VN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    };
-
     if (!conversation) {
         return (
             <div className="chat-window">
@@ -204,41 +194,18 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                                         String(message.senderId) === String(currentId) ? 'own' : 'other'
                                     }`}
                                 >
-                                    {String(message.senderId) !== String(currentId) && (
-                                        <img
-                                            src={conversation.userAvatarUrl}
-                                            alt={conversation.username}
-                                            className="message-item__avatar"
-                                        />
-                                    )}
-                                    <div className="message-item__content">
-                                        <div className="message-item__content__bubble message-item__bubble">
-                                            {message.content}
-                                        </div>
-
-                                        <div className="message-item__content__time">
-                                            {formatDate(message.createdTime)}
-                                        </div>
-                                    </div>
+                                    <ChatBubble 
+                                        message={message} 
+                                        currentId={currentId} 
+                                        conversation={conversation} 
+                                    />
                                 </div>
                             ))
                         )}
-                        <div ref={messagesEndRef} />
+
+                        {/* dùng để luôn xuống cuối khi mở trang */}
+                        <div ref={messagesEndRef} /> 
                     </>
-                )}
-                {messages.length > 0 && (
-                    (() => {
-                        const lastMessage = messages[messages.length - 1];
-                        if (lastMessage.senderId === currentId && lastMessage.read) {
-                            return (
-                                <div className="message-read-status">
-                                    Đã xem
-                                </div>
-                            );
-                        }
-                        else 
-                            return null;
-                    })()
                 )}
                 {isTyping && <p>đang nhập...</p>}
             </div>
@@ -252,7 +219,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                         onChange={handleTypingChange}
                     />
                     <button type="submit" disabled={!messageInput.trim()} className="submit">
-                        Gửi
+                        <Send />
                     </button>
                 </form>
             </div>

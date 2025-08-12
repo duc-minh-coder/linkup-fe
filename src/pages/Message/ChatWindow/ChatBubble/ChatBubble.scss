@@ -1,0 +1,131 @@
+.chat-bubble {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+
+    &__actions {
+        position: relative; 
+    }
+
+    &.own {
+        margin-left: auto; 
+        flex-direction: row-reverse;
+        .chat-bubble__content {
+            align-items: flex-end;
+        }
+        .chat-bubble__bubble-wrapper {
+            flex-direction: row-reverse;
+        }
+        .chat-bubble__menu {
+            right: 0;
+            left: auto;
+        }
+    }
+
+    &__avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    &__content {
+        max-width: 70%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        
+        &__bubble {
+            padding: 8px 16px;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #fff;
+        }
+        
+        &__time {
+            font-size: 11px;
+            color: #8e8e8e;
+            margin-top: 5px;
+            text-align: right;
+        }
+    }
+
+    &__bubble-wrapper {
+        display: flex;
+        align-items: flex-end; // giúp bong bóng và thời gian canh cùng đáy
+        gap: 6px; // tạo khoảng trống giữa bong bóng và icon menu
+    }
+
+    &__bubble {
+        background: #e4e6eb;
+        color: #050505;
+        padding: 8px 12px;
+        border-radius: 18px;
+        font-size: 14px;
+    }
+
+    &__menu-trigger {
+        opacity: 0;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 50%;
+        margin-left: 4px;
+        transition: opacity 0.2s ease, 0.2s ease;
+        opacity: 1;
+    }
+
+    &__menu {
+        position: absolute;
+        top: 110%;
+        right: 0;
+        background: #242526;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(5px);
+        pointer-events: none;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        min-width: 150px;
+        z-index: 10;
+
+        button {
+            background: none;
+            border: none;
+            color: #e4e6eb;
+            padding: 10px 15px;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        &.open {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    }
+
+    &__time {
+        font-size: 12px;
+        color: #65676b;
+        margin-top: 4px;
+        align-self: flex-end;
+        width: 100px;
+    }
+
+    &.own .chat-bubble__time {
+        text-align: right;
+        margin-right: 4px; // cho thời gian không dính sát mép
+    }
+
+    &__read-status {
+        color: white;
+        margin-top: 2px;
+    }
+}

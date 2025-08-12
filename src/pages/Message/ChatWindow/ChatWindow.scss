@@ -270,25 +270,6 @@
         margin-right: 10px;
         border: 1px solid #dbdbdb;
     }
-
-    &__content {
-        max-width: 70%;
-        
-        &__bubble {
-            padding: 8px 16px;
-            font-size: 14px;
-            line-height: 1.4;
-            word-wrap: break-word;
-            color: #fff;
-        }
-        
-        &__time {
-            font-size: 11px;
-            color: #8e8e8e;
-            margin-top: 5px;
-            text-align: right;
-        }
-    }
 }
 
 .message-read-status {

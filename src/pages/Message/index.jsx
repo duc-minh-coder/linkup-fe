@@ -209,23 +209,23 @@ function Message() {
                                     Authorization: `Bearer ${token}`,
                                     "Content-Type": "application/json"
                                 }, params: {
-                                    otherUserId: messageBody.senderId
+                                    otherUserId: conversationRef.current.userId
                                 }
                             })
-                        }
-                        
-                        switch (messageBody.type) {
-                            case "CHAT":
-                                setMessages(prev => [...prev, messageBody]);
-                                break;
-                            case "TYPING":
-                                setIsTyping(true);
-                                break;
-                            case "STOP_TYPING":
-                                setIsTyping(false);
-                                break;
-                            default:
-                                break;
+
+                            switch (messageBody.type) {
+                                case "CHAT":
+                                    setMessages(prev => [...prev, messageBody]);
+                                    break;
+                                case "TYPING":
+                                    setIsTyping(true);
+                                    break;
+                                case "STOP_TYPING":
+                                    setIsTyping(false);
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     } else { // thuộc về đoạn chat khác
                         if (messageBody.type === "CHAT") {
@@ -285,14 +285,6 @@ function Message() {
             setInitSelected(true);
         }
     }, [receiverId, conversations, initSelected]);
-
-    if (!isReady || !userInfo?.id) {
-        return (
-            <div className="loading">
-                đang tải dữ liệu người dùng
-            </div>
-        );
-    }
     
     return (
         <div className="message">

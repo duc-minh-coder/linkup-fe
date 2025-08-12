@@ -22,6 +22,12 @@ export const WebsocketProvider = ({ children }) => {
 
         if (!token) return;
 
+        await axios.post(`${API_BASE_URL}/auth/introspect`, {
+            token
+        }, {}).catch(() => {
+            return;
+        })
+
         try {
             const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
                 headers: {
@@ -35,7 +41,7 @@ export const WebsocketProvider = ({ children }) => {
 
             initWebSocket(response.data.result.id);
         } catch (error) {
-            console.log(error);
+            return;
         }
     }
 
