@@ -166,7 +166,7 @@ function Message() {
 
     const selectConversation = async (newConversation) => {
         if (conversation && conversation?.userId === newConversation.userId) return;
-
+        
         conversationRef.current = newConversation;
         setMessages([]);
         setPage(0);

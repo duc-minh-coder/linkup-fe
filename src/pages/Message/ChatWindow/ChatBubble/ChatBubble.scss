@@ -91,8 +91,7 @@
 
     &__menu {
         position: absolute;
-        top: 110%;
-        right: 0;
+        top: 0;
         background: #242526;
         border-radius: 8px;
         overflow: hidden;
@@ -123,12 +122,14 @@
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto;
+            right: 2px;
         }
 
         &.open.other {
             opacity: 1;
             transform: translateX(120px);
             pointer-events: auto;
+            right: -2px;
         }
     }
 
@@ -146,7 +147,8 @@
     }
 
     &__read-status {
-        color: white;
+        color: #7c7c7c;
+        font-size: smaller;
         margin-top: 2px;
     }
 }

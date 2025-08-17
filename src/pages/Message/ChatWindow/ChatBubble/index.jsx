@@ -110,7 +110,14 @@ function ChatBubble({ message, currentId, conversation }) {
                                 className={`config-btn ${isOwnMessage ? "own" : ""}`} />
                         </div>
 
-                        <div className={`chat-bubble__menu ${menuOpen ? "open" : ""} ${isOwnMessage ? "own" : "other"}`} >
+                        <div 
+                            className={`
+                                    chat-bubble__menu 
+                                    ${menuOpen ? "open" : ""} 
+                                    ${isOwnMessage ? "own" : "other"} 
+                                    ${conversation.userSentLast && "user-sent-last"}
+                                `} 
+                        >
                             {isOwnMessage ? (
                                 <>
                                     <button onClick={handleConfig}>Xóa với bạn</button>

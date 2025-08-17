@@ -219,7 +219,7 @@ function ChatWindow({ conversation, messages, loading, onSendMessage, onLoadMore
                         onChange={handleTypingChange}
                     />
                     <button type="submit" disabled={!messageInput.trim()} className="submit">
-                        <Send />
+                        <Send size={10} />
                     </button>
                 </form>
             </div>

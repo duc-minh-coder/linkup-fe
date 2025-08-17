@@ -40,7 +40,6 @@ function SearchBar({ isOpen, onClose }) {
     useEffect(() => {
         if (debounceText?.trim()) {
             setLoading(true);
-            // console.log("debounceText:", debounceText);
 
             try {
                 const token = localStorage.getItem("token");

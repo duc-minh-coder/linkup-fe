@@ -1,12 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import "./ConversationList.scss";
+import useDebounce from "../../../hooks/useDebounce";
+import axios from "axios";
+import GetApiBaseUrl from "../../../helpers/GetApiBaseUrl";
 
 function ConversationList({ conversations = [], otherUserId, onSelectConversation, onlineList, unreadCounts }) {
     const [searchTerm, setSearchTerm] = useState("");
+    const debounceText = useDebounce(searchTerm, 300);
+    const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(0);
+    const [init, setInit] = useState(true);
+    const [searchResult, setSearchResult] = useState([]);
 
-    const filteredConversations = conversations.filter(conversation =>
-        conversation.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const API_BASE_URL = GetApiBaseUrl();
+    const PAGE_SIZE = "3";
 
     const formatDate = (dateString) => {
         if (!dateString) return '';
@@ -51,6 +58,48 @@ function ConversationList({ conversations = [], otherUserId, onSelectConversatio
         }
     };
 
+    const seeMore = () => {
+        setPage(prev => prev + 1);
+    }
+
+    useEffect(() => {
+        if (debounceText?.trim()) {
+            setIsLoading(true);
+
+            const getFriend = async () => {
+                const token = localStorage.getItem("token");
+
+                try {
+                    await axios.post(`${API_BASE_URL}/api/messages/conversation/search`, {
+                        text: debounceText
+                    },{
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        }, 
+                        params: {
+                            page: page,
+                            size: PAGE_SIZE
+                        }
+                    }).then((response) => {
+                        const data = response.data.result;
+
+                        if (page === 0)
+                            setSearchResult(data);
+                        else 
+                            setSearchResult(prev => [...prev, ...data]);
+                        setIsLoading(false);
+                    })
+                } catch (error) {
+                    console.log(error);
+                    setIsLoading(false);
+                }
+            }
+
+            getFriend();
+        }
+    }, [debounceText, page])
+
     return (
         <div className="conversation-list">       
             <div className="conversation-list__search">
@@ -63,56 +112,100 @@ function ConversationList({ conversations = [], otherUserId, onSelectConversatio
             </div>
 
             <div className="conversation-list__conversations">
-                {filteredConversations.length === 0 ? 
+                {conversations.length === 0 ? 
                 (
                     <div className="no-conversations">
                         <p>Kết thêm bạn để nhắn tin</p>
                     </div>
                 ) : 
-                (
-                    filteredConversations.map(conversation => (
-                        <div
-                            key={conversation.userId}
-                            className={`conversation-item ${
-                                String(otherUserId) === String(conversation.userId) ? 'active' : ''
-                            }`}
-                            onClick={() => {
-                                onSelectConversation(conversation)
-                            }}
-                        >
-                            <div className="conversation-item__avatar-wrapper">
-                                <img
-                                    src={conversation.userAvatarUrl}
-                                    alt={conversation.username}
-                                    className="conversation-item__avatar"
-                                />
-                                {Array.isArray(onlineList) &&
-                                    onlineList.find(u => String(u.senderId) === String(conversation.userId)) && (
-                                        <span className="online-indicator" />
-                                    )
-                                }
-                                {unreadCounts[conversation.userId] > 0 && (
-                                    <span className="unread-badge">
-                                        {unreadCounts[conversation.userId] > 99 ? '99+' : unreadCounts[conversation.userId]}
-                                    </span>
-                                )}
-                            </div>
-                            <div className="conversation-item__info">
-                                <h4 className="conversation-item__info__name">
-                                    {conversation.username} 
-                                </h4>
+                ( 
+                    searchTerm.trim() && searchResult.length > 0 
+                        ? searchResult.map((conversation) => (
+                            <div
+                                key={conversation.userId}
+                                className={`conversation-item ${
+                                    String(otherUserId) === String(conversation.userId) ? 'active' : ''
+                                }`}
+                                onClick={() => {
+                                    onSelectConversation(conversation)
+                                }}
+                            >
+                                <div className="conversation-item__avatar-wrapper">
+                                    <img
+                                        src={conversation.userAvatarUrl}
+                                        alt={conversation.username}
+                                        className="conversation-item__avatar"
+                                    />
+                                    {Array.isArray(onlineList) &&
+                                        onlineList.find(u => String(u.senderId) === String(conversation.userId)) && (
+                                            <span className="online-indicator" />
+                                        )
+                                    }
+                                    {unreadCounts[conversation.userId] > 0 && (
+                                        <span className="unread-badge">
+                                            {unreadCounts[conversation.userId] > 99 ? '99+' : unreadCounts[conversation.userId]}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="conversation-item__info">
+                                    <h4 className="conversation-item__info__name">
+                                        {conversation.username} 
+                                    </h4>
 
-                                <p className="conversation-item__info__message">
-                                    {conversation.userSentLast ? 'bạn: ' : ''}
-                                    {conversation.lastMessage ? conversation.lastMessage : 'Chưa có tin nhắn'}
-                                </p>
+                                    <p className="conversation-item__info__message">
+                                        {conversation.userSentLast ? 'bạn: ' : ''}
+                                        {conversation.lastMessage ? conversation.lastMessage : 'Chưa có tin nhắn'}
+                                    </p>
+                                </div>
+                                <span className="conversation-item__time">
+                                    {conversation.lastMessageTime && 
+                                        formatDate(conversation.lastMessageTime)}
+                                </span>
                             </div>
-                            <span className="conversation-item__time">
-                                {conversation.lastMessageTime && 
-                                    formatDate(conversation.lastMessageTime)}
-                            </span>
-                        </div>
-                    ))
+                        ))
+                        : conversations.map(conversation => (
+                            <div
+                                key={conversation.userId}
+                                className={`conversation-item ${
+                                    String(otherUserId) === String(conversation.userId) ? 'active' : ''
+                                }`}
+                                onClick={() => {
+                                    onSelectConversation(conversation)
+                                }}
+                            >
+                                <div className="conversation-item__avatar-wrapper">
+                                    <img
+                                        src={conversation.userAvatarUrl}
+                                        alt={conversation.username}
+                                        className="conversation-item__avatar"
+                                    />
+                                    {Array.isArray(onlineList) &&
+                                        onlineList.find(u => String(u.senderId) === String(conversation.userId)) && (
+                                            <span className="online-indicator" />
+                                        )
+                                    }
+                                    {unreadCounts[conversation.userId] > 0 && (
+                                        <span className="unread-badge">
+                                            {unreadCounts[conversation.userId] > 99 ? '99+' : unreadCounts[conversation.userId]}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="conversation-item__info">
+                                    <h4 className="conversation-item__info__name">
+                                        {conversation.username} 
+                                    </h4>
+
+                                    <p className="conversation-item__info__message">
+                                        {conversation.userSentLast ? 'bạn: ' : ''}
+                                        {conversation.lastMessage ? conversation.lastMessage : 'Chưa có tin nhắn'}
+                                    </p>
+                                </div>
+                                <span className="conversation-item__time">
+                                    {conversation.lastMessageTime && 
+                                        formatDate(conversation.lastMessageTime)}
+                                </span>
+                            </div>
+                        ))
                 )}
             </div>
         </div>

@@ -59,7 +59,8 @@
                 cursor: pointer;
                 color: #fff;
                 font-size: 18px;
-                
+                transition: 0.2s;
+
                 &:hover {
                     color: #0095f6;
                 }
@@ -226,42 +227,6 @@
         }
     }
 }
-
-// .message-item {
-//     display: flex;
-    
-//     &.own {
-//         justify-content: flex-end;
-
-//         .message-item__content {
-//             display: flex;
-//             flex-direction: column;
-//             align-items: flex-end;
-//         }
-        
-//         .message-item__bubble {
-//             background: #0095f6;
-//             color: #fff;
-//             border-radius: 18px 18px 5px 18px;
-//         }
-//     }
-    
-//     &.other {
-//         justify-content: flex-start;
-
-//         .message-item__content {
-//             display: flex;
-//             flex-direction: column;
-//             align-items: flex-start;
-//         }
-        
-//         .message-item__bubble {
-//             background: #262626;
-//             color: #fff;
-//             border-radius: 18px 18px 18px 5px;
-//         }
-//     }
-// }
 
 .message-read-status {
     font-size: 12px;
