@@ -1,7 +1,15 @@
 .chat-bubble {
     display: flex;
-    align-items: flex-end;
-    margin-bottom: 10px;
+    align-items: flex-start;
+
+    &__avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 10px;
+        border: 1px solid #dbdbdb;
+    }
 
     &__actions {
         position: relative; 
@@ -10,6 +18,7 @@
     &.own {
         margin-left: auto; 
         flex-direction: row-reverse;
+        
         .chat-bubble__content {
             align-items: flex-end;
         }
@@ -19,6 +28,11 @@
         .chat-bubble__menu {
             right: 0;
             left: auto;
+        }
+        .message-item__bubble {
+            background: #0095f6;
+            color: #fff;
+            border-radius: 18px 18px 5px 18px;
         }
     }
 
@@ -52,8 +66,8 @@
 
     &__bubble-wrapper {
         display: flex;
-        align-items: flex-end; // giúp bong bóng và thời gian canh cùng đáy
-        gap: 6px; // tạo khoảng trống giữa bong bóng và icon menu
+        align-items: flex-end;
+        gap: 6px; 
     }
 
     &__bubble {
@@ -62,6 +76,7 @@
         padding: 8px 12px;
         border-radius: 18px;
         font-size: 14px;
+        max-width: 120px;
     }
 
     &__menu-trigger {
@@ -104,9 +119,15 @@
             }
         }
 
-        &.open {
+        &.open.own {
             opacity: 1;
             transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        &.open.other {
+            opacity: 1;
+            transform: translateX(120px);
             pointer-events: auto;
         }
     }

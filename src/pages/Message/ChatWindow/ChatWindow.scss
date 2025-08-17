@@ -90,7 +90,7 @@
             right: 2px;
             width: 12px;
             height: 12px;
-            background-color: #28a745; // xanh lá
+            background-color: #28a745;
             border: 2px solid #000;
             border-radius: 50%;
         }
@@ -137,7 +137,7 @@
             gap: 10px;
             
             input {
-                 flex: 1;
+                flex: 1;
                 padding: 12px 16px;
                 border: 1px solid #dbdbdb;
                 border-radius: 20px;
@@ -227,50 +227,41 @@
     }
 }
 
-.message-item {
-    display: flex;
+// .message-item {
+//     display: flex;
     
-    &.own {
-        justify-content: flex-end;
+//     &.own {
+//         justify-content: flex-end;
 
-        .message-item__content {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
+//         .message-item__content {
+//             display: flex;
+//             flex-direction: column;
+//             align-items: flex-end;
+//         }
         
-        .message-item__bubble {
-            background: #0095f6;
-            color: #fff;
-            border-radius: 18px 18px 5px 18px;
-        }
-    }
+//         .message-item__bubble {
+//             background: #0095f6;
+//             color: #fff;
+//             border-radius: 18px 18px 5px 18px;
+//         }
+//     }
     
-    &.other {
-        justify-content: flex-start;
+//     &.other {
+//         justify-content: flex-start;
 
-        .message-item__content {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+//         .message-item__content {
+//             display: flex;
+//             flex-direction: column;
+//             align-items: flex-start;
+//         }
         
-        .message-item__bubble {
-            background: #262626;
-            color: #fff;
-            border-radius: 18px 18px 18px 5px;
-        }
-    }
-
-    &__avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 10px;
-        border: 1px solid #dbdbdb;
-    }
-}
+//         .message-item__bubble {
+//             background: #262626;
+//             color: #fff;
+//             border-radius: 18px 18px 18px 5px;
+//         }
+//     }
+// }
 
 .message-read-status {
     font-size: 12px;

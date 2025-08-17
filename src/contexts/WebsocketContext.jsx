@@ -8,25 +8,26 @@ export const WebsocketContext = createContext();
 
 export const WebsocketProvider = ({ children }) => {
     const [stompCli, setStompCli] = useState(null);
-    const [userInfo, setUserInfo] = useState({});
-    const [onlineList, setOnlineList] = useState([]);
+    const [userInfo, setUserInfo] = useState(() => {
+        const saved = localStorage.getItem("userInfo");
 
-    const [isReady, setIsReady] = useState(false);
+        return saved ? JSON.parse(saved) : {};
+    });
+    const [onlineList, setOnlineList] = useState([]);
+    const pathName = window.location.pathname;
+
+    const [isReady, setIsReady] = useState(!(!localStorage.getItem("userInfo")));// trả ra T F
     const stompConnection = useRef(null);
 
     const API_BASE_URL = GetApiBaseUrl();
     const SOCKET_URL = `${API_BASE_URL}/ws`;
 
     const getUserInfo = async () => {
+        if (pathName === "/signin" || pathName === "/signup") return;
+
         const token = localStorage.getItem("token");
 
         if (!token) return;
-
-        await axios.post(`${API_BASE_URL}/auth/introspect`, {
-            token
-        }, {}).catch(() => {
-            return;
-        })
 
         try {
             const response = await axios.get(`${API_BASE_URL}/api/profiles/user`, {
@@ -37,6 +38,7 @@ export const WebsocketProvider = ({ children }) => {
             })
             
             setUserInfo(response.data.result);
+            localStorage.setItem("userInfo", JSON.stringify(response.data.result));
             setIsReady(true);
 
             initWebSocket(response.data.result.id);
@@ -103,10 +105,6 @@ export const WebsocketProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (userInfo?.id) {
-            initWebSocket(userInfo.id);
-        }
-
         const handleBeforeUnload = () => {
             if (stompConnection.current) {
                 stompConnection.current.send("/app/chat.addUser", {}, JSON.stringify({

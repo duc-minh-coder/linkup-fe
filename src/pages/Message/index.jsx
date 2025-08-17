@@ -181,13 +181,13 @@ function Message() {
     };
 
     useEffect(() => {
+        if (!isReady || !userInfo?.id) return;
+
         setInitSelected(false);
-        if (userInfo?.id) {
-            getUnreadCounts();
-            getConversations();
-        }
+        getUnreadCounts();
+        getConversations();
             
-    }, [userInfo]);
+    }, [isReady, userInfo?.id]);
 
     useEffect(() => {
         if (!stompCli) return;
@@ -286,6 +286,10 @@ function Message() {
         }
     }, [receiverId, conversations, initSelected]);
     
+    if (!isReady) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="message">
             <div className="message__content">

@@ -8,6 +8,9 @@ function ChatBubble({ message, currentId, conversation }) {
     const menuRef = useRef(null);
     const bubbleRef = useRef(null);
     
+    const handleConfig = () => {
+        console.log(message);
+    }
 
     useEffect(() => {
         function handleClickOutside(e) {
@@ -107,15 +110,14 @@ function ChatBubble({ message, currentId, conversation }) {
                                 className={`config-btn ${isOwnMessage ? "own" : ""}`} />
                         </div>
 
-                        <div className={`chat-bubble__menu ${menuOpen ? "open" : ""}`}>
+                        <div className={`chat-bubble__menu ${menuOpen ? "open" : ""} ${isOwnMessage ? "own" : "other"}`} >
                             {isOwnMessage ? (
                                 <>
-                                    <button>✏️ Sửa</button>
-                                    <button>🗑️ Xóa với bạn</button>
-                                    <button>❌ Xóa với mọi người</button>
+                                    <button onClick={handleConfig}>Xóa với bạn</button>
+                                    <button onClick={handleConfig}>Xóa với mọi người</button>
                                 </>
                             ) : (
-                                <button>🗑️ Xóa với bạn</button>
+                                <button onClick={handleConfig}>Xóa với bạn</button>
                             )}
                         </div>
                     </div>
