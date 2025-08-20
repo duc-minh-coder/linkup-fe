@@ -71,21 +71,17 @@ function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList, com
 
         if (!token) return;
 
-        try {
-            const res = await axios.post(`${API_BASE_URL}/api/bookmarks/create`, {
-                postId: post.id
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
-            })
-            
-            toast.success(res.data.result);
-
-        } catch (error) {
-            toast.error(error);
-        }
+        await axios.post(`${API_BASE_URL}/api/bookmarks/create`, {
+            postId: post.id
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        }).then((response) => {
+            setIsSaved(response.data.result);
+            toast.success(response.data.result);
+        }).catch((err) => console.log(err))
     }
 
     
@@ -93,19 +89,19 @@ function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList, com
         setShowDropdown(false);
     }
     
-    const handleLikePost = () => {
+    const handleLikePost = async () => {
         const token = localStorage.getItem('token');
 
         try {
-            axios.post(`${API_BASE_URL}/api/post-like/toggle-like`, {}, {
+            await axios.post(`${API_BASE_URL}/api/post-like/toggle-like`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
                 }, params: {
                     postId: post.id
                 }
-            }).then(() => {
-                setIsLiked(true);
+            }).then((res) => {
+                setIsLiked(res.data.result);
             })
         } catch (error) {
             console.log(error);
@@ -287,7 +283,7 @@ function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList, com
                     <div className="detail-post__interactions">
                         <div className="detail-post__interactions-left">
                             <button 
-                                className={`detail-post__interaction-btn ${post.liked ? 'detail-post__interaction-btn--liked' : ''}`}
+                                className={`detail-post__interaction-btn ${post.liked || isLiked ? 'detail-post__interaction-btn--liked' : ''}`}
                                 onClick={handleLikePost}
                             >
                                 <Heart 
@@ -311,7 +307,7 @@ function DetailPost({ post, handlingShow, userAvatar , isAuthor, onlineList, com
                         >
                             <Bookmark 
                                 size={24} 
-                                fill={post.saved ? '#fff' : 'none'}
+                                fill={post.saved || isSaved ? '#fff' : 'none'}
                                 onClick={handleBookmark}
                             />
                         </button>

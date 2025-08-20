@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 
 function Post({ post, userProfile, onlineList }) {
     const [isLiked, setIsLiked] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
     const [showDetail, setShowDetail] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -52,22 +53,19 @@ function Post({ post, userProfile, onlineList }) {
 
         if (!token) return;
 
-        try {
-            const res = await axios.post(`${API_BASE_URL}/api/bookmarks/create`, {
+
+        await axios.post(`${API_BASE_URL}/api/bookmarks/create`, {
                 postId: post.id
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
                 }
-            })
-            
-            toast.success(res.data.result);
-
-        } catch (error) {
-            toast.error(error);
-        }
-    }
+            }).then((response) => {
+                setIsSaved(response.data.result);
+                toast.success(response.data.result);
+            }).catch((err) => console.log(err));
+    } 
 
     const handleDeletePost = () => {
         const token = localStorage.getItem('token');
@@ -95,19 +93,19 @@ function Post({ post, userProfile, onlineList }) {
         }
     }
 
-    const handleLikePost = () => {
+    const handleLikePost = async () => {
         const token = localStorage.getItem('token');
 
         try {
-            axios.post(`${API_BASE_URL}/api/post-like/toggle-like`, {}, {
+            await axios.post(`${API_BASE_URL}/api/post-like/toggle-like`, {}, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json"
                 }, params: {
                     postId: post.id
                 }
-            }).then(() => {
-                setIsLiked(true);
+            }).then((res) => {
+                setIsLiked(res.data.result);
             })
         } catch (error) {
             console.log(error);
@@ -243,7 +241,7 @@ function Post({ post, userProfile, onlineList }) {
                 <Bookmark
                     size={24}
                     className={`post__action-icon ${
-                        post.saved ? "post__action-icon--saved" : ""
+                        post.saved || isSaved ? "post__action-icon--saved" : ""
                     }`}
                     onClick={handlingBookmark}
                 />
